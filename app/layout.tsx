@@ -4,7 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar/Navbar";
 import { ThemeProvider } from "./theme-provider";
 import Providers from "./provider";
-import { sarabun } from "./fonts";
+import { sarabun, kanit } from "./fonts";
 import {
   ClerkProvider,
   SignInButton,
@@ -51,7 +51,7 @@ export default function RootLayout({
           />
         </head>
         <body
-          className={`${sarabun.variable} ${sarabun.className} antialiased`}
+          className={`${sarabun.variable} ${kanit.variable} ${sarabun.className} antialiased`}
         >
           <Providers>
             <Navbar />

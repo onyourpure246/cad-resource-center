@@ -2,7 +2,38 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+Follow these steps to set up the project locally.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/onyourpure246/cad-resource-center.git
+cd cad-resource-center
+```
+
+### 2. Install dependencies
+
+Install the necessary packages using npm:
+
+```bash
+npm install
+```
+
+### 3. Configure Environment Variables
+
+Create a `.env.local` file in the root directory and add the following variables. You will need to obtain these values from your project administrator or service providers (e.g., Clerk).
+
+```env
+NEXT_PUBLIC_API_URL=
+API_URL=
+API_TOKEN=
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+```
+
+### 4. Run the development server
+
+Once the dependencies are installed and the environment is configured, start the development server:
 
 ```bash
 npm run dev
