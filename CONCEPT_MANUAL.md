@@ -66,68 +66,131 @@ resource-center/
 
 ## 6. รายละเอียด Components (Component Details)
 
-ส่วนนี้อธิบายรายละเอียดของ Component สำคัญที่ใช้งานบ่อย เพื่อให้เข้าใจวิธีการใช้งานและปรับแต่ง
+ส่วนนี้รวบรวมรายชื่อและหน้าที่ของ Components ทั้งหมดในโปรเจกต์ โดยแบ่งเป็น 2 กลุ่มหลัก คือ Components จาก Library (Shadcn UI) และ Components ที่พัฒนาขึ้นเอง (Custom)
 
-### 6.1 UI Components (`components/ui`)
-เป็น Component พื้นฐานที่ใช้ซ้ำได้ทั่วทั้งโปรเจกต์ (Reusable) ส่วนใหญ่สร้างจาก Radix UI และปรับแต่งด้วย Tailwind CSS
+### 6.1 Shadcn UI Components (`components/ui`)
+เป็น Base UI Components ที่นำมาจาก Library Shadcn UI (Radix UI + Tailwind) ใช้เป็นพื้นฐานในการสร้างหน้าเว็บ
+-   **Layout & Feedback**: `card`, `dialog`, `drawer`, `sheet`, `skeleton`, `sonner` (Toast), `table`
+-   **Form Elements**: `button`, `input`, `checkbox`, `label`, `select`, `textarea`, `form`
+-   **Navigation**: `breadcrumb`, `dropdown-menu`
+-   **Others**: `badge`, `calendar`, `popover`, `command`
 
-#### **Button** (`components/ui/button.tsx`)
-ปุ่มกดมาตรฐาน รองรับหลายรูปแบบ
--   **Variants**:
-    -   `default`: สีหลัก (Primary) สำหรับปุ่มสำคัญที่สุด
-    -   `destructive`: สีแดง สำหรับการลบหรือยกเลิก
-    -   `outline`: ขอบเส้น สำหรับปุ่มรอง
-    -   `secondary`: สีรอง
-    -   `ghost`: ไม่มีพื้นหลัง แสดงเมื่อเอาเมาส์ไปชี้
-    -   `link`: ลักษณะเหมือนลิงก์
--   **Sizes**: `default`, `sm` (เล็ก), `lg` (ใหญ่), `icon` (สำหรับไอคอน)
--   **Usage**:
-    ```tsx
-    import { Button } from "@/components/ui/button"
-    
-    <Button variant="default">บันทึกข้อมูล</Button>
-    <Button variant="destructive" size="sm">ลบ</Button>
-    ```
+### 6.2 Custom Components
+เป็น Components ที่พัฒนาขึ้นเฉพาะสำหรับโปรเจกต์นี้ โดยจัดเก็บตาม Feature:
 
-#### **Card** (`components/ui/card.tsx`)
-กล่องใส่เนื้อหา ประกอบด้วยส่วนหัว เนื้อหา และส่วนท้าย
--   **Sub-components**: `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`
--   **Usage**:
-    ```tsx
-    import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-    
-    <Card>
-      <CardHeader>
-        <CardTitle>หัวข้อการ์ด</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p>เนื้อหาภายในการ์ด...</p>
-      </CardContent>
-    </Card>
-    ```
+#### **A. Layout & Navigation**
+-   **Navbar** (`components/Navbar/`)
+    -   `Navbar`: แถบเมนูหลักด้านบน
+    -   `NavAuth`: ปุ่ม Login/Logout และแสดง Profile ผู้ใช้
+    -   `ModeToggle`: ปุ่มสลับ Dark/Light Mode
+    -   `DropDownMenu`: เมนูย่อยสำหรับ Admin หรือหมวดหมู่อื่นๆ
+-   **Header** (`components/Header/`)
+    -   `Header`: ส่วนหัวของหน้าเพจ (Page Title & Description)
 
-### 6.2 Layout Components
+#### **B. Home Page** (`components/HomePage/`)
+-   `AnnounceSection`: ส่วนแสดงข่าวประชาสัมพันธ์หน้าแรก
 
-#### **Navbar** (`components/Navbar/Navbar.tsx`)
-แถบเมนูด้านบนของเว็บไซต์ รองรับ Responsive Design
--   **Structure**:
-    -   **Logo**: ลิงก์กลับหน้าแรก
-    -   **Menu Items**: รายการเมนู (เว็บไซต์กรมฯ, ดาวน์โหลด, สำหรับผู้ดูแลระบบ)
-    -   **Actions**: ปุ่มเปลี่ยน Theme (`ModeToggle`) และปุ่มเข้าสู่ระบบ (`NavAuth`)
--   **Sub-components**:
-    -   `DropDownMenu`: เมนูแบบ Dropdown สำหรับเมนูย่อย (เช่น เมนูผู้ดูแลระบบ)
-    -   `NavAuth`: จัดการสถานะการล็อกอิน (แสดงปุ่ม Sign In หรือ User Profile)
+#### **C. Downloads Page** (`components/DownloadsPage/`)
+-   `CategorySelection`: ส่วนเลือกหมวดหมู่เอกสารหลัก
+-   `CategoryCard`: การ์ดแสดงหมวดหมู่ย่อย
+-   `DownloadLists`: รายการไฟล์ดาวน์โหลด (แสดงเป็นตารางหรือการ์ด)
+-   `SubFolderBadges`: แถบนำทางโฟลเดอร์ย่อย (Breadcrumb แบบ Badge)
 
-### 6.3 Feature Components
-Component ที่สร้างขึ้นเพื่อใช้งานเฉพาะจุด (Specific Features) ควรเก็บแยกตามโฟลเดอร์ใน `components/` เช่น:
--   `components/Admin/`: สำหรับหน้า Admin Dashboard
--   `components/HomePage/`: สำหรับหน้า Landing Page (เช่น `AnnounceSection`)
--   `components/DownloadsPage/`: สำหรับหน้าดาวน์โหลดเอกสาร
+#### **D. Admin Dashboard** (`components/Admin/`)
+ส่วนจัดการข้อมูลหลังบ้าน แบ่งเป็นกลุ่มย่อย:
+
+**1. Document Management (`components/Admin/DocManagement/`)**
+-   `DataManagementLayout`: Layout หลักของหน้าจัดการเอกสาร (มี Search, Breadcrumb)
+-   `ItemsTable`: ตารางแสดงรายการโฟลเดอร์และไฟล์
+-   `ActionButtons`: ปุ่มดำเนินการต่างๆ (เช่น สร้างโฟลเดอร์, อัปโหลดไฟล์)
+-   `PaginationFooter`: ส่วนจัดการหน้า (Pagination)
+
+**2. Announcement Management (`components/Admin/Announcement/`)**
+-   `AnnouncementTable`: ตารางจัดการข่าวประชาสัมพันธ์
+-   `AnnouncementCard`: การ์ดแสดงตัวอย่างข่าว
+-   `CreateNewAnnouncement`: ฟอร์มสร้างประกาศใหม่
+
+**3. Dialogs & Forms (`components/Admin/Dialog/`)**
+-   `AddFolderDialog` / `AddFolderForm`: หน้าต่างสร้างโฟลเดอร์ใหม่
+-   `EditFolderDialog` / `EditFolderForm`: หน้าต่างแก้ไขโฟลเดอร์
+-   `CreateNewForm`: หน้าต่างอัปโหลดไฟล์ใหม่ (Drawer)
+-   `DeleteConfirmationDialog`: หน้าต่างยืนยันการลบ
+-   `MoveDialog`: หน้าต่างย้ายไฟล์/โฟลเดอร์
+-   `FolderTree`: แสดงโครงสร้างโฟลเดอร์ (ใช้ใน MoveDialog)
+
+#### **E. Shared Forms** (`components/Form/`)
+Components สำหรับสร้างฟอร์มที่ใช้ซ้ำได้
+-   `FormContainer`: Wrapper สำหรับ Server Actions Form
+-   `TextInput`, `TextAreaInput`: ช่องกรอกข้อมูลพร้อม Error Handling
+-   `Button`: ปุ่ม Submit ที่มีสถานะ Loading
+-   `DateAndTime`, `DatePicker`: ตัวเลือกวันเวลา
+
+#### **F. Utilities** (`components/DataTable/`)
+-   `DataTable`: ตารางข้อมูลอเนกประสงค์ (Generic Table)
 
 ## 7. ข้อควรระวัง (Important Notes)
 -   **Theme Consistency**: ตรวจสอบการแสดงผลทั้งใน Light Mode และ Dark Mode เสมอ
 -   **Responsive Design**: ทดสอบการแสดงผลบนหน้าจอมือถือและแท็บเล็ต
 -   **Performance**: ใช้ `<Image />` ของ Next.js เสมอสำหรับการแสดงรูปภาพเพื่อประสิทธิภาพที่ดีที่สุด
 
+## 8. Data Model & Business Logic
+
+### 8.1 Data Models (Type Definitions)
+ระบบใช้ TypeScript Interfaces ในการกำหนดโครงสร้างข้อมูล โดยมีโมเดลหลักดังนี้:
+
+#### **Folder (โฟลเดอร์)**
+ใช้สำหรับจัดเก็บโครงสร้างหมวดหมู่เอกสาร (`types/documents.ts`)
+-   `id`: รหัสโฟลเดอร์ (Number)
+-   `name`: ชื่อโฟลเดอร์ (String)
+-   `abbr`: ชื่อย่อ (String) - ใช้สำหรับการอ้างอิงหรือ URL
+-   `description`: คำอธิบาย (String)
+-   `parent`: รหัสโฟลเดอร์แม่ (Number | null) - ถ้าเป็น null คือ Root Folder
+-   `created_at`, `updated_at`: วันที่สร้างและแก้ไข
+-   `updated_by`: รหัสผู้แก้ไขล่าสุด
+
+#### **File (ไฟล์เอกสาร)**
+ใช้สำหรับจัดเก็บข้อมูลไฟล์ดาวน์โหลด (`types/documents.ts`)
+-   `id`: รหัสไฟล์ (Number)
+-   `name`: ชื่อที่แสดงผล (String)
+-   `filename`: ชื่อไฟล์จริง (String)
+-   `sysname`: ชื่อไฟล์ในระบบ (String)
+-   `description`: คำอธิบาย (String)
+-   `parent`: รหัสโฟลเดอร์ที่ไฟล์อยู่ (Number)
+-   `isactive`: สถานะการใช้งาน (Number)
+-   `created_at`, `updated_at`: วันที่สร้างและแก้ไข
+
+#### **Announcement (ประกาศ)**
+ใช้สำหรับข่าวประชาสัมพันธ์ (`types/announcement.ts`)
+-   `id`: รหัสประกาศ
+-   `title`: หัวข้อประกาศ
+-   `description`: รายละเอียดโดยย่อ
+-   `content`: เนื้อหาประกาศ
+-   `status`: สถานะ ('Published' | 'Draft')
+-   `category`: หมวดหมู่
+-   `categoryVariant`: รูปแบบสีของหมวดหมู่ ("default" | "secondary" | "destructive" | "outline")
+-   `date`: วันที่ประกาศ
+
+### 8.2 Business Logic (Server Actions)
+ระบบใช้ **Server Actions** (`actions/actions.ts`) ในการจัดการ Logic ฝั่ง Server และเชื่อมต่อกับ Backend API
+
+#### **การจัดการข้อมูล (CRUD)**
+-   **Fetching**: ดึงข้อมูลผ่าน API โดยใช้ `fetch` และส่ง `Authorization Header` (Bearer Token)
+    -   `adminGetRootFolder()`: ดึงข้อมูล Root Folder
+    -   `adminGetFolderById(id)`: ดึงข้อมูลภายในโฟลเดอร์ตาม ID
+-   **Mutations**: การสร้าง/แก้ไข/ลบ ข้อมูล จะมีการตรวจสอบความถูกต้อง (Validation) ก่อนส่งไป API
+    -   `createFolder`, `updateFolder`: จัดการโฟลเดอร์
+    -   `uploadFile`, `updateFile`: จัดการไฟล์ (รองรับการส่ง FormData)
+    -   `deleteItemById(id, type)`: ลบโฟลเดอร์หรือไฟล์
+
+#### **Validation**
+ใช้ library **Zod** ในการตรวจสอบความถูกต้องของข้อมูลที่รับมาจาก Form (FormData) ก่อนประมวลผล
+-   ตรวจสอบฟิลด์ที่จำเป็น (Required fields)
+-   ตรวจสอบรูปแบบข้อมูล (เช่น ชื่อย่อต้องเป็นภาษาอังกฤษ/ตัวเลข)
+-   ตรวจสอบข้อมูลซ้ำ (Duplicate Check) เช่น ชื่อโฟลเดอร์ซ้ำในระดับเดียวกัน
+
+#### **Error Handling & Revalidation**
+-   มีการดักจับ Error จาก API และส่งกลับไปยัง Client
+-   ใช้ `revalidatePath` ของ Next.js เพื่อทำการ Refresh ข้อมูลหน้าเว็บทันทีที่มีการเปลี่ยนแปลงข้อมูล (เช่น หลังสร้างโฟลเดอร์เสร็จ)
+
 ---
-*เอกสารนี้ปรับปรุงล่าสุดเมื่อ: 28 พฤศจิกายน 2025*
+*เอกสารนี้ปรับปรุงล่าสุดเมื่อ: 1 ธันวาคม 2025*

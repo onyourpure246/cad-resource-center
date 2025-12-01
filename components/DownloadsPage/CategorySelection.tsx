@@ -9,7 +9,6 @@ const CategorySelection = async () => {
     const folders = folderContents.folders;
     return (
         <div className='container mx-auto max-w-[1320px] py-10 text-center'>
-            <h2 className='text-3xl font-semibold mb-10'>เลือกรายการที่ต้องการดาวน์โหลด</h2>
             <div className='grid grid-cols-1 gap-8 md:grid-cols-3'>
                 {folders.map((folder) => (
                     <CategoryCard
