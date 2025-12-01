@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import ThemeLogo from './ThemeLogo'
-import DropDownMenu from './DropDownMenu' // This will be our reusable component
+import DropDownMenu from './DropDownMenu'
 import {
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import NavAuth from './NavAuth'
 import { ModeToggle } from './ModeToggle'
+import { Button } from '@/components/ui/button'
 
 const Navbar = () => {
   return (
@@ -24,14 +25,24 @@ const Navbar = () => {
 
         <div className='flex flex-row gap-12 items-center '>
           {/* Menu Items */}
-          <ul className='flex flex-col md:flex md:flex-row my-5'>
-            <li className="my-2 md:mx-4"><Link href="https://cad.go.th/" className="transition-colors hover:text-primary">เว็บไซต์กรมตรวจบัญชีสหกรณ์</Link></li>
-            <li className="my-2 md:mx-4"><Link href="/downloads" className="transition-colors hover:text-primar">ดาวน์โหลด</Link></li>
-            <li className="my-2 md:mx-4">
+          <ul className='flex flex-col md:flex md:flex-row my-5 items-center'>
+            <li className="my-2 md:mx-2">
+              <Button variant="ghost" asChild className="text-base font-normal hover:bg-transparent hover:text-primary dark:hover:bg-transparent dark:hover:text-white">
+                <Link href="https://cad.go.th/">เว็บไซต์กรมตรวจบัญชีสหกรณ์</Link>
+              </Button>
+            </li>
+            <li className="my-2 md:mx-2">
+              <Button variant="ghost" asChild className="text-base font-normal hover:bg-transparent hover:text-primary dark:hover:bg-transparent dark:hover:text-white">
+                <Link href="/downloads">ดาวน์โหลด</Link>
+              </Button>
+            </li>
+            <li className="my-2 md:mx-2">
               {/* Admin Actions */}
               <DropDownMenu
                 trigger={
-                  <span className='flex cursor-pointer transition-colors hover:text-primary'>สำหรับผู้ดูแลระบบ</span>
+                  <Button variant="ghost" className="cursor-pointer text-base font-normal hover:bg-transparent hover:text-primary dark:hover:bg-transparent dark:hover:text-white">
+                    สำหรับผู้ดูแลระบบ
+                  </Button>
                 }
               >
                 <DropdownMenuLabel>สำหรับผู้ดูแลระบบ</DropdownMenuLabel>
