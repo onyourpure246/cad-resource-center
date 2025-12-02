@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/select"
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
-import { contentCategory } from '@/utils/contentcategory'
 import { CategorySelectProps } from '@/types/common'
 
 const CategorySelect = ({
@@ -16,14 +15,15 @@ const CategorySelect = ({
     label,
     placeholder,
     defaultValue,
-    className
+    className,
+    categories
 }: CategorySelectProps) => {
     return (
         <div className='mb-2 flex flex-col gap-1'>
             <Label htmlFor={name} className='mb-1'>{label}</Label>
             <Select
                 name={name}
-                defaultValue={defaultValue || contentCategory[0].CATEGORY_NAME}>
+                defaultValue={defaultValue || categories?.[0]?.CATEGORY_NAME}>
 
                 <SelectTrigger
                     className={cn("w-full md:w-[230px]", className)}>
@@ -32,7 +32,7 @@ const CategorySelect = ({
                 </SelectTrigger>
 
                 <SelectContent>
-                    {contentCategory.map((item) => (
+                    {categories?.map((item) => (
                         <SelectItem
                             key={item.CATEGORY_ID}
                             value={item.CATEGORY_NAME}>

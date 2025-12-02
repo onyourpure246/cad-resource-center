@@ -1,8 +1,14 @@
+import Header from '@/components/Header/Header'
 import React from 'react'
 
 const DashboardPage = () => {
   return (
-    <div>DashboardPage</div>
+    <>
+      <Header
+        title="แดชบอร์ด"
+        description=""
+      />
+    </>
   )
 }
 

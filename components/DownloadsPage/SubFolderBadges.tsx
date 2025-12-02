@@ -1,49 +1,63 @@
 'use client';
 
-import { Folder, SubFolderBadgesProps } from '@/types/documents';
-import { Badge } from '@/components/ui/badge';
+import { SubFolderBadgesProps } from '@/types/documents';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { ChevronLeft, Folder as FolderIcon } from 'lucide-react';
+import { ChevronLeft, FolderOpen, LayoutGrid } from 'lucide-react';
 import { Button } from '../ui/button';
+import { cn } from '@/lib/utils';
 
 const SubFolderBadges = ({ subFolders, parentFolderId, backLink }: SubFolderBadgesProps) => {
     const params = useParams();
     const currentFolderId = parseInt(params.folderId as string, 10);
 
     return (
-        <div className="mb-2 flex flex-col gap-4">
+        <div className="mb-8 flex flex-col gap-6">
             {backLink && (
                 <div className="flex items-center">
-                    <Button variant="ghost" size="sm" asChild className="pl-0 hover:bg-transparent hover:text-primary transition-colors">
-                        <Link href={backLink} className="flex items-center gap-1 text-muted-foreground">
-                            <ChevronLeft className="h-4 w-4" />
+                    <Button variant="ghost" size="sm" asChild className="pl-0 hover:bg-transparent hover:text-primary transition-colors group">
+                        <Link href={backLink} className="flex items-center gap-1 text-muted-foreground group-hover:text-primary">
+                            <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
                             ย้อนกลับ
                         </Link>
                     </Button>
                 </div>
             )}
 
-            <div className="flex flex-wrap gap-2">
-                <Link href={`/downloads/${parentFolderId}`} passHref>
-                    <Badge
-                        variant={currentFolderId === parentFolderId ? 'default' : 'outline'}
-                        className={`cursor-pointer px-4 py-2 text-sm transition-all hover:bg-primary/90 hover:text-primary-foreground ${currentFolderId === parentFolderId ? 'shadow-md' : 'bg-background hover:border-primary'}`}
-                    >
-                        ทั้งหมด
-                    </Badge>
-                </Link>
-                {subFolders.map((folder) => (
-                    <Link key={folder.id} href={`/downloads/${folder.id}`} passHref>
-                        <Badge
-                            variant={currentFolderId === folder.id ? 'default' : 'outline'}
-                            className={`cursor-pointer px-4 py-2 text-sm transition-all hover:bg-primary/90 hover:text-primary-foreground flex items-center gap-2 ${currentFolderId === folder.id ? 'shadow-md' : 'bg-background hover:border-primary'}`}
+            <div className="w-full overflow-x-auto pb-2 scrollbar-hide">
+                <div className="flex items-center gap-2 min-w-max">
+                    <Link href={`/downloads/${parentFolderId}`} passHref>
+                        <div
+                            className={cn(
+                                "flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer border",
+                                currentFolderId === parentFolderId
+                                    ? "bg-primary text-primary-foreground border-primary shadow-md"
+                                    : "bg-background text-muted-foreground border-border hover:border-primary/50 hover:bg-accent"
+                            )}
                         >
-                            <FolderIcon className="h-3 w-3" />
-                            {folder.name}
-                        </Badge>
+                            <LayoutGrid className="h-4 w-4" />
+                            ทั้งหมด
+                        </div>
                     </Link>
-                ))}
+
+                    <div className="h-6 w-px bg-border mx-2" />
+
+                    {subFolders.map((folder) => (
+                        <Link key={folder.id} href={`/downloads/${folder.id}`} passHref>
+                            <div
+                                className={cn(
+                                    "flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer border",
+                                    currentFolderId === folder.id
+                                        ? "bg-primary text-primary-foreground border-primary shadow-md"
+                                        : "bg-background text-muted-foreground border-border hover:border-primary/50 hover:bg-accent"
+                                )}
+                            >
+                                <FolderOpen className="h-4 w-4" />
+                                {folder.name}
+                            </div>
+                        </Link>
+                    ))}
+                </div>
             </div>
         </div>
     );

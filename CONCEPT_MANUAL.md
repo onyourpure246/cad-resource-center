@@ -31,6 +31,7 @@
 -   **Language**: TypeScript (Strict Mode)
 -   **UI Library**: [React 19](https://react.dev/)
 -   **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) + [Tailwind Animate](https://github.com/jamiebuilds/tailwindcss-animate)
+-   **Animation**: [Framer Motion](https://www.framer.com/motion/) (Complex Animations & Gestures)
 -   **Component Library**:
     -   [Radix UI](https://www.radix-ui.com/) (Headless Primitives)
     -   [Shadcn UI](https://ui.shadcn.com/) (Reusable Components)
@@ -62,31 +63,136 @@
 -   **Radius**: `1.55rem` (Rounded XL/2XL feel) ให้ความรู้สึกเป็นมิตรและทันสมัย
 -   **Shadows**: Custom Shadows ตั้งแต่ `shadow-2xs` ถึง `shadow-2xl` โดยใช้สี `hsl(185 70% 30%)` เพื่อให้เงาดูมีสีสัน (Colored Shadows) ไม่ใช่แค่สีดำ
 -   **Spacing**: ใช้ Standard Tailwind Spacing (0.25rem base)
+-   **Visual Effects**:
+    -   **Glassmorphism**: ใช้ `backdrop-blur` และ `bg-opacity` สำหรับ Overlay Elements
+    -   **Gradients**: ใช้ `bg-gradient-to-r` สำหรับ Text Clipping และ Background Accents
+    -   **Motion**: ใช้ `framer-motion` สำหรับ Background Animation ที่มีความซับซ้อน (เช่น Floating Blobs)
 
 ---
 
 ## 5. โครงสร้างไฟล์ (Project Structure)
 ```
-resource-center/
-├── actions/             # Server Actions (Business Logic & API Calls)
-│   └── actions.ts       # Centralized Actions
-├── app/                 # Next.js App Router
-│   ├── admin/           # Protected Routes (Admin)
-│   ├── downloads/       # Protected Routes (User)
-│   ├── api/             # API Routes (ถ้ามี)
-│   ├── fonts.ts         # Font Configuration
-│   ├── globals.css      # Global Styles & Tokens
-│   └── layout.tsx       # Root Layout & Providers
-├── components/          # React Components
-│   ├── Admin/           # Admin-specific Components
-│   ├── DownloadsPage/   # User-specific Components
-│   ├── Form/            # Shared Form Components
-│   ├── ui/              # Shadcn UI Base Components
-│   └── Navbar/          # Navigation Components
-├── hooks/               # Custom Hooks (Logic Reuse)
-├── lib/                 # Utilities (cn, formatters)
-├── types/               # TypeScript Definitions (Models)
-└── middleware.ts        # Auth & Route Protection
+.
+├─ actions
+│  └─ actions.ts
+├─ app
+│  ├─ admin
+│  │  ├─ announcement
+│  │  │  ├─ create
+│  │  │  │  └─ page.tsx
+│  │  │  └─ page.tsx
+│  │  ├─ dashboard
+│  │  │  └─ page.tsx
+│  │  ├─ documents
+│  │  │  ├─ [folderId]
+│  │  │  │  └─ page.tsx
+│  │  │  └─ page.tsx
+│  │  ├─ usermanagement
+│  │  │  └─ page.tsx
+│  │  └─ layout.tsx
+│  ├─ downloads
+│  │  ├─ [folderId]
+│  │  │  └─ page.tsx
+│  │  └─ page.tsx
+│  ├─ favicon.ico
+│  ├─ fonts.ts
+│  ├─ globals.css
+│  ├─ layout.tsx
+│  ├─ page.tsx
+│  ├─ provider.tsx
+│  └─ theme-provider.tsx
+├─ assets
+│  ├─ img
+│  │  ├─ clients 
+├─ components
+│  ├─ Admin
+│  │  ├─ Announcement
+│  │  │  ├─ AnnouncementCard.tsx
+│  │  │  ├─ AnnouncementTable.tsx
+│  │  │  └─ CreateNewAnnouncement.tsx
+│  │  ├─ Dialog
+│  │  │  ├─ AddFolderDialog.tsx
+│  │  │  ├─ AddFolderForm.tsx
+│  │  │  ├─ CreateNewForm.tsx
+│  │  │  ├─ DeleteConfirmationDialog.tsx
+│  │  │  ├─ DialogFooter.tsx
+│  │  │  ├─ Dialog.tsx
+│  │  │  ├─ EditFolderDialog.tsx
+│  │  │  ├─ EditFolderForm.tsx
+│  │  │  ├─ FolderTree.tsx
+│  │  │  └─ MoveDialog.tsx
+│  │  ├─ DocManagement
+│  │  │  ├─ ActionButtons.tsx
+│  │  │  ├─ DataManagementLayout.tsx
+│  │  │  ├─ ItemsTable.tsx
+│  │  │  ├─ PaginationFooter.tsx
+│  │  │  ├─ RightSideDrawer.tsx
+│  │  │  └─ TableSkeleton.tsx
+│  │  ├─ SidebarContext.tsx
+│  │  ├─ Sidebar.tsx
+│  │  └─ UserManagement.tsx
+│  ├─ DataTable
+│  │  └─ DataTable.tsx
+│  ├─ DownloadsPage
+│  │  ├─ CategoryCard.tsx
+│  │  │  ├─ CategorySelection.tsx
+│  │  │  ├─ DownloadCard.tsx
+│  │  │  ├─ DownloadLists.tsx
+│  │  │  ├─ HeroBackground.tsx
+│  │  │  ├─ HeroSection.tsx
+│  │  │  └─ SubFolderBadges.tsx
+│  ├─ Form
+│  │  ├─ Button.tsx
+│  │  ├─ CategorySelect.tsx
+│  │  ├─ DateAndTime.tsx
+│  │  ├─ DatePicker.tsx
+│  │  ├─ FormContainer.tsx
+│  │  ├─ TextAreaInput.tsx
+│  │  └─ TextInput.tsx
+│  ├─ Header
+│  │  └─ Header.tsx
+│  ├─ HomePage
+│  │  └─ AnnounceSection.tsx
+│  ├─ Navbar
+│  │  ├─ DropDownMenu.tsx
+│  │  ├─ ModeToggle.tsx
+│  │  ├─ NavAuth.tsx
+│  │  ├─ Navbar.tsx
+│  │  ├─ Search.tsx
+│  │  └─ ThemeLogo.tsx
+│  └─ ui
+├─ hooks
+│  ├─ useAnnouncementColumns.tsx
+│  ├─ useFolderContents.ts
+│  ├─ useFormSubmission.ts
+│  ├─ useItemsTableColumns.tsx
+│  ├─ useMoveDialog.ts
+│  ├─ useRootDocuments.ts
+│  └─ useTableData.ts
+├─ lib
+│  └─ utils.ts
+├─ public
+├─ types
+│  ├─ announcement.ts
+│  ├─ common.ts
+│  ├─ documents.ts
+│  └─ MoveDialog.types.ts
+├─ utils
+│  ├─ download-page-utils.ts
+│  └─ newcdm_types.ts
+├─ components.json
+├─ CONCEPT_MANUAL.md
+├─ .env.local
+├─ eslint.config.mjs
+├─ .gitignore
+├─ middleware.ts
+├─ next.config.ts
+├─ next-env.d.ts
+├─ package.json
+├─ package-lock.json
+├─ postcss.config.mjs
+├─ README.md
+└─ tsconfig.json
 ```
 
 ---
@@ -153,4 +259,4 @@ resource-center/
 -   **Draft**: สถานะประกาศที่ยังไม่เผยแพร่
 
 ---
-*เอกสารนี้ปรับปรุงล่าสุดเมื่อ: 1 ธันวาคม 2025 (Updated to Technical Spec)*
+*เอกสารนี้ปรับปรุงล่าสุดเมื่อ: 2 ธันวาคม 2025 (Added Hero Section & Animation Specs)*

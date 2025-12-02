@@ -2,33 +2,35 @@ import React from 'react'
 import CategoryCard from './CategoryCard'
 import { Folder } from 'lucide-react'
 import { adminGetFolderById } from '@/actions/actions'
+import HeroSection from './HeroSection'
 
 const CategorySelection = async () => {
 
     const folderContents = await adminGetFolderById(1);
     const folders = folderContents.folders;
     return (
-        <div className='container mx-auto max-w-[1320px] py-10 text-center'>
-            <div className='grid grid-cols-1 gap-8 md:grid-cols-3'>
-                {folders.map((folder) => (
-                    <CategoryCard
-                        key={folder.id}
-                        title={folder.name}
-                        description={folder.description}
-                        href={`/downloads/${folder.id}`}
-                        icon={<Folder size={28} />}
-                    />
-                ))}
+        <div className='flex flex-col gap-12 pb-20'>
+            {/* Hero Section */}
+            <HeroSection />
 
-                {/* <Link href={`/downloads/${folder.id}`} key={folder.id}>
-                            <Card className="hover:shadow-lg transition-shadow duration-200 cursor-pointer h-full">
-                                <CardHeader className="flex flex-row items-center gap-4">
-                                    <Folder className="w-8 h-8 text-primary" />
-                                    <CardTitle>{folder.name}</CardTitle>
-                                </CardHeader>
-                            </Card>
-                        </Link>
-                    ))} */}
+            {/* Category Grid */}
+            <div className='container mx-auto max-w-[1920px] px-4'>
+                <div className="flex items-center gap-2 mb-6">
+                    <Folder className="w-6 h-6 text-primary" />
+                    <h2 className="text-2xl font-semibold">หมวดหมู่เอกสาร</h2>
+                </div>
+
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+                    {folders.map((folder) => (
+                        <CategoryCard
+                            key={folder.id}
+                            title={folder.name}
+                            description={folder.description}
+                            href={`/downloads/${folder.id}`}
+                            icon={<Folder />}
+                        />
+                    ))}
+                </div>
             </div>
         </div>
     )

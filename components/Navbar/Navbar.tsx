@@ -13,9 +13,9 @@ import { Button } from '@/components/ui/button'
 
 const Navbar = () => {
   return (
-    <nav>
+    <nav className='bg-sidebar'>
       {/* Logo */}
-      <div className='container mx-auto max-w-[1440px] relative h-auto px-2 py-1 flex flex-col md:flex-row md:justify-between md:items-center md:h-[80px]'>
+      <div className='container mx-auto max-w-[1360px] relative h-auto px-2 py-1 flex flex-col md:flex-row md:justify-between md:items-center md:h-[80px]'>
         <div className='flex gap-12 items-center'>
           <Link href="/">
             <ThemeLogo />
@@ -23,7 +23,7 @@ const Navbar = () => {
 
         </div>
 
-        <div className='flex flex-row gap-12 items-center '>
+        <div className='flex flex-row gap-12 items-center font-kanit'>
           {/* Menu Items */}
           <ul className='flex flex-col md:flex md:flex-row my-5 items-center'>
             <li className="my-2 md:mx-2">

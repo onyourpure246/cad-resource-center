@@ -65,12 +65,18 @@ export type SubmitButtonProps = {
     text?: string
 }
 
+export type CategoryItem = {
+    CATEGORY_ID: number | string;
+    CATEGORY_NAME: string;
+};
+
 export type CategorySelectProps = {
     name: string;
     label: string;
     placeholder?: string;
     defaultValue?: string;
     className?: string;
+    categories: CategoryItem[];
 };
 
 export type DatePickerProps = {

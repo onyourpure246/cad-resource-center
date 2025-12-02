@@ -1,4 +1,4 @@
-import React, { useActionState, useEffect } from 'react'
+import React from 'react'
 import FormContainer from '../../Form/FormContainer'
 import { uploadFile } from '@/actions/actions'
 import TextInput from '../../Form/TextInput'
@@ -8,6 +8,7 @@ import { DrawerClose, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle
 import { Button } from '../../ui/button'
 import { CreateNewFormProps } from '@/types/documents';
 import { State } from '@/types/common';
+import { useFormSubmission } from '@/hooks/useFormSubmission';
 
 // default state
 const initialState: State = {
@@ -17,12 +18,8 @@ const initialState: State = {
 };
 
 const CreateNewForm = ({ parentId, onSuccess }: CreateNewFormProps) => {
-    const [state, formAction] = useActionState(uploadFile, initialState);
-    useEffect(() => {
-        if (state.success) {
-            onSuccess();
-        }
-    }, [state.success, onSuccess]);
+    const { state, formAction } = useFormSubmission(uploadFile, initialState, onSuccess);
+
     return (
         <div className="flex flex-col h-full">
             <DrawerHeader>

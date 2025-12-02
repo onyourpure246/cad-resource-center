@@ -144,7 +144,7 @@ export interface CategoryCardProps {
     title: string;
     description: string;
     href: string;
-    icon: React.ReactNode;
+    icon: React.ReactElement;
 }
 
 export interface DownloadListProps {
