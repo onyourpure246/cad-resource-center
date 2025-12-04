@@ -60,7 +60,7 @@ export const useItemsTableColumns = ({
             ),
             cell: (item) => (
                 <span
-                    className={`font-medium ${item.type === 'folder' ? 'cursor-pointer hover:text-primary transition-colors' : 'text-foreground'}`}
+                    className={`hover:underline font-medium ${item.type === 'folder' ? 'cursor-pointer hover:text-primary transition-colors' : 'text-foreground'}`}
                     onClick={() => onItemClick(item)}
                 >
                     {item.name}

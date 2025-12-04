@@ -11,24 +11,27 @@ const DataManagementLayout = ({
     children,
     breadcrumbs = [],
     showBreadcrumbs = true,
+    showSearch = true,
     onSearchChange,
     footer
 }: DataManagementLayoutProps) => {
     return (
-        <div className="p-4 sm:p-6 lg:p-8">
+        <div className="py-2 px-4 sm:py-4 sm:px-6 lg:py-4 lg:px-4">
             <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
                 <div className="flex gap-2">
                     {actionButtons}
                 </div>
-                <div className="w-full sm:w-auto relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        type="search"
-                        placeholder={searchPlaceholder}
-                        className="w-full sm:w-[300px] pl-10 h-10 bg-background border-muted-foreground/40 focus-visible:ring-primary/50 transition-all hover:border-primary/60"
-                        onChange={(e) => onSearchChange?.(e.target.value)}
-                    />
-                </div>
+                {showSearch && (
+                    <div className="w-full sm:w-auto relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            type="search"
+                            placeholder={searchPlaceholder}
+                            className="w-full sm:w-[300px] pl-10 h-10 bg-background border-muted-foreground/40 focus-visible:ring-primary/50 transition-all hover:border-primary/60"
+                            onChange={(e) => onSearchChange?.(e.target.value)}
+                        />
+                    </div>
+                )}
             </div>
             {/* Breadcrumbs */}
             {showBreadcrumbs && (

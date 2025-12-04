@@ -45,12 +45,12 @@ const Navbar = () => {
                   </Button>
                 }
               >
-                <DropdownMenuLabel>สำหรับผู้ดูแลระบบ</DropdownMenuLabel>
+                <DropdownMenuLabel className='font-kanit'>สำหรับผู้ดูแลระบบ</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem><Link href="/admin/documents">จัดการรายการดาวน์โหลด</Link></DropdownMenuItem>
-                <DropdownMenuItem><Link href="/admin/usermanagement">จัดการข้อมูลผู้ใช้งาน</Link></DropdownMenuItem>
-                <DropdownMenuItem><Link href="/admin/dashboard">ข้อมูลการใช้งานระบบ</Link></DropdownMenuItem>
-                <DropdownMenuItem><Link href="/admin/announcement">จัดการข้อมูลประชาสัมพันธ์</Link></DropdownMenuItem>
+                <DropdownMenuItem><Link href="/admin/documents" className='font-kanit'>จัดการรายการดาวน์โหลด</Link></DropdownMenuItem>
+                <DropdownMenuItem><Link href="/admin/usermanagement" className='font-kanit'>จัดการข้อมูลผู้ใช้งาน</Link></DropdownMenuItem>
+                <DropdownMenuItem><Link href="/admin/dashboard" className='font-kanit'>ข้อมูลการใช้งานระบบ</Link></DropdownMenuItem>
+                <DropdownMenuItem><Link href="/admin/announcement" className='font-kanit'>จัดการข้อมูลประชาสัมพันธ์</Link></DropdownMenuItem>
               </DropDownMenu>
             </li>
           </ul>
@@ -58,7 +58,7 @@ const Navbar = () => {
 
         <div>
           <ul className='flex flex-row gap-5 items-center'>
-            <li className="my-2 md:mx-4">
+            <li className="my-2 md:mx-4 ">
               <ModeToggle />
             </li>
             <li className="my-2 md:mx-4">
