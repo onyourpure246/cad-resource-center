@@ -42,12 +42,17 @@ const Sidebar = () => {
 
     return (
         <aside className={cn(
-            "hidden md:flex flex-col min-h-[calc(100vh-80px)] bg-card p-4 bg-sidebar transition-all duration-300",
+            "hidden md:flex flex-col min-h-[calc(100vh-80px)] p-4 bg-sidebar transition-all duration-300 ease-in-out",
             isCollapsed ? "w-20" : "w-64"
         )}>
             <div className="flex flex-col gap-2">
-                <div className={cn("px-4 py-2 mb-2 transition-opacity duration-300", isCollapsed ? "opacity-0 hidden" : "opacity-100")}>
-                    <h2 className="text-lg font-semibold tracking-tight text-foreground whitespace-nowrap">
+                <div className={cn(
+                    "overflow-hidden transition-all duration-300 ease-in-out whitespace-nowrap",
+                    isCollapsed
+                        ? "max-h-0 opacity-0 mb-0"
+                        : "max-h-14 opacity-100 mb-2 px-4 py-2"
+                )}>
+                    <h2 className="text-lg font-semibold tracking-tight text-foreground">
                         ระบบสำหรับผู้ดูแล
                     </h2>
                 </div>

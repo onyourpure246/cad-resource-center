@@ -127,6 +127,7 @@ export interface DataManagementLayoutProps {
     children: React.ReactNode;
     breadcrumbs?: Breadcrumb[];
     showBreadcrumbs?: boolean;
+    showSearch?: boolean;
     onSearchChange?: (value: string) => void;
     footer?: React.ReactNode;
 }
