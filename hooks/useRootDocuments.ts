@@ -12,6 +12,8 @@ const transformDataToItems = (data: Awaited<ReturnType<typeof adminGetRootFolder
         created: folder.created_at?.split('T')[0] || '',
         modified: folder.updated_at?.split('T')[0] || '',
         modifiedBy: folder.updated_by?.toString() || "Admin",
+        mui_icon: folder.mui_icon,
+        mui_colour: folder.mui_colour,
     }));
 
     const transformedFiles: Item[] = data.files.map(file => ({
@@ -21,6 +23,8 @@ const transformDataToItems = (data: Awaited<ReturnType<typeof adminGetRootFolder
         created: file.created_at?.split('T')[0] || '',
         modified: file.updated_at?.split('T')[0] || '',
         modifiedBy: file.updated_by?.toString() || "Admin",
+        mui_icon: file.mui_icon,
+        mui_colour: file.mui_colour,
     }));
 
     return [...transformedFolders, ...transformedFiles];

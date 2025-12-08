@@ -28,6 +28,8 @@ const CategorySelection = async () => {
                             description={folder.description}
                             href={`/downloads/${folder.id}`}
                             icon={<Folder />}
+                            mui_icon={folder.mui_icon}
+                            mui_colour={folder.mui_colour}
                         />
                     ))}
                 </div>

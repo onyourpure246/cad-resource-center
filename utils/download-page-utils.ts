@@ -20,7 +20,11 @@ export async function getDownloadPageData(folderId: string) {
         description: file.description || 'ไม่มีคำอธิบาย',
         updated_at: file.updated_at.split(' ')[0],
         downloadUrl: `${process.env.NEXT_PUBLIC_API_URL}/dl/file/download/${file.id}`,
+        mui_icon: file.mui_icon,
+        mui_colour: file.mui_colour,
     }));
+
+    console.log('getDownloadPageData mapped downloads:', JSON.stringify(downloadsFromApi, null, 2));
 
     // Calculate back link
     let backLink = '/downloads';

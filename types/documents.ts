@@ -26,6 +26,8 @@ export interface Folder {
     created_at?: string;
     updated_at?: string;
     updated_by?: number;
+    mui_icon?: string;
+    mui_colour?: string;
 }
 
 export interface Breadcrumb {
@@ -45,6 +47,8 @@ export interface File {
     updated_at: string;
     created_by?: number | null;
     updated_by?: number | null;
+    mui_icon?: string;
+    mui_colour?: string;
 }
 
 export interface DownloadItem {
@@ -63,6 +67,8 @@ export interface DownloadItem {
     updated_by?: number | null;
     tags?: string[];
     downloadUrl?: string;
+    mui_icon?: string;
+    mui_colour?: string;
 }
 
 export interface DownloadFolderPageProps {
@@ -78,6 +84,8 @@ export interface Item {
     created: string;
     modified: string;
     modifiedBy: string;
+    mui_icon?: string;
+    mui_colour?: string;
 }
 
 // Component Props
