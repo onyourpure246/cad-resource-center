@@ -28,7 +28,7 @@ const Navbar = () => {
           <ul className='flex flex-col md:flex md:flex-row my-5 items-center'>
             <li className="my-2 md:mx-2">
               <Button variant="ghost" asChild className="text-base font-normal hover:bg-transparent hover:text-primary dark:hover:bg-transparent dark:hover:text-white">
-                <Link href="https://cad.go.th/">เว็บไซต์กรมตรวจบัญชีสหกรณ์</Link>
+                <Link href="https://store-auditdocs.cad.go.th/CADWP">ระบบจัดการกระดาษทำการ</Link>
               </Button>
             </li>
             <li className="my-2 md:mx-2">

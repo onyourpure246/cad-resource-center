@@ -7,11 +7,18 @@ import Header from '@/components/Header/Header';
 import { useRootDocuments } from '@/hooks/useRootDocuments';
 import ActionButtons from '@/components/Admin/DocManagement/ActionButtons';
 import { Item } from '@/types/documents';
+import { toast } from 'sonner';
 
 const DocumentManagementPage = () => {
-    const { items, isLoading, refreshItems } = useRootDocuments();
+    const { items, isLoading, error, refreshItems } = useRootDocuments();
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
+
+    React.useEffect(() => {
+        if (error) {
+            toast.error(error);
+        }
+    }, [error]);
 
     const handleItemClick = (item: Item) => {
         if (item.type === 'folder') {

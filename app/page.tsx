@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import AnnounceSection from "@/components/HomePage/AnnounceSection";
 import Link from "next/link";
-import ContactSection from "@/components/HomePage/ContactSection";
+
 const HomePage = () => {
   return (
     <>
@@ -60,8 +60,7 @@ const HomePage = () => {
       {/* Announcement Section */}
       <AnnounceSection />
 
-      {/* Contact Section */}
-      <ContactSection />
+
     </>
   );
 };

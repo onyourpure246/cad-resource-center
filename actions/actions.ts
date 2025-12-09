@@ -21,13 +21,13 @@ export const adminGetRootFolder = async () => {
         },
     });
     if (!res.ok) {
-        throw new Error('Failed to fetch folder contents');
+        throw new Error('เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้');
     }
 
     const json: ApiResponse<FolderContentResponse> = await res.json();
 
     if (!json.success || !json.data) {
-        throw new Error(json.message || 'Failed to get folder contents data');
+        throw new Error(json.message || 'เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้');
     }
 
     return json.data;

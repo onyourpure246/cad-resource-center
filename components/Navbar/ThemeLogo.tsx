@@ -16,11 +16,11 @@ const ThemeLogo = () => {
     if (!mounted) {
         // Render a placeholder or the default logo to avoid layout shift/hydration mismatch
         // Defaulting to LogoBlack as it was the original default
-        return <Image src={LogoBlack} alt="logo" className='w-[246px]' priority />
+        return <Image src={LogoBlack} alt="logo" className='w-[236px]' priority />
     }
 
     return (
-        <div className="relative w-[246px] h-auto">
+        <div className="relative w-[236px] h-auto">
             <Image
                 src={LogoBlack}
                 alt="logo"

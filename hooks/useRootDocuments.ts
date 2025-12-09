@@ -29,14 +29,17 @@ const transformDataToItems = (data: Awaited<ReturnType<typeof adminGetRootFolder
 export const useRootDocuments = () => {
     const [items, setItems] = useState<Item[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const fetchItems = useCallback(async () => {
         setIsLoading(true);
+        setError(null);
         try {
             const data = await adminGetRootFolder();
             setItems(transformDataToItems(data));
         } catch (error) {
             console.error("Failed to fetch items:", error);
+            setError(error instanceof Error ? error.message : "Failed to fetch items");
             setItems([]); // Clear items on error
         } finally {
             setIsLoading(false);
@@ -47,5 +50,5 @@ export const useRootDocuments = () => {
         fetchItems();
     }, [fetchItems]);
 
-    return { items, isLoading, refreshItems: fetchItems };
+    return { items, isLoading, error, refreshItems: fetchItems };
 };
