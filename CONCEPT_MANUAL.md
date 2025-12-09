@@ -14,11 +14,16 @@
 ### 2.1 Architecture Pattern
 โครงการใช้สถาปัตยกรรมแบบ **Modular Monolith** บน **Next.js App Router** โดยเน้นการแยกส่วนตาม Feature (Feature-based) เพื่อให้ง่ายต่อการขยายระบบ
 
--   **Server Components by Default**: ใช้ Server Components เป็นหลักเพื่อประสิทธิภาพ (SEO, Initial Load) และใช้ Client Components (`'use client'`) เฉพาะเมื่อต้องการ Interactive (State, Effects)
+-   **Server Components by Default**: ใช้ Server Components เป็นหลักเพื่อประสิทธิภาพ (SEO, Initial Load) และใช้ Client Components (`'use client'`) เฉพาะเมื่อต้องการ Interactive (State, Effects) หรือใช้ Library ที่ต้องการ Browser APIs (เช่น `framer-motion`)
 -   **Server Actions**: ใช้สำหรับ Logic การจัดการข้อมูล (Mutations) แทนการสร้าง API Route แยก เพื่อลดความซับซ้อนและ Type Safety ที่ดีกว่า
 -   **Directory Oriented**: เก็บไฟล์ที่เกี่ยวข้องไว้ในโฟลเดอร์เดียวกัน (เช่น `components/Admin/Dialog` เก็บทั้ง UI และ Logic ของ Dialog นั้น)
 
-### 2.2 Naming Conventions
+### 2.2 Performance Patterns
+-   **Lazy Loading Icons**: สำหรับ Component ที่มีการเรียกใช้ Icons จำนวนมาก (เช่น `MuiIconRenderer`) **ต้อง** ใช้ `next/dynamic` หรือ Dynamic Imports เพื่อลด Bundle Size เริ่มต้น
+-   **Package Optimization**: กำหนด `optimizePackageImports` ใน `next.config.ts` สำหรับ heavy libraries เช่น `@mui/icons-material`, `@mui/material`, `lucide-react`
+-   **Bundler**: ใช้ **Turbopack** (`next dev --turbo`) สำหรับ Development Environment เพื่อความรวดเร็ว
+
+### 2.3 Naming Conventions
 -   **Folders/Files**: `kebab-case` สำหรับ Route (เช่น `app/user-management/page.tsx`) และ `PascalCase` สำหรับ Components (เช่น `components/Navbar.tsx`)
 -   **Variables/Functions**: `camelCase` (เช่น `fetchUserData`, `isLoading`)
 -   **Types/Interfaces**: `PascalCase` (เช่น `UserResponse`, `FolderItem`)
@@ -27,15 +32,21 @@
 ---
 
 ## 3. เทคโนโลยีที่ใช้ (Technology Stack)
+## 3. เทคโนโลยีที่ใช้ (Technology Stack)
 -   **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
 -   **Language**: TypeScript (Strict Mode)
 -   **UI Library**: [React 19](https://react.dev/)
--   **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) + [Tailwind Animate](https://github.com/jamiebuilds/tailwindcss-animate)
--   **Animation**: [Framer Motion](https://www.framer.com/motion/) (Complex Animations & Gestures)
+-   **Styling**: 
+    -   [Tailwind CSS 4](https://tailwindcss.com/) (Utility-first)
+    -   [Tailwind Animate](https://github.com/jamiebuilds/tailwindcss-animate)
+-   **Animation**: [Framer Motion](https://www.framer.com/motion/) (Complex Animations, Gestures, Spring Physics)
+-   **Icons**: 
+    -   [Lucide React](https://lucide.dev/) (Primary Icons)
+    -   [@mui/icons-material](https://mui.com/material-ui/material-icons/) (Specific Folder Icons - Loaded Dynamically)
+-   **Date Handling**: [date-fns](https://date-fns.org/) (with `th` locale for Buddhist Era formatting)
 -   **Component Library**:
     -   [Radix UI](https://www.radix-ui.com/) (Headless Primitives)
-    -   [Shadcn UI](https://ui.shadcn.com/) (Reusable Components)
-    -   [Lucide React](https://lucide.dev/) (Icons)
+    -   [Shadcn UI](https://ui.shadcn.com/) (Reusable Components Base)
 -   **Authentication**: [Clerk](https://clerk.com/)
 -   **Validation**: [Zod](https://zod.dev/)
 -   **State Management**: React Hooks (`useActionState`, `useState`)
@@ -47,8 +58,8 @@
 ### 4.1 Typography
 ใช้ Google Fonts โดยกำหนดผ่าน `app/fonts.ts` และ `globals.css`:
 -   **Body**: `Sarabun` (Variable) - อ่านง่าย เหมาะสำหรับเนื้อหาทั่วไป
--   **Headings**: `Kanit` (Variable) - ทันสมัย เหมาะสำหรับหัวข้อ
--   **Usage**: Font หลักถูก Apply ที่ `<body>` ใน `layout.tsx`
+-   **Headings**: `Kanit` (Variable) - ทันสมัย เหมาะสำหรับหัวข้อ (Titles, Buttons, Badges)
+-   **Indentation**: สำหรับเนื้อหาย่อหน้ายาวๆ (เช่นใน Announcement Card) ให้ใช้ `indent-4` เพื่อความเป็นระเบียบ
 
 ### 4.2 Color Palette (OKLCH)
 ระบบสีใช้ **OKLCH** เพื่อความสดใสและรองรับ Dark Mode อย่างสมบูรณ์ (กำหนดใน `globals.css`)
@@ -57,16 +68,17 @@
 -   **Background**:
     -   Light: `oklch(0.949 0.009 197.013)` (ขาวอมเทา)
     -   Dark: `oklch(0.207 0.025 224.453)` (น้ำเงินเข้ม)
--   **Surface/Card**: มีการแยกสี Card และ Popover เพื่อมิติที่ชัดเจน
+-   **Surface/Card**: มีการแยกสี Card และ Popover เพื่อมิติที่ชัดเจน โดยใช้ `backdrop-blur` ร่วมกับ `bg-opacity`
 
 ### 4.3 Design Tokens
--   **Radius**: `1.55rem` (Rounded XL/2XL feel) ให้ความรู้สึกเป็นมิตรและทันสมัย
--   **Shadows**: Custom Shadows ตั้งแต่ `shadow-2xs` ถึง `shadow-2xl` โดยใช้สี `hsl(185 70% 30%)` เพื่อให้เงาดูมีสีสัน (Colored Shadows) ไม่ใช่แค่สีดำ
--   **Spacing**: ใช้ Standard Tailwind Spacing (0.25rem base)
+-   **Radius**: `1.55rem` (Custom Value) - ใช้สำหรับ Cards, Modal และ Container หลัก เพื่อให้ความรู้สึก Soft & Modern
+-   **Shadows**: ใช้ **Colored Shadows** (`hsl(185 70% 30%)`) ไล่ระดับตั้งแต่ `shadow-2xs` ถึง `shadow-2xl` เพื่อให้เงามีความลึกและกลมกลืนกับ Theme ไม่ใช่แค่สีดำทึบ
+-   **Spacing**: 
+    -   เน้นความกระชับ (Compact) ในส่วนของ Card Content
+    -   สามารถใช้ **Negative Margin** (เช่น `-mt-1.5`) เพื่อปรับระยะห่างระหว่าง Element ให้ชิดกันมากกว่าค่ามาตรฐานได้ หากต้องการ Visual Hierarchy ที่แนบเนียน
 -   **Visual Effects**:
-    -   **Glassmorphism**: ใช้ `backdrop-blur` และ `bg-opacity` สำหรับ Overlay Elements
-    -   **Gradients**: ใช้ `bg-gradient-to-r` สำหรับ Text Clipping และ Background Accents
-    -   **Motion**: ใช้ `framer-motion` สำหรับ Background Animation ที่มีความซับซ้อน (เช่น Floating Blobs)
+    -   **Glassmorphism**: ใช้ `backdrop-blur-sm/md` สำหรับ Card Background
+    -   **Hover Effects**: ใช้ `framer-motion` (`whileHover={{ y: -5 }}`) พร้อม `spring` transition (`stiffness: 300`) เพื่อความนุ่มนวล
 
 ---
 
@@ -94,16 +106,18 @@
 │  │  ├─ [folderId]
 │  │  │  └─ page.tsx
 │  │  └─ page.tsx
+│  ├─ error.tsx
 │  ├─ favicon.ico
 │  ├─ fonts.ts
+│  ├─ global-error.tsx
 │  ├─ globals.css
 │  ├─ layout.tsx
 │  ├─ page.tsx
 │  ├─ provider.tsx
 │  └─ theme-provider.tsx
 ├─ assets
-│  ├─ img
-│  │  ├─ clients 
+│  └─ img
+│     └─ clients
 ├─ components
 │  ├─ Admin
 │  │  ├─ Announcement
@@ -112,13 +126,12 @@
 │  │  │  └─ CreateNewAnnouncement.tsx
 │  │  ├─ Dialog
 │  │  │  ├─ AddFolderDialog.tsx
-│  │  │  ├─ AddFolderForm.tsx
 │  │  │  ├─ CreateNewForm.tsx
 │  │  │  ├─ DeleteConfirmationDialog.tsx
 │  │  │  ├─ DialogFooter.tsx
 │  │  │  ├─ Dialog.tsx
 │  │  │  ├─ EditFolderDialog.tsx
-│  │  │  ├─ EditFolderForm.tsx
+│  │  │  ├─ FolderForm.tsx
 │  │  │  ├─ FolderTree.tsx
 │  │  │  └─ MoveDialog.tsx
 │  │  ├─ DocManagement
@@ -135,12 +148,14 @@
 │  │  └─ DataTable.tsx
 │  ├─ DownloadsPage
 │  │  ├─ CategoryCard.tsx
-│  │  │  ├─ CategorySelection.tsx
-│  │  │  ├─ DownloadCard.tsx
-│  │  │  ├─ DownloadLists.tsx
-│  │  │  ├─ HeroBackground.tsx
-│  │  │  ├─ HeroSection.tsx
-│  │  │  └─ SubFolderBadges.tsx
+│  │  ├─ CategorySelection.tsx
+│  │  ├─ DownloadCard.tsx
+│  │  ├─ DownloadLists.tsx
+│  │  ├─ HeroBackground.tsx
+│  │  ├─ HeroSection.tsx
+│  │  └─ SubFolderBadges.tsx
+│  ├─ Footer
+│  │  └─ Footer.tsx
 │  ├─ Form
 │  │  ├─ Button.tsx
 │  │  ├─ CategorySelect.tsx
@@ -152,7 +167,8 @@
 │  ├─ Header
 │  │  └─ Header.tsx
 │  ├─ HomePage
-│  │  └─ AnnounceSection.tsx
+│  │  ├─ AnnounceSection.tsx
+│  │  └─ ContactSection.tsx
 │  ├─ Navbar
 │  │  ├─ DropDownMenu.tsx
 │  │  ├─ ModeToggle.tsx
@@ -161,6 +177,10 @@
 │  │  ├─ Search.tsx
 │  │  └─ ThemeLogo.tsx
 │  └─ ui
+├─ data
+│  ├─ announceData.ts
+│  ├─ contactData.ts
+│  └─ footerData.ts
 ├─ hooks
 │  ├─ useAnnouncementColumns.tsx
 │  ├─ useFolderContents.ts
@@ -172,10 +192,16 @@
 ├─ lib
 │  └─ utils.ts
 ├─ public
+│  ├─ file.svg
+│  ├─ globe.svg
+│  ├─ next.svg
+│  ├─ vercel.svg
+│  └─ window.svg
 ├─ types
 │  ├─ announcement.ts
 │  ├─ common.ts
 │  ├─ documents.ts
+│  ├─ footer.ts
 │  └─ MoveDialog.types.ts
 ├─ utils
 │  ├─ download-page-utils.ts
@@ -193,6 +219,7 @@
 ├─ postcss.config.mjs
 ├─ README.md
 └─ tsconfig.json
+
 ```
 
 ---
@@ -202,7 +229,9 @@
 ### 6.1 Data Models (`types/`)
 -   **Folder**: `id`, `name`, `abbr`, `parent` (Recursive Structure)
 -   **File**: `id`, `name`, `filename`, `parent`, `isactive`
--   **Announcement**: `id`, `title`, `content`, `status`, `category`
+-   **Announcement**: 
+    -   `id`, `title`, `content` (Main Description), `status`, `category`
+    -   **Note**: Model ไม่ใช้ field `description` แล้ว ให้ใช้ `content` เป็นหลักเพื่อลดความซ้ำซ้อน
 
 ### 6.2 Business Logic (`actions/`)
 -   **Server Actions**: ใช้ `actions.ts` เป็นตัวกลางในการคุยกับ Backend API
@@ -223,12 +252,11 @@
 -   **Environment Variables**: ห้าม Hardcode Secret Key ในโค้ด ให้ใช้ `.env.local`
 
 ### 7.2 Deployment Strategy
--   **Build**: `npm run build` (Next.js Build)
+-   **Build**: `npm run build` (Next.js Build) - **ต้อง** ตรวจสอบ `next.config.ts` ให้แน่ใจว่าเปิด options `optimizePackageImports` เพื่อลดขนาด Build
 -   **Environment**:
     -   `API_URL`: URL ของ Backend API
     -   `API_TOKEN`: Token สำหรับ Server-to-Server Communication
     -   `NEXT_PUBLIC_CLERK_...`: Clerk Keys
--   **CI/CD**: (แนะนำ) ใช้ GitHub Actions สำหรับ Run Test และ Deploy ไปยัง Vercel/Docker
 
 ---
 
@@ -240,7 +268,12 @@
 -   **Loading State**:
     -   ปุ่ม Submit ต้องมีสถานะ `Disabled` และแสดง `Spinner` ขณะกำลังประมวลผล (`useFormStatus` หรือ `isPending`)
     -   หน้าโหลดข้อมูลใช้ `Skeleton` หรือ `Loading Spinner`
--   **Responsive**: ออกแบบโดยยึดหลัก **Mobile-First** (ใช้ `md:`, `lg:` สำหรับหน้าจอใหญ่)
+-   **Responsive**: 
+    -   ออกแบบโดยยึดหลัก **Mobile-First** (ใช้ `md:`, `lg:` สำหรับหน้าจอใหญ่)
+    -   **Grid Layout**: ปรับ Column อัตโนมัติ (เช่น 1 col on Mobile -> 3 cols on Desktop)
+-   **Component States**:
+    -   **Hover**: ปุ่มและการ์ดต้องมี Hover State ที่ชัดเจน (Shadow Increase, Lift Up)
+    -   **Active**: แสดงสีเข้มขึ้นเมื่อถูกกด
 
 ---
 
@@ -259,4 +292,4 @@
 -   **Draft**: สถานะประกาศที่ยังไม่เผยแพร่
 
 ---
-*เอกสารนี้ปรับปรุงล่าสุดเมื่อ: 2 ธันวาคม 2025 (Added Hero Section & Animation Specs)*
+*เอกสารนี้ปรับปรุงล่าสุดเมื่อ: 9 ธันวาคม 2025 (Updated Architecture, Animations, and Performance Specs)*

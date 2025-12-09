@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import React from 'react'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod';
-import { ApiResponse } from '@/types/common';
+import { ApiResponse, State } from '@/types/common';
 import { FolderContentResponse } from '@/types/documents';
 
 // fetch root folder
@@ -64,7 +64,7 @@ export const adminGetFolderById = async (id: number) => {
 
 
 // For Create Folder
-export const createFolder = async (prevState: any, formData: FormData) => {
+export const createFolder = async (prevState: any, formData: FormData): Promise<State> => {
     const API_URL = process.env.API_URL;
     const API_TOKEN = process.env.API_TOKEN;
     if (!API_URL || !API_TOKEN) {
@@ -74,9 +74,9 @@ export const createFolder = async (prevState: any, formData: FormData) => {
     //Validate form data
     const schema = z.object({
         name: z.string().min(1, 'กรุณากรอกชื่อโฟลเดอร์'),
-        description: z.string().optional(),
         abbr: z.string().min(1, 'กรุณากรอกชื่อย่อ').regex(/^[a-zA-Z0-9_-]+$/, 'ชื่อย่อต้องเป็นภาษาอังกฤษ ตัวเลข หรือเครื่องหมาย -_ เท่านั้น'),
         parent: z.string().optional(),
+        mui_colour: z.string().optional(),
     });
 
     const rawData = Object.fromEntries(formData);
@@ -116,9 +116,9 @@ export const createFolder = async (prevState: any, formData: FormData) => {
 
     const body = {
         name: rawData.name,
-        description: rawData.description,
         abbr: rawData.abbr,
         parent: parentValue,
+        mui_colour: rawData.mui_colour,
     };
 
     const res = await fetch(`${API_URL}/dl/folder`, {
@@ -143,7 +143,7 @@ export const createFolder = async (prevState: any, formData: FormData) => {
 
 // update folder
 // PATCH https://casdu-backops.witspleasure.com/api/fy2569/dl/folder/:id
-export const updateFolder = async (prevState: any, formData: FormData) => {
+export const updateFolder = async (prevState: any, formData: FormData): Promise<State> => {
     const API_URL = process.env.API_URL;
     const API_TOKEN = process.env.API_TOKEN;
     if (!API_URL || !API_TOKEN) {
@@ -155,6 +155,7 @@ export const updateFolder = async (prevState: any, formData: FormData) => {
         name: z.string().min(1, 'กรุณากรอกชื่อโฟลเดอร์'),
         description: z.string().optional(),
         parent: z.string().optional(),
+        mui_colour: z.string().optional(),
     });
 
     const rawData = Object.fromEntries(formData);
@@ -185,6 +186,7 @@ export const updateFolder = async (prevState: any, formData: FormData) => {
     const body = {
         name: rawData.name,
         description: rawData.description,
+        mui_colour: rawData.mui_colour,
     };
 
     const res = await fetch(`${API_URL}/dl/folder/${id}`, {
@@ -240,7 +242,7 @@ export const deleteItemById = async (id: number, type: 'folder' | 'file') => {
 
 // create ข้อมูลไฟล์ดาวน์โหลด
 // POST https://casdu-backops.witspleasure.com/api/fy2569/dl/file
-export const uploadFile = async (prevState: any, formData: FormData) => {
+export const uploadFile = async (prevState: any, formData: FormData): Promise<State> => {
     const API_URL = process.env.API_URL;
     const API_TOKEN = process.env.API_TOKEN;
     if (!API_URL || !API_TOKEN) {
@@ -335,7 +337,7 @@ export const createAnnouncement = async (prevState: any, formData: FormData) => 
 
 // update ข้อมูลไฟล์
 // PATCH /api/dl/file/:id
-export const updateFile = async (prevState: any, formData: FormData) => {
+export const updateFile = async (prevState: any, formData: FormData): Promise<State> => {
     const API_URL = process.env.API_URL;
     const API_TOKEN = process.env.API_TOKEN;
     if (!API_URL || !API_TOKEN) {

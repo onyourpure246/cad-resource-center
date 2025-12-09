@@ -8,26 +8,7 @@ import { CirclePlus } from 'lucide-react';
 import AnnouncementTable from '@/components/Admin/Announcement/AnnouncementTable';
 import { Announcement } from '@/types/announcement';
 import Link from 'next/link';
-
-// Mock data for demonstration purposes
-const mockAnnouncements: Announcement[] = [
-  {
-    id: 1,
-    title: 'ประกาศหยุดทำการเนื่องในวันหยุดพิเศษ',
-    status: 'Published',
-    createdBy: 'Admin',
-    createdAt: '2024-07-25',
-    updatedAt: '2024-07-25',
-  },
-  {
-    id: 2,
-    title: 'ร่าง: แผนการซ้อมหนีไฟประจำปี',
-    status: 'Draft',
-    createdBy: 'Manager',
-    createdAt: '2024-07-22',
-    updatedAt: '2024-07-22',
-  },
-];
+import { announceData } from '@/data/announceData';
 
 const actionButtons = (
   <>
@@ -38,6 +19,7 @@ const actionButtons = (
     </Button>
   </>
 )
+
 const AnnouncementPage = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,7 +27,7 @@ const AnnouncementPage = () => {
   useEffect(() => {
     // Simulate fetching data
     const timer = setTimeout(() => {
-      setAnnouncements(mockAnnouncements);
+      setAnnouncements(announceData);
       setIsLoading(false);
     }, 1000); // Simulate 1 second loading time
 

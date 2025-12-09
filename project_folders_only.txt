@@ -20,42 +20,18 @@
 │  │  ├─ [folderId]
 │  │  │  └─ page.tsx
 │  │  └─ page.tsx
+│  ├─ error.tsx
 │  ├─ favicon.ico
 │  ├─ fonts.ts
+│  ├─ global-error.tsx
 │  ├─ globals.css
 │  ├─ layout.tsx
 │  ├─ page.tsx
 │  ├─ provider.tsx
 │  └─ theme-provider.tsx
 ├─ assets
-│  ├─ img
-│  │  ├─ clients
-│  │  │  ├─ client-01.png
-│  │  │  ├─ client-02.png
-│  │  │  ├─ client-03.png
-│  │  │  ├─ client-04.png
-│  │  │  ├─ client-05.png
-│  │  │  ├─ client-06.png
-│  │  │  └─ client-07.png
-│  │  ├─ article-01.png
-│  │  ├─ article-02.png
-│  │  ├─ article-03.png
-│  │  ├─ customer.png
-│  │  ├─ header-img.png
-│  │  ├─ icon-01.png
-│  │  ├─ icon-02.png
-│  │  ├─ icon-03.png
-│  │  ├─ icon-04.png
-│  │  ├─ icon-05.png
-│  │  ├─ icon-06.png
-│  │  ├─ icon-07.png
-│  │  ├─ img-01.png
-│  │  ├─ img-02.png
-│  │  ├─ landing-banner.jpg
-│  │  ├─ logo-black.png
-│  │  ├─ logo-white.png
-│  │  └─ tim-smith.png
-│  └─ S__12165124.png
+│  └─ img
+│     └─ clients
 ├─ components
 │  ├─ Admin
 │  │  ├─ Announcement
@@ -64,13 +40,12 @@
 │  │  │  └─ CreateNewAnnouncement.tsx
 │  │  ├─ Dialog
 │  │  │  ├─ AddFolderDialog.tsx
-│  │  │  ├─ AddFolderForm.tsx
 │  │  │  ├─ CreateNewForm.tsx
 │  │  │  ├─ DeleteConfirmationDialog.tsx
 │  │  │  ├─ DialogFooter.tsx
 │  │  │  ├─ Dialog.tsx
 │  │  │  ├─ EditFolderDialog.tsx
-│  │  │  ├─ EditFolderForm.tsx
+│  │  │  ├─ FolderForm.tsx
 │  │  │  ├─ FolderTree.tsx
 │  │  │  └─ MoveDialog.tsx
 │  │  ├─ DocManagement
@@ -93,6 +68,8 @@
 │  │  ├─ HeroBackground.tsx
 │  │  ├─ HeroSection.tsx
 │  │  └─ SubFolderBadges.tsx
+│  ├─ Footer
+│  │  └─ Footer.tsx
 │  ├─ Form
 │  │  ├─ Button.tsx
 │  │  ├─ CategorySelect.tsx
@@ -104,7 +81,8 @@
 │  ├─ Header
 │  │  └─ Header.tsx
 │  ├─ HomePage
-│  │  └─ AnnounceSection.tsx
+│  │  ├─ AnnounceSection.tsx
+│  │  └─ ContactSection.tsx
 │  ├─ Navbar
 │  │  ├─ DropDownMenu.tsx
 │  │  ├─ ModeToggle.tsx
@@ -113,24 +91,10 @@
 │  │  ├─ Search.tsx
 │  │  └─ ThemeLogo.tsx
 │  └─ ui
-│     ├─ badge.tsx
-│     ├─ breadcrumb.tsx
-│     ├─ button.tsx
-│     ├─ calendar.tsx
-│     ├─ card.tsx
-│     ├─ checkbox.tsx
-│     ├─ command.tsx
-│     ├─ dialog.tsx
-│     ├─ drawer.tsx
-│     ├─ dropdown-menu.tsx
-│     ├─ input.tsx
-│     ├─ label.tsx
-│     ├─ popover.tsx
-│     ├─ select.tsx
-│     ├─ skeleton.tsx
-│     ├─ sonner.tsx
-│     ├─ table.tsx
-│     └─ textarea.tsx
+├─ data
+│  ├─ announceData.ts
+│  ├─ contactData.ts
+│  └─ footerData.ts
 ├─ hooks
 │  ├─ useAnnouncementColumns.tsx
 │  ├─ useFolderContents.ts
@@ -151,6 +115,7 @@
 │  ├─ announcement.ts
 │  ├─ common.ts
 │  ├─ documents.ts
+│  ├─ footer.ts
 │  └─ MoveDialog.types.ts
 ├─ utils
 │  ├─ download-page-utils.ts

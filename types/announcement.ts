@@ -1,15 +1,14 @@
 export interface Announcement {
     id: string | number;
-    title: string;
-    description?: string;
-    categoryVariant?: "default" | "secondary" | "destructive" | "outline"; // Added optional variant
-    status: 'Published' | 'Draft';
-    createdBy: string;
-    createdAt: string;
-    updatedAt: string;
-    content?: string; // Added optional content as it appeared in some usages
-    date?: string; // Added optional date
-    category?: string; // Added optional category
+    title: string; // หัวข้อ
+    content: string; // รายละเอียด
+    categoryVariant?: "default" | "secondary" | "destructive" | "outline"; // ประเภท (สีของ badge)
+    status: 'Published' | 'Draft'; // สถานะ (Published/Draft)
+    createdBy: string; // ผู้สร้าง
+    createdAt: string; // วันที่สร้าง
+    updatedAt: string; // วันที่อัปเดต
+    publishDate?: string; // วันที่ประกาศ
+    category?: string; // หมวดหมู่
 }
 
 export interface AnnouncementTableProps {

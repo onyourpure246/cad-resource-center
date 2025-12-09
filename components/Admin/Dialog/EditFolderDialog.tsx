@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { ReusableDialog } from './Dialog';
-import EditFolderForm from './EditFolderForm';
+import FolderForm from './FolderForm';
 import { EditFolderDialogProps } from '@/types/documents';
 
 export const EditFolderDialog = ({ folder, parentId, trigger, onSuccess }: EditFolderDialogProps) => {
@@ -21,7 +21,7 @@ export const EditFolderDialog = ({ folder, parentId, trigger, onSuccess }: EditF
             open={open}
             onOpenChange={setOpen}
         >
-            <EditFolderForm folder={folder} parentId={parentId} onSuccess={handleSuccess} />
+            <FolderForm folder={folder} parentId={parentId} onSuccess={handleSuccess} />
         </ReusableDialog>
     );
 };

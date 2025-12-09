@@ -19,9 +19,9 @@ export const footerData: FooterData = {
                         "4343 [ ผอ.กรส. ]",
                         "4344 [ CAD-WP, ACL/CATS ]",
                         "4346 [ CAD-WP, ACL ]",
-                        "4345 [ Cad-Wp ]",
-                        "4329 [ Cad-Wp ]",
-                        "4349 [ Cad-Wp ]"
+                        "4345 [ CAD-WP ]",
+                        "4329 [ CAD-WP ]",
+                        "4349 [ CAD-WP ]"
                     ]
                 }
             ],

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { ReusableDialog } from './Dialog'
 import { Button } from '@/components/ui/button'
 import { FolderPlus } from 'lucide-react'
-import AddFolderForm from './AddFolderForm'
+import FolderForm from './FolderForm'
 import { AddFolderDialogProps } from '@/types/documents'
 
 const AddFolderDialog = ({ parentId, onSuccess }: AddFolderDialogProps) => {
@@ -21,7 +21,7 @@ const AddFolderDialog = ({ parentId, onSuccess }: AddFolderDialogProps) => {
             open={open}
             onOpenChange={setOpen}
         >
-            <AddFolderForm parentId={parentId} onSuccess={handleSuccess} />
+            <FolderForm parentId={parentId} onSuccess={handleSuccess} />
         </ReusableDialog>
     );
 };

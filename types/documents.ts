@@ -123,7 +123,10 @@ export interface EditFolderFormProps extends BaseParentProps, BaseSuccessCallbac
     folder: Item;
 }
 
-export type AddFolderFormProps = BaseParentProps & BaseSuccessCallback;
+export interface FolderFormProps extends BaseParentProps, BaseSuccessCallback {
+    folder?: Item;
+}
+
 
 export interface CreateNewFormProps extends BaseParentProps, BaseSuccessCallback {
     sysname?: string;
