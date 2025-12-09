@@ -3,6 +3,7 @@ import React from 'react'
 import { DownloadItem } from '@/types/documents'
 import { Button } from '../ui/button'
 import { Download, FileText, Calendar, Clock } from 'lucide-react'
+import MuiIconRenderer from '@/components/ui/MuiIconRenderer'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 
@@ -20,7 +21,11 @@ const DownloadCard = ({ item }: DownloadCardProps) => {
                     {/* Icon Section */}
                     <div className="flex items-center justify-center p-6 bg-primary/5 md:w-24 shrink-0">
                         <div className="w-12 h-12 rounded-xl bg-background shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                            <FileText className="w-6 h-6 text-primary" />
+                            {item.mui_icon ? (
+                                <MuiIconRenderer iconName={item.mui_icon} iconColor={item.mui_colour} className="w-6 h-6" />
+                            ) : (
+                                <FileText className="w-6 h-6 text-primary" />
+                            )}
                         </div>
                     </div>
 

@@ -10,6 +10,7 @@ import {
 import NavAuth from './NavAuth'
 import { ModeToggle } from './ModeToggle'
 import { Button } from '@/components/ui/button'
+import AddIcon from '@mui/icons-material/Add';
 
 const Navbar = () => {
   return (

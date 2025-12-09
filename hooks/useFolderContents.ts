@@ -35,6 +35,8 @@ export const useFolderContents = (folderId: number) => {
                 created: folder.created_at?.split('T')[0] || '',
                 modified: folder.updated_at?.split('T')[0] || '',
                 modifiedBy: folder.updated_by?.toString() || "Admin",
+                mui_icon: folder.mui_icon,
+                mui_colour: folder.mui_colour,
             }));
 
             const transformedFiles: FolderItem[] = data.files.map((file: any) => ({
@@ -45,6 +47,8 @@ export const useFolderContents = (folderId: number) => {
                 created: file.created_at?.split('T')[0] || '',
                 modified: file.updated_at?.split('T')[0] || '',
                 modifiedBy: file.updated_by?.toString() || "Admin",
+                mui_icon: file.mui_icon,
+                mui_colour: file.mui_colour,
             }));
 
             // Combine folders and files for display

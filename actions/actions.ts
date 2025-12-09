@@ -19,6 +19,7 @@ export const adminGetRootFolder = async () => {
             'Authorization': `Bearer ${API_TOKEN}`,
             'Content-Type': 'application/json',
         },
+        cache: 'no-store',
     });
     if (!res.ok) {
         throw new Error('เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้');
@@ -46,6 +47,7 @@ export const adminGetFolderById = async (id: number) => {
             'Authorization': `Bearer ${API_TOKEN}`,
             'Content-Type': 'application/json',
         },
+        cache: 'no-store',
     });
     if (!res.ok) {
         throw new Error('Failed to fetch folder contents');
@@ -322,7 +324,6 @@ export const createAnnouncement = async (prevState: any, formData: FormData) => 
     const data = Object.fromEntries(
         Object.entries(rawData).filter(([key]) => !key.startsWith("$ACTION"))
     );
-    console.log("Filtered:", data);
 
     revalidatePath('/admin/announcement', 'layout');
     return { success: true, message: "อัปโหลดไฟล์สำเร็จ!" };

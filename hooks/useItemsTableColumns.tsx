@@ -12,6 +12,7 @@ import { EditFolderDialog } from '@/components/Admin/Dialog/EditFolderDialog';
 import { MoveDialog } from '@/components/Admin/Dialog/MoveDialog';
 import { Item } from '@/types/documents';
 import { DataTableColumn } from '@/types/common';
+import MuiIconRenderer from '@/components/ui/MuiIconRenderer';
 
 interface UseItemsTableColumnsProps {
     parentId: number | null;
@@ -46,9 +47,14 @@ export const useItemsTableColumns = ({
             header: '',
             headerClassName: "w-[50px]",
             className: "w-[50px]",
-            cell: (item) => item.type === "folder"
-                ? <Folder className="h-4 w-4 text-yellow-500 fill-yellow-500/20" />
-                : <FileText className="h-4 w-4 text-primary/80" />,
+            cell: (item) => {
+                if (item.mui_icon) {
+                    return <MuiIconRenderer iconName={item.mui_icon} iconColor={item.mui_colour} className="h-4 w-4" />;
+                }
+                return item.type === "folder"
+                    ? <Folder className="h-4 w-4 text-yellow-500 fill-yellow-500/20" />
+                    : <FileText className="h-4 w-4 text-primary/80" />;
+            },
         },
         {
             accessorKey: 'name',
