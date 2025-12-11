@@ -1,13 +1,16 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
+
+
 const isProtectedRoute = createRouteMatcher(
-    [
-        '/admin(.*)',
-        '/downloads(.*)'
-    ]
-)
+  [
+    // Always run for API routes
+    '/(api|trpc)(.*)',
+  ],
+) // Corrected closing brace for createRouteMatcher
 
 export default clerkMiddleware(async (auth, req) => {
+  // 1. Protect routes that require authentication
   if (isProtectedRoute(req)) await auth.protect()
 })
 

@@ -12,7 +12,12 @@ import { ModeToggle } from './ModeToggle'
 import { Button } from '@/components/ui/button'
 import AddIcon from '@mui/icons-material/Add';
 
-const Navbar = () => {
+import { auth, currentUser } from '@clerk/nextjs/server'
+
+const Navbar = async () => {
+  const user = await currentUser();
+  const isAdmin = user?.publicMetadata?.role === 'admin';
+
   return (
     <nav className='bg-sidebar'>
       {/* Logo */}
@@ -37,23 +42,25 @@ const Navbar = () => {
                 <Link href="/downloads">ดาวน์โหลด</Link>
               </Button>
             </li>
-            <li className="my-2 md:mx-2">
-              {/* Admin Actions */}
-              <DropDownMenu
-                trigger={
-                  <Button variant="ghost" className="cursor-pointer text-base font-normal hover:bg-transparent hover:text-primary dark:hover:bg-transparent dark:hover:text-white">
-                    สำหรับผู้ดูแลระบบ
-                  </Button>
-                }
-              >
-                <DropdownMenuLabel className='font-kanit'>สำหรับผู้ดูแลระบบ</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem><Link href="/admin/documents" className='font-kanit'>จัดการรายการดาวน์โหลด</Link></DropdownMenuItem>
-                <DropdownMenuItem><Link href="/admin/usermanagement" className='font-kanit'>จัดการข้อมูลผู้ใช้งาน</Link></DropdownMenuItem>
-                <DropdownMenuItem><Link href="/admin/dashboard" className='font-kanit'>ข้อมูลการใช้งานระบบ</Link></DropdownMenuItem>
-                <DropdownMenuItem><Link href="/admin/announcement" className='font-kanit'>จัดการข้อมูลประชาสัมพันธ์</Link></DropdownMenuItem>
-              </DropDownMenu>
-            </li>
+            {isAdmin && (
+              <li className="my-2 md:mx-2">
+                {/* Admin Actions */}
+                <DropDownMenu
+                  trigger={
+                    <Button variant="ghost" className="cursor-pointer text-base font-normal hover:bg-transparent hover:text-primary dark:hover:bg-transparent dark:hover:text-white">
+                      สำหรับผู้ดูแลระบบ
+                    </Button>
+                  }
+                >
+                  <DropdownMenuLabel className='font-kanit'>สำหรับผู้ดูแลระบบ</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem><Link href="/admin/documents" className='font-kanit'>จัดการรายการดาวน์โหลด</Link></DropdownMenuItem>
+                  <DropdownMenuItem><Link href="/admin/usermanagement" className='font-kanit'>จัดการข้อมูลผู้ใช้งาน</Link></DropdownMenuItem>
+                  <DropdownMenuItem><Link href="/admin/dashboard" className='font-kanit'>ข้อมูลการใช้งานระบบ</Link></DropdownMenuItem>
+                  <DropdownMenuItem><Link href="/admin/announcement" className='font-kanit'>จัดการข้อมูลประชาสัมพันธ์</Link></DropdownMenuItem>
+                </DropDownMenu>
+              </li>
+            )}
           </ul>
         </div>
 

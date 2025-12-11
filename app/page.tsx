@@ -24,7 +24,7 @@ const HomePage = () => {
           alt="Landing Banner"
           fill
           className="object-cover brightness-75"
-          priority
+          sizes="100vw"
         />
 
         {/* Dark Overlay */}
