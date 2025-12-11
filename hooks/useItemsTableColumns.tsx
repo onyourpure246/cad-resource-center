@@ -6,9 +6,10 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, FileText, Folder, ArrowUpDown } from "lucide-react";
+import { MoreHorizontal, FileText, Folder, ArrowUpDown, Download, Pencil, Move, Trash, FolderOutput } from "lucide-react";
 import { DeleteConfirmationDialog } from '@/components/Admin/Dialog/DeleteConfirmationDialog';
 import { EditFolderDialog } from '@/components/Admin/Dialog/EditFolderDialog';
+import { EditFileDrawer } from '@/components/Admin/DocManagement/EditFileDrawer';
 import { MoveDialog } from '@/components/Admin/Dialog/MoveDialog';
 import { Item } from '@/types/documents';
 import { DataTableColumn } from '@/types/common';
@@ -69,7 +70,7 @@ export const useItemsTableColumns = ({
                     className={`hover:underline font-medium ${item.type === 'folder' ? 'cursor-pointer hover:text-primary transition-colors' : 'text-foreground'}`}
                     onClick={() => onItemClick(item)}
                 >
-                    {item.name}
+                    {item.type === 'file' && item.filename ? item.filename : item.name}
                 </span>
             ),
         },
@@ -118,15 +119,19 @@ export const useItemsTableColumns = ({
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-[160px]">
-                        {item.type === 'file' && <DropdownMenuItem className="cursor-pointer">ดาวน์โหลด</DropdownMenuItem>}
+                        {item.type === 'file' && <DropdownMenuItem className="cursor-pointer"><Download className="mr-1 h-2 w-2" />ดาวน์โหลด</DropdownMenuItem>}
+                        {item.type === 'file' && (
+                            <EditFileDrawer file={item} onSuccess={onRefresh}
+                                trigger={<DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer"><Pencil className="mr-1 h-2 w-2" />แก้ไข</DropdownMenuItem>} />
+                        )}
                         {item.type === 'folder' && (
                             <EditFolderDialog folder={item} parentId={parentId} onSuccess={onRefresh}
-                                trigger={<DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer">แก้ไข</DropdownMenuItem>} />
+                                trigger={<DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer"><Pencil className="mr-1 h-2 w-2" />แก้ไข</DropdownMenuItem>} />
                         )}
                         <MoveDialog item={item} currentParentId={parentId} onMoveSuccess={onRefresh}
-                            trigger={<DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer">ย้าย</DropdownMenuItem>} />
+                            trigger={<DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer"><FolderOutput className="mr-1 h-2 w-2" />ย้าย</DropdownMenuItem>} />
                         <DeleteConfirmationDialog id={item.id} name={item.name} type={item.type} onSuccess={onRefresh}
-                            trigger={<DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer text-destructive focus:text-destructive">ลบ</DropdownMenuItem>} />
+                            trigger={<DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer text-destructive focus:text-destructive"><Trash className="mr-1 h-2 w-2" />ลบ</DropdownMenuItem>} />
                     </DropdownMenuContent>
                 </DropdownMenu>
             ),

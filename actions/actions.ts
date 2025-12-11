@@ -348,6 +348,7 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
         id: z.string().min(1, 'ไม่พบ ID ของไฟล์'),
         name: z.string().optional(),
         description: z.string().optional(),
+        filename: z.string().optional(),
         parent: z.string().optional(),
     });
 
@@ -359,13 +360,39 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
         return { success: false, message: 'ข้อมูลไม่ถูกต้อง', errors };
     }
 
-    const { id, name, description } = parsed.data;
+    const { id, name, description, filename } = parsed.data;
     const parentId = rawData.parent ? parseInt(rawData.parent as string, 10) : null;
+
+    // Server-side validation for duplicate filename
+    // We need to check in the target folder (parentId) if 'filename' already exists
+    try {
+        const targetFolderContents = parentId
+            ? await adminGetFolderById(parentId)
+            : await adminGetRootFolder();
+
+        // Check if any file in the target folder has the same filename, excluding the current file itself
+        const isDuplicate = targetFolderContents.files.some(
+            file => file.filename === filename && file.id !== parseInt(id)
+        );
+
+        if (isDuplicate) {
+            return { success: false, message: 'ชื่อไฟล์นี้มีอยู่แล้วในโฟลเดอร์นี้' };
+        }
+    } catch (error) {
+        console.error("Failed to validate duplicate filename:", error);
+        // Optionally tolerate error or return failure. 
+        // For safety, maybe better to fail? Or just proceed? 
+        // If we can't check, we might risk duplicate. Let's log and proceed or fail.
+        // Let's decide to fail validation if we can't fetch folder.
+        return { success: false, message: 'เกิดข้อผิดพลาดในการตรวจสอบชื่อไฟล์ซ้ำ' };
+    }
 
     const body: any = {};
     if (name) body.name = name;
     if (description !== undefined) body.description = description;
-    if (rawData.parent !== undefined) body.parent = parentId; // Allow null for root
+    if (filename) body.filename = filename;
+    // Only set parent if it's explicitly provided in the form data (meaning we intend to move it or confirm it)
+    if (rawData.parent !== undefined) body.parent = parentId;
 
     const res = await fetch(`${API_URL}/dl/file/${id}`, {
         method: 'PATCH',

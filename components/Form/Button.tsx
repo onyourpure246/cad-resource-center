@@ -7,14 +7,15 @@ import { SubmitButtonProps } from '@/types/common'
 export const SubmitButton = ({
     className,
     size,
-    text
+    text,
+    disabled
 }: SubmitButtonProps) => {
 
     const { pending } = useFormStatus()
 
     return (
         <Button
-            disabled={pending}
+            disabled={pending || disabled}
             size={size}
             type='submit'
             className={`${className} capitalize`}>

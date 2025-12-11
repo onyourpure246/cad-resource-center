@@ -62,7 +62,8 @@ export type btnSize = 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg'
 export type SubmitButtonProps = {
     className: string,
     size?: btnSize,
-    text?: string
+    text?: string,
+    disabled?: boolean
 }
 
 export type CategoryItem = {

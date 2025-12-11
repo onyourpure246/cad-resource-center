@@ -43,6 +43,8 @@ export const useFolderContents = (folderId: number) => {
                 id: file.id,
                 name: file.name,
                 description: file.description,
+                filename: file.filename,
+                parent: file.parent,
                 type: "file",
                 created: file.created_at?.split('T')[0] || '',
                 modified: file.updated_at?.split('T')[0] || '',

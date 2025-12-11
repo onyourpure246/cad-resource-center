@@ -80,6 +80,8 @@ export interface Item {
     name: string | null;
     description?: string | null;
     abbr?: string | null;
+    filename?: string;
+    parent?: number | null;
     type: 'folder' | 'file';
     created: string;
     modified: string;
