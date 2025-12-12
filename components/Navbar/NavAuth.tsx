@@ -1,6 +1,6 @@
 'use client'
-
 import React from 'react'
+import Link from 'next/link'
 import { useUser, useClerk, SignInButton } from '@clerk/nextjs'
 import { Button } from '../ui/button'
 import { toast } from 'sonner'
@@ -15,7 +15,6 @@ import { User } from 'lucide-react'
 const NavAuth = () => {
   const { isSignedIn, user } = useUser()
   const { signOut } = useClerk()
-
 
   const handleSignOut = async () => {
     await signOut(() => {
@@ -36,6 +35,18 @@ const NavAuth = () => {
         {isSignedIn ? `สวัสดี, ${user.firstName || 'ผู้ใช้'}` : 'บัญชีผู้ใช้'}
       </DropdownMenuLabel>
       <DropdownMenuSeparator />
+
+      {/* Admin Menu Items */}
+      {user?.publicMetadata?.role === 'admin' && (
+        <>
+          <DropdownMenuLabel className='text-xs text-muted-foreground'>สำหรับผู้ดูแลระบบ</DropdownMenuLabel>
+          <DropdownMenuItem><Link href="/admin/documents" className='w-full'>จัดการรายการดาวน์โหลด</Link></DropdownMenuItem>
+          <DropdownMenuItem><Link href="/admin/usermanagement" className='w-full'>จัดการข้อมูลผู้ใช้งาน</Link></DropdownMenuItem>
+          <DropdownMenuItem><Link href="/admin/dashboard" className='w-full'>ข้อมูลการใช้งานระบบ</Link></DropdownMenuItem>
+          <DropdownMenuItem><Link href="/admin/announcement" className='w-full'>จัดการข้อมูลประชาสัมพันธ์</Link></DropdownMenuItem>
+          <DropdownMenuSeparator />
+        </>
+      )}
 
       {!isSignedIn ? (
         <DropdownMenuItem asChild>
