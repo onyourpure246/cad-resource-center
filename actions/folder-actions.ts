@@ -1,6 +1,4 @@
 'use server'
-import { redirect } from 'next/navigation'
-import React from 'react'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod';
 import { ApiResponse, State } from '@/types/common';
@@ -61,7 +59,6 @@ export const adminGetFolderById = async (id: number) => {
 
     return json.data;
 }
-
 
 // For Create Folder
 export const createFolder = async (prevState: any, formData: FormData): Promise<State> => {
@@ -187,6 +184,7 @@ export const updateFolder = async (prevState: any, formData: FormData): Promise<
         name: rawData.name,
         description: rawData.description,
         mui_colour: rawData.mui_colour,
+        parent: parentId
     };
 
     const res = await fetch(`${API_URL}/dl/folder/${id}`, {
@@ -207,213 +205,6 @@ export const updateFolder = async (prevState: any, formData: FormData): Promise<
     revalidatePath('/admin/documents', 'layout');
     return { success: true, message: 'อัปเดตโฟลเดอร์สำเร็จ!' };
 }
-
-
-// For Delete Item (Folder or File) by id
-// DELETE /api/dl/folder/:id or /api/dl/file/:id
-export const deleteItemById = async (id: number, type: 'folder' | 'file') => {
-    const API_URL = process.env.API_URL;
-    const API_TOKEN = process.env.API_TOKEN;
-    if (!API_URL || !API_TOKEN) {
-        throw new Error('Missing API_URL or API_TOKEN in .env.local');
-    }
-
-    const endpoint = type === 'folder' ? `/dl/folder/${id}` : `/dl/file/${id}`;
-    const successMessage = type === 'folder' ? 'ลบโฟลเดอร์สำเร็จ!' : 'ลบไฟล์สำเร็จ!';
-    const errorMessage = type === 'folder' ? 'ลบโฟลเดอร์ไม่สำเร็จ' : 'ลบไฟล์ไม่สำเร็จ';
-
-    const res = await fetch(`${API_URL}${endpoint}`, {
-        method: 'DELETE',
-        headers: {
-            'Authorization': `Bearer ${API_TOKEN}`,
-        },
-    });
-
-    if (!res.ok) {
-        const errorResponse = await res.json().catch(() => ({ message: 'An unexpected error occurred' }));
-        console.error(`Failed to delete ${type}:`, errorResponse);
-        return { success: false, message: errorResponse.message || errorMessage };
-    }
-
-    revalidatePath('/admin/documents', 'layout');
-    return { success: true, message: successMessage };
-}
-
-
-// create ข้อมูลไฟล์ดาวน์โหลด
-// POST https://casdu-backops.witspleasure.com/api/fy2569/dl/file
-export const uploadFile = async (prevState: any, formData: FormData): Promise<State> => {
-    const API_URL = process.env.API_URL;
-    const API_TOKEN = process.env.API_TOKEN;
-    if (!API_URL || !API_TOKEN) {
-        throw new Error('Missing API_URL or API_TOKEN in .env.local');
-    }
-
-    // Validate schema by zod
-    const schema = z.object({
-        name: z.string().min(1, 'กรุณากรอกชื่อไฟล์'),
-        description: z.string().optional(),
-        parent: z.string().optional(),
-        file: z.any().refine(file => file instanceof File && file.size > 0, 'กรุณาเลือกไฟล์'),
-    });
-
-    // Convert from FormData to Object
-    const rawData = Object.fromEntries(formData);
-    // Validate rawData using creted zod schema
-    const parsed = schema.safeParse(rawData);
-
-    if (!parsed.success) {
-        const errors = parsed.error.flatten().fieldErrors;
-        return { success: false, message: 'ข้อมูลไม่ถูกต้อง', errors };
-    }
-
-    const { name, description, parent, file } = parsed.data;
-    const parentId = parent ? parseInt(parent, 10) : null;
-
-
-    // log for debugging
-    console.log("--- Parsed form data ---");
-    console.log("Name:", name);
-    console.log("Description:", description);
-    console.log("Parent ID:", parentId);
-    console.log("File Name:", file.name);
-    console.log("------------------------");
-
-    // send to backend via json structure (temp)
-    const body = {
-        name,
-        description: description || '',
-        parent: parentId,
-        filename: file.name, // ส่งแค่ชื่อไฟล์ไปก่อน เพราะตอนนี้ยังไม่รองรับการส่งไฟล์จริงๆ
-    };
-
-    // // We need to use FormData to send file to the backend
-    const formDataForFileUpload = new FormData();
-    formDataForFileUpload.append('name', name);
-    if (description) {
-        formDataForFileUpload.append('description', description);
-    }
-    if (parentId !== null) {
-        formDataForFileUpload.append('parent', String(parentId));
-    }
-    formDataForFileUpload.append('file', file, file.name);
-
-    // Request to Server
-    const res = await fetch(`${API_URL}/dl/file`, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${API_TOKEN}`
-        },
-        body: formDataForFileUpload,
-    });
-
-    if (!res.ok) {
-        const errorResponse = await res.json().catch(() => ({ message: res.statusText }));
-        console.error('Failed to upload file:', errorResponse);
-        return { success: false, message: 'อัปโหลดไฟล์ไม่สำเร็จ' };
-    }
-
-    revalidatePath('/admin/documents', 'layout');
-    return { success: true, message: 'อัปโหลดไฟล์สำเร็จ!' };
-}
-
-// fetch ข้อมูลประกาศประชาสัมพันธ์
-
-
-// create ข้อมูลประกาศประชาสัมพันธ์
-export const createAnnouncement = async (prevState: any, formData: FormData) => {
-    const rawData = Object.fromEntries(formData);
-    const data = Object.fromEntries(
-        Object.entries(rawData).filter(([key]) => !key.startsWith("$ACTION"))
-    );
-
-    revalidatePath('/admin/announcement', 'layout');
-    return { success: true, message: "อัปโหลดไฟล์สำเร็จ!" };
-};
-
-
-// update ข้อมูลประกาศประชาสัมพันธ์
-
-
-// update ข้อมูลไฟล์
-// PATCH /api/dl/file/:id
-export const updateFile = async (prevState: any, formData: FormData): Promise<State> => {
-    const API_URL = process.env.API_URL;
-    const API_TOKEN = process.env.API_TOKEN;
-    if (!API_URL || !API_TOKEN) {
-        throw new Error('Missing API_URL or API_TOKEN in .env.local');
-    }
-
-    const schema = z.object({
-        id: z.string().min(1, 'ไม่พบ ID ของไฟล์'),
-        name: z.string().optional(),
-        description: z.string().optional(),
-        filename: z.string().optional(),
-        parent: z.string().optional(),
-    });
-
-    const rawData = Object.fromEntries(formData);
-    const parsed = schema.safeParse(rawData);
-
-    if (!parsed.success) {
-        const errors = parsed.error.flatten().fieldErrors;
-        return { success: false, message: 'ข้อมูลไม่ถูกต้อง', errors };
-    }
-
-    const { id, name, description, filename } = parsed.data;
-    const parentId = rawData.parent ? parseInt(rawData.parent as string, 10) : null;
-
-    // Server-side validation for duplicate filename
-    // We need to check in the target folder (parentId) if 'filename' already exists
-    try {
-        const targetFolderContents = parentId
-            ? await adminGetFolderById(parentId)
-            : await adminGetRootFolder();
-
-        // Check if any file in the target folder has the same filename, excluding the current file itself
-        const isDuplicate = targetFolderContents.files.some(
-            file => file.filename === filename && file.id !== parseInt(id)
-        );
-
-        if (isDuplicate) {
-            return { success: false, message: 'ชื่อไฟล์นี้มีอยู่แล้วในโฟลเดอร์นี้' };
-        }
-    } catch (error) {
-        console.error("Failed to validate duplicate filename:", error);
-        // Optionally tolerate error or return failure. 
-        // For safety, maybe better to fail? Or just proceed? 
-        // If we can't check, we might risk duplicate. Let's log and proceed or fail.
-        // Let's decide to fail validation if we can't fetch folder.
-        return { success: false, message: 'เกิดข้อผิดพลาดในการตรวจสอบชื่อไฟล์ซ้ำ' };
-    }
-
-    const body: any = {};
-    if (name) body.name = name;
-    if (description !== undefined) body.description = description;
-    if (filename) body.filename = filename;
-    // Only set parent if it's explicitly provided in the form data (meaning we intend to move it or confirm it)
-    if (rawData.parent !== undefined) body.parent = parentId;
-
-    const res = await fetch(`${API_URL}/dl/file/${id}`, {
-        method: 'PATCH',
-        headers: {
-            'Authorization': `Bearer ${API_TOKEN}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-    });
-
-    if (!res.ok) {
-        const errorResponse = await res.json().catch(() => ({ message: res.statusText }));
-        console.error('Failed to update file:', errorResponse);
-        return { success: false, message: errorResponse.message || 'อัปเดตไฟล์ไม่สำเร็จ' };
-    }
-
-    revalidatePath('/admin/documents', 'layout');
-    return { success: true, message: 'อัปเดตไฟล์สำเร็จ!' };
-}
-
-// delete ข้อมูลประกาศประชาสัมพันธ์
 
 // Helper to find path to a folder
 export const getFolderPath = async (targetId: number): Promise<{ id: number; name: string }[]> => {

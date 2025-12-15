@@ -99,6 +99,7 @@ export type TextAreaInputProps = {
     defaultValue?: string;
     placeholder?: string;
     errorMessage?: string;
+    required?: boolean;
 }
 
 export type FormInputProps = {

@@ -54,13 +54,13 @@ export default function RootLayout({
           />
         </head>
         <body
-          className={`${sarabun.variable} ${kanit.variable} ${sarabun.className} antialiased`}
+          className={`${sarabun.variable} ${kanit.variable} ${sarabun.className} antialiased min-h-screen flex flex-col`}
         >
           <Providers>
             <SidebarProvider>
               <Navbar />
 
-              <main>{children}</main>
+              <main className="flex-1 pb-20">{children}</main>
               <Footer />
             </SidebarProvider>
 

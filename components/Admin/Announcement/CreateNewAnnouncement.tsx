@@ -1,5 +1,5 @@
 'use client'
-import { createAnnouncement } from '@/actions/actions'
+import { createAnnouncement } from '@/actions/announcement-actions'
 import { SubmitButton } from '@/components/Form/Button'
 import DateAndTime from '@/components/Form/DateAndTime'
 import FormContainer from '@/components/Form/FormContainer'
@@ -29,11 +29,11 @@ const CreateNewAnnouncement = ({ className }: { className?: string }) => {
 
 
     return (
-        <div className={`w-[1320px] mx-auto ${className}`}>
+        <div className={`w-full max-w-[1320px] mx-auto ${className}`}>
             <FormContainer action={formAction} state={state}>
                 {/* <input type="hidden" name="parent" value={parentId ?? ''} /> */}
                 <div className='mt-4'>
-                    <div className='grid grid-cols-2 gap-12'>
+                    <div className='grid grid-cols-1 lg:grid-cols-2 gap-12'>
                         {/* Column 1 */}
                         <div>
                             <div className='mb-4 flex flex-col gap-1'>

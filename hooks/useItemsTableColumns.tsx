@@ -1,19 +1,10 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, FileText, Folder, ArrowUpDown, Download, Pencil, Move, Trash, FolderOutput } from "lucide-react";
-import { DeleteConfirmationDialog } from '@/components/Admin/Dialog/DeleteConfirmationDialog';
-import { EditFolderDialog } from '@/components/Admin/Dialog/EditFolderDialog';
-import { EditFileDrawer } from '@/components/Admin/DocManagement/EditFileDrawer';
-import { MoveDialog } from '@/components/Admin/Dialog/MoveDialog';
+import { ArrowUpDown, FileText, Folder } from "lucide-react";
 import { Item } from '@/types/documents';
 import { DataTableColumn } from '@/types/common';
 import MuiIconRenderer from '@/components/ui/MuiIconRenderer';
+import { RowActions } from '@/components/Admin/DocManagement/RowActions';
 
 interface UseItemsTableColumnsProps {
     parentId: number | null;
@@ -49,9 +40,24 @@ export const useItemsTableColumns = ({
             headerClassName: "w-[50px]",
             className: "w-[50px]",
             cell: (item) => {
-                if (item.mui_icon) {
-                    return <MuiIconRenderer iconName={item.mui_icon} iconColor={item.mui_colour} className="h-4 w-4" />;
+                let iconName = item.mui_icon;
+                let iconColor = item.mui_colour;
+
+                if (!iconName && item.type === 'file') {
+                    const fileName = (item.filename || item.name || '').toLowerCase();
+                    if (fileName.endsWith('.pdf')) {
+                        iconName = 'PictureAsPdf';
+                        iconColor = '#ef4444'; // text-red-500
+                    } else if (fileName.endsWith('.zip')) {
+                        iconName = 'FolderZip';
+                        iconColor = '#eab308'; // text-yellow-500
+                    }
                 }
+
+                if (iconName) {
+                    return <MuiIconRenderer iconName={iconName} iconColor={iconColor} className="h-4 w-4" />;
+                }
+
                 return item.type === "folder"
                     ? <Folder className="h-4 w-4 text-yellow-500 fill-yellow-500/20" />
                     : <FileText className="h-4 w-4 text-primary/80" />;
@@ -111,29 +117,7 @@ export const useItemsTableColumns = ({
             headerClassName: "text-right w-[50px]",
             className: "text-right w-[50px]",
             cell: (item) => (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer hover:bg-muted">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-[160px]">
-                        {item.type === 'file' && <DropdownMenuItem className="cursor-pointer"><Download className="mr-1 h-2 w-2" />ดาวน์โหลด</DropdownMenuItem>}
-                        {item.type === 'file' && (
-                            <EditFileDrawer file={item} onSuccess={onRefresh}
-                                trigger={<DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer"><Pencil className="mr-1 h-2 w-2" />แก้ไข</DropdownMenuItem>} />
-                        )}
-                        {item.type === 'folder' && (
-                            <EditFolderDialog folder={item} parentId={parentId} onSuccess={onRefresh}
-                                trigger={<DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer"><Pencil className="mr-1 h-2 w-2" />แก้ไข</DropdownMenuItem>} />
-                        )}
-                        <MoveDialog item={item} currentParentId={parentId} onMoveSuccess={onRefresh}
-                            trigger={<DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer"><FolderOutput className="mr-1 h-2 w-2" />ย้าย</DropdownMenuItem>} />
-                        <DeleteConfirmationDialog id={item.id} name={item.name} type={item.type} onSuccess={onRefresh}
-                            trigger={<DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer text-destructive focus:text-destructive"><Trash className="mr-1 h-2 w-2" />ลบ</DropdownMenuItem>} />
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                <RowActions item={item} parentId={parentId} onRefresh={onRefresh} />
             ),
         },
     ], [sortConfig, onItemClick, onRefresh, parentId, onSort]);

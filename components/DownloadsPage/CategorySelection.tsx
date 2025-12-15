@@ -1,8 +1,8 @@
 import React from 'react'
 import CategoryCard from './CategoryCard'
 import { Folder } from 'lucide-react'
-import { adminGetFolderById } from '@/actions/actions'
 import HeroSection from './HeroSection'
+import { adminGetFolderById } from '@/actions/folder-actions'
 
 const CategorySelection = async () => {
 

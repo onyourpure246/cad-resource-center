@@ -11,6 +11,9 @@ const SubFolderBadges = ({ subFolders, parentFolderId, backLink }: SubFolderBadg
     const params = useParams();
     const currentFolderId = parseInt(params.folderId as string, 10);
 
+    const isRoot = backLink === '/downloads';
+    const allLink = isRoot ? `/downloads/${parentFolderId}` : (backLink || `/downloads/${parentFolderId}`);
+
     return (
         <div className="mb-8 flex flex-col gap-6">
             {backLink && (
@@ -26,7 +29,7 @@ const SubFolderBadges = ({ subFolders, parentFolderId, backLink }: SubFolderBadg
 
             <div className="w-full overflow-x-auto pb-2 scrollbar-hide">
                 <div className="flex items-center gap-2 min-w-max">
-                    <Link href={`/downloads/${parentFolderId}`} passHref>
+                    <Link href={allLink} passHref>
                         <div
                             className={cn(
                                 "flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer border",

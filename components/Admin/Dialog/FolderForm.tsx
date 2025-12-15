@@ -1,6 +1,6 @@
 'use client';
 
-import { createFolder, updateFolder } from '@/actions/actions';
+import { createFolder, updateFolder } from '@/actions/folder-actions';
 import FormContainer from '@/components/Form/FormContainer';
 import TextInput from '@/components/Form/TextInput';
 import TextAreaInput from '@/components/Form/TextAreaInput';
@@ -19,8 +19,8 @@ const initialState: State = {
 };
 
 const COLOR_PRESETS = [
-    '#FFC107', '#F44336', '#FF9800', '#4CAF50', '#009688', '#2196F3', '#9C27B0', '#E91E63',
-    '#9E9E9E', '#FFCDD2', '#FFCC80', '#C8E6C9', '#B2DFDB', '#90CAF9', '#E1BEE7', '#F8BBD0'
+    '#FFCE3C', '#E73E29', '#EE7110', '#3F9F4A', '#27938E', '#1E84D0', '#9A61C7', '#CC53B4',
+    '#B0B7BA', '#FFBCB2', '#FFBF84', '#8ED290', '#7AD1CD', '#86C8F7', '#D4AFF6', '#F7AAE7'
 ];
 
 const FolderForm = ({ folder, parentId, onSuccess }: FolderFormProps) => {

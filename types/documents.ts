@@ -88,6 +88,7 @@ export interface Item {
     modifiedBy: string;
     mui_icon?: string;
     mui_colour?: string;
+    downloadUrl?: string;
 }
 
 // Component Props

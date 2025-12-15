@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { adminGetRootFolder } from '@/actions/actions';
+import { adminGetRootFolder } from '@/actions/folder-actions';
 import { Item } from '@/types/documents';
 
 const transformDataToItems = (data: Awaited<ReturnType<typeof adminGetRootFolder>>): Item[] => {

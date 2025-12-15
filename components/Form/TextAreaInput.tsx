@@ -9,7 +9,8 @@ const TextAreaInput = (
         label,
         defaultValue,
         placeholder,
-        errorMessage
+        errorMessage,
+        required
     }: TextAreaInputProps) => {
     return (
         <div className='mb-2 flex flex-col gap-1'>
@@ -18,7 +19,7 @@ const TextAreaInput = (
                 name={name}
                 defaultValue={defaultValue}
                 rows={5}
-                required
+                required={required}
                 placeholder={placeholder}
             />
             {errorMessage && (

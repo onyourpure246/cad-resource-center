@@ -1,10 +1,12 @@
 'use client';
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { Button } from "@/components/ui/button";
 import { FileUp, FolderSync } from "lucide-react";
 import { ReusableDrawer } from '@/components/Admin/DocManagement/RightSideDrawer';
-import CreateNewForm from '@/components/Admin/Dialog/CreateNewForm';
-import AddFolderDialog from '@/components/Admin/Dialog/AddFolderDialog';
+// Dynamic imports for heavy components
+const CreateNewForm = dynamic(() => import('@/components/Admin/Dialog/CreateNewForm'));
+const AddFolderDialog = dynamic(() => import('@/components/Admin/Dialog/AddFolderDialog'));
 import { ActionButtonsProps } from '@/types/documents';
 
 const ActionButtons = ({ parentId, onRefresh }: ActionButtonsProps) => {

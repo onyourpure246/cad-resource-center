@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { adminGetFolderById, getFolderPath } from '@/actions/actions';
+import { adminGetFolderById, getFolderPath } from '@/actions/folder-actions';
 import { Item as FolderItem, File as FileType } from '@/types/documents';
 
 export const useFolderContents = (folderId: number) => {
@@ -51,12 +51,13 @@ export const useFolderContents = (folderId: number) => {
                 modifiedBy: file.updated_by?.toString() || "Admin",
                 mui_icon: file.mui_icon,
                 mui_colour: file.mui_colour,
+                downloadUrl: `${process.env.NEXT_PUBLIC_API_URL}/dl/file/download/${file.id}`,
             }));
 
             // Combine folders and files for display
             setItems([...transformedFolders, ...transformedFiles]);
         } catch (error) {
-            console.error(`Failed to fetch contents for folder ID ${folderId}:`, error);
+            console.error(`Failed to fetch contents for folder ID ${folderId}: `, error);
         } finally {
             setIsLoading(false);
         }

@@ -24,7 +24,7 @@ const DateAndTime = ({
 }: DateAndTimeProps) => {
     const [open, setOpen] = React.useState(false)
     return (
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
             {/* --- ส่วนของ Date --- */}
             <div className="mb-2 flex flex-col gap-1"> {/* เพิ่ม flex flex-col gap-1 ให้เหมือน TextInput */}
                 <Label htmlFor={dateName} className="mb-1"> {/* คง mb-1 ไว้ */}

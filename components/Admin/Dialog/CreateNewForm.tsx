@@ -1,6 +1,6 @@
 import React from 'react'
 import FormContainer from '../../Form/FormContainer'
-import { uploadFile } from '@/actions/actions'
+import { uploadFile } from '@/actions/file-actions'
 import TextInput from '../../Form/TextInput'
 import TextAreaInput from '../../Form/TextAreaInput'
 import { SubmitButton } from '../../Form/Button'

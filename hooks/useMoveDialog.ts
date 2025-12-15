@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { adminGetRootFolder, adminGetFolderById, updateFolder, updateFile } from '@/actions/actions';
+import { adminGetRootFolder, adminGetFolderById, updateFolder } from '@/actions/folder-actions';
+import { updateFile } from '@/actions/file-actions';
 import { toast } from 'sonner';
 import { FolderNode, MoveDialogProps } from '../types/MoveDialog.types';
 

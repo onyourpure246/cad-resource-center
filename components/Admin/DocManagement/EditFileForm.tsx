@@ -1,5 +1,5 @@
 import React, { useEffect, useActionState } from 'react';
-import { updateFile } from '@/actions/actions';
+import { updateFile } from '@/actions/file-actions';
 import FormContainer from '@/components/Form/FormContainer';
 import TextAreaInput from '@/components/Form/TextAreaInput';
 import { SubmitButton } from '@/components/Form/Button';
