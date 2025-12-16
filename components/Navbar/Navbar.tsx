@@ -45,7 +45,7 @@ const Navbar = async () => {
             <li className="my-2 md:mx-4 ">
               <ModeToggle />
             </li>
-            <li className="my-2 md:mx-4">
+            <li className="my-2 md:mx-4 cursor-pointer">
               <NavAuth />
             </li>
           </ul>

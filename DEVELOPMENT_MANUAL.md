@@ -1,4 +1,4 @@
-# คู่มือแนวคิดและมาตรฐานการพัฒนา Web Application (Resource Center)
+# คู่มือมาตรฐานการพัฒนา Web Application (Development Manual)
 
 เอกสารฉบับนี้จัดทำขึ้นเพื่อเป็น **Technical Specification & Development Guideline** สำหรับการพัฒนาและดูแลรักษา Web Application "Resource Center" ของกลุ่มพัฒนาระบบตรวจสอบบัญชีคอมพิวเตอร์ เนื้อหาครอบคลุมตั้งแต่แนวคิดการออกแบบ สถาปัตยกรรมระบบ ไปจนถึงมาตรฐานการเขียนโค้ดและการ Deploy
 
@@ -32,13 +32,13 @@
 ---
 
 ## 3. เทคโนโลยีที่ใช้ (Technology Stack)
-## 3. เทคโนโลยีที่ใช้ (Technology Stack)
 -   **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
 -   **Language**: TypeScript (Strict Mode)
 -   **UI Library**: [React 19](https://react.dev/)
 -   **Styling**: 
     -   [Tailwind CSS 4](https://tailwindcss.com/) (Utility-first)
     -   [Tailwind Animate](https://github.com/jamiebuilds/tailwindcss-animate)
+    -   [tw-animate-css](https://www.npmjs.com/package/tw-animate-css)
 -   **Animation**: [Framer Motion](https://www.framer.com/motion/) (Complex Animations, Gestures, Spring Physics)
 -   **Icons**: 
     -   [Lucide React](https://lucide.dev/) (Primary Icons)
@@ -47,7 +47,9 @@
 -   **Component Library**:
     -   [Radix UI](https://www.radix-ui.com/) (Headless Primitives)
     -   [Shadcn UI](https://ui.shadcn.com/) (Reusable Components Base)
--   **Authentication**: [Clerk](https://clerk.com/)
+    -   [Vaul](https://vaul.emilkowal.ski/) (Drawer Component)
+    -   [Sonner](https://sonner.emilkowal.ski/) (Toast Notifications)
+-   **Authentication**: [Clerk](https://clerk.com/) (Current), [NextAuth.js](https://authjs.dev/) (Planned Migration)
 -   **Validation**: [Zod](https://zod.dev/)
 -   **State Management**: React Hooks (`useActionState`, `useState`)
 
@@ -228,15 +230,20 @@
 
 ### 6.1 Data Models (`types/`)
 -   **Folder**: `id`, `name`, `abbr`, `parent` (Recursive Structure)
--   **File**: `id`, `name`, `filename`, `parent`, `isactive`
+-   **File**: `id`, `name`, `filename`, `parent`, `isactive`, `mui_icon`, `mui_colour`
 -   **Announcement**: 
     -   `id`, `title`, `content` (Main Description), `status`, `category`
+    -   `categoryVariant` (Theme styling), `createdBy`, `createdAt`, `updatedAt`
     -   **Note**: Model ไม่ใช้ field `description` แล้ว ให้ใช้ `content` เป็นหลักเพื่อลดความซ้ำซ้อน
 
 ### 6.2 Business Logic (`actions/`)
--   **Server Actions**: ใช้ `actions.ts` เป็นตัวกลางในการคุยกับ Backend API
+-   **Separation of Concerns**: แยกไฟล์ Actions ตาม Domain เพื่อความชัดเจน (`actions/`)
+    -   `file-actions.ts`: จัดการไฟล์ (Upload, Update, Delete)
+    -   `folder-actions.ts`: จัดการโฟลเดอร์ (Create, Move, Delete Structure)
+    -   `announcement-actions.ts`: จัดการประกาศ
+    -   `common-actions.ts`: Shared Logic
 -   **Validation**: ทุก Action ที่มีการรับข้อมูล (Create/Update) **ต้อง** ผ่านการ Validate ด้วย `Zod` Schema เสมอ
--   **Error Handling**: Return object `{ success: boolean, message: string, errors?: object }` เพื่อให้ Client นำไปแสดงผลได้ง่าย
+-   **Error Handling**: Return object `State` (`{ success: boolean, message: string, errors?: object }`) เพื่อให้ Client นำไปแสดงผลได้ง่ายผ่าน `useActionState`
 
 ---
 
@@ -292,4 +299,4 @@
 -   **Draft**: สถานะประกาศที่ยังไม่เผยแพร่
 
 ---
-*เอกสารนี้ปรับปรุงล่าสุดเมื่อ: 9 ธันวาคม 2025 (Updated Architecture, Animations, and Performance Specs)*
+*เอกสารนี้ปรับปรุงล่าสุดเมื่อ: 16 ธันวาคม 2025 (Updated to Development Manual, removed DaisyUI)*

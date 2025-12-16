@@ -1,6 +1,5 @@
 import React from 'react'
 import AnnouncementCard from '../Admin/Announcement/AnnouncementCard'
-import { Announcement } from '@/types/announcement'
 import { announceData } from '@/data/announceData'
 
 const AnnounceSection = () => {

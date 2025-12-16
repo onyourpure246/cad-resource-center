@@ -8,8 +8,7 @@ import {
     LayoutDashboard,
     FileText,
     Users,
-    Megaphone,
-    Settings
+    Megaphone
 } from 'lucide-react'
 import { useSidebar } from './SidebarContext'
 

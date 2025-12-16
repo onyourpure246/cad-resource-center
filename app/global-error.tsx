@@ -18,8 +18,8 @@ export default function GlobalError({
         <html>
             <body>
                 <ErrorState
-                    title="Critical Error"
-                    description="A critical error occurred and the application cannot recover."
+                    title="ขออภัย ระบบเกิดข้อผิดพลาด"
+                    description="แอปพลิเคชันพบปัญหาบางอย่างและไม่สามารถทำงานต่อได้ในขณะนี้"
                     retry={reset}
                 />
             </body>

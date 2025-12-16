@@ -1,6 +1,9 @@
 .
 ├─ actions
-│  └─ actions.ts
+│  ├─ announcement-actions.ts
+│  ├─ common-actions.ts
+│  ├─ file-actions.ts
+│  └─ folder-actions.ts
 ├─ app
 │  ├─ admin
 │  │  ├─ announcement
@@ -30,8 +33,8 @@
 │  ├─ provider.tsx
 │  └─ theme-provider.tsx
 ├─ assets
-│  └─ img
-│     └─ clients
+│  ├─ img
+│  │  ├─ clients
 ├─ components
 │  ├─ Admin
 │  │  ├─ Announcement
@@ -51,9 +54,12 @@
 │  │  ├─ DocManagement
 │  │  │  ├─ ActionButtons.tsx
 │  │  │  ├─ DataManagementLayout.tsx
+│  │  │  ├─ EditFileDrawer.tsx
+│  │  │  ├─ EditFileForm.tsx
 │  │  │  ├─ ItemsTable.tsx
 │  │  │  ├─ PaginationFooter.tsx
 │  │  │  ├─ RightSideDrawer.tsx
+│  │  │  ├─ RowActions.tsx
 │  │  │  └─ TableSkeleton.tsx
 │  │  ├─ SidebarContext.tsx
 │  │  ├─ Sidebar.tsx
@@ -93,6 +99,7 @@
 │  └─ ui
 ├─ data
 │  ├─ announceData.ts
+│  ├─ categoryData.ts
 │  ├─ contactData.ts
 │  └─ footerData.ts
 ├─ hooks
@@ -106,24 +113,23 @@
 ├─ lib
 │  └─ utils.ts
 ├─ public
-│  ├─ file.svg
-│  ├─ globe.svg
-│  ├─ next.svg
-│  ├─ vercel.svg
-│  └─ window.svg
 ├─ types
 │  ├─ announcement.ts
 │  ├─ common.ts
 │  ├─ documents.ts
 │  ├─ footer.ts
+│  ├─ globals.d.ts
 │  └─ MoveDialog.types.ts
 ├─ utils
 │  ├─ download-page-utils.ts
 │  └─ newcdm_types.ts
+├─ AUTH_BACKEND_SPECS.md
+├─ AUTH_MIGRATION_GUIDE.md
 ├─ components.json
-├─ CONCEPT_MANUAL.md
+├─ DEVELOPMENT_MANUAL.md
 ├─ .env.local
 ├─ eslint.config.mjs
+├─ FUTURE_PLAN_DOWNLOADS.md
 ├─ .gitignore
 ├─ middleware.ts
 ├─ next.config.ts
