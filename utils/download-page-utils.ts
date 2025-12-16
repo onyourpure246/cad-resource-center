@@ -38,7 +38,11 @@ export async function getDownloadPageData(folderId: string) {
         // If path has more than 1 item, the parent is the second to last item
         // e.g. [Root, Parent, Self] -> Parent is index length-2
         const parentFolder = folderPath[folderPath.length - 2];
-        backLink = `/downloads/${parentFolder.id}`;
+        if (parentFolder.id === 1) {
+            backLink = '/downloads';
+        } else {
+            backLink = `/downloads/${parentFolder.id}`;
+        }
     } else {
         // If path length is 1 (Self is Root) or 0 (Not found/Error), back to /downloads
         backLink = '/downloads';
