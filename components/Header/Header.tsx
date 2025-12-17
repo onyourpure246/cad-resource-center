@@ -16,7 +16,7 @@ const Header = ({
     const isAdmin = pathname?.startsWith('/admin')
 
     return (
-        <div className='h-auto flex items-center justify-between px-4 py-2'>
+        <div className='h-auto flex items-center justify-between px-2 py-2'>
             <div className='flex gap-4'>
                 {isAdmin && (
                     <Button

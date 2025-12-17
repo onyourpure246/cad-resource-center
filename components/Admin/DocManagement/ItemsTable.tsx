@@ -13,7 +13,9 @@ const ItemsTable = ({
     onItemClick,
     onRefresh,
     sortConfig,
-    onSort
+    onSort,
+    selectedIds,
+    onSelectionChange
 }: ItemsTableProps) => {
 
     const columns = useItemsTableColumns({
@@ -31,6 +33,9 @@ const ItemsTable = ({
                 data={items}
                 isLoading={isLoading}
                 noResultsMessage="ไม่พบไฟล์หรือโฟลเดอร์"
+                enableRowSelection={true}
+                selectedIds={selectedIds}
+                onSelectionChange={onSelectionChange}
                 noResultsContent={
                     <div className="flex flex-col items-center justify-center py-10 text-center">
                         <div className="bg-muted/50 rounded-full p-4 mb-4">

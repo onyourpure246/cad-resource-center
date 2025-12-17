@@ -16,7 +16,7 @@ import Link from "next/link";
 
 const HomePage = () => {
   return (
-    <>
+    <div className="pb-20">
       <section className="relative w-full h-[210px] md:h-[210px] overflow-hidden">
         {/* Background Image */}
         <Image
@@ -57,11 +57,10 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-      {/* Announcement Section */}
       <AnnounceSection />
 
 
-    </>
+    </div>
   );
 };
 

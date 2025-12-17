@@ -16,6 +16,7 @@ const FolderContentPage = () => {
     const [, startTransition] = useTransition();
     const params = useParams();
     const folderId = parseInt(params.folderId as string, 10);
+    const [selectedIds, setSelectedIds] = React.useState<(string | number)[]>([]);
 
     const { items, isLoading, breadcrumbs, refresh, currentFolder } = useFolderContents(folderId);
     const {
@@ -40,6 +41,8 @@ const FolderContentPage = () => {
         }
     };
 
+    const selectedItems = items.filter(item => selectedIds.includes(item.id));
+
     return (
         <>
             <Header
@@ -49,7 +52,7 @@ const FolderContentPage = () => {
             </Header>
             <DataManagementLayout
                 searchPlaceholder="ค้นหาในโฟลเดอร์นี้..."
-                actionButtons={<ActionButtons parentId={folderId} onRefresh={refresh} />}
+                actionButtons={<ActionButtons parentId={folderId} onRefresh={refresh} selectedItems={selectedItems} />}
                 breadcrumbs={breadcrumbs}
                 onSearchChange={handleSearch}
                 footer={
@@ -70,6 +73,8 @@ const FolderContentPage = () => {
                     onRefresh={refresh}
                     sortConfig={sortConfig}
                     onSort={handleSort}
+                    selectedIds={selectedIds}
+                    onSelectionChange={setSelectedIds}
                 />
             </DataManagementLayout>
         </>

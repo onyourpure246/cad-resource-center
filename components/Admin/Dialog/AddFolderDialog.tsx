@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState } from 'react'
 import { ReusableDialog } from './Dialog'
 import { Button } from '@/components/ui/button'

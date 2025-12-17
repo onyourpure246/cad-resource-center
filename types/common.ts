@@ -34,6 +34,9 @@ export interface DataTableProps<T> {
     isLoading: boolean;
     noResultsMessage?: string;
     noResultsContent?: ReactNode;
+    enableRowSelection?: boolean;
+    selectedIds?: (string | number)[];
+    onSelectionChange?: (selectedIds: (string | number)[]) => void;
 }
 
 // UI Components

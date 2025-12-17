@@ -3,9 +3,9 @@ import React from 'react'
 
 const DownloadPage = () => {
     return (
-        <>
+        <div className="pb-20">
             <CategorySelection />
-        </>
+        </div>
     )
 }
 

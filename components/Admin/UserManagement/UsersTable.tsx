@@ -9,6 +9,8 @@ import { Box } from 'lucide-react';
 const UsersTable = ({
     items,
     isLoading,
+    selectedIds,
+    onSelectionChange
 }: UsersTableProps) => {
 
     const columns = getUserColumns();
@@ -20,6 +22,9 @@ const UsersTable = ({
                 data={items}
                 isLoading={isLoading}
                 noResultsMessage="ไม่พบรายชื่อผู้ใช้"
+                enableRowSelection={true}
+                selectedIds={selectedIds}
+                onSelectionChange={onSelectionChange}
                 noResultsContent={
                     <div className="flex flex-col items-center justify-center py-10 text-center">
                         <div className="bg-muted/50 rounded-full p-4 mb-4">

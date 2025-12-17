@@ -15,4 +15,6 @@ export interface UsersTableProps {
     isLoading: boolean;
     onItemClick?: (item: User) => void;
     onRefresh?: () => void;
+    selectedIds: (string | number)[];
+    onSelectionChange: (ids: (string | number)[]) => void;
 }

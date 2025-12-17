@@ -21,6 +21,7 @@ const UserManagementPage = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedIds, setSelectedIds] = useState<(string | number)[]>([])
 
   return (
     <>
@@ -32,11 +33,13 @@ const UserManagementPage = () => {
       <DataManagementLayout
         searchPlaceholder="ค้นหาผู้ใช้..."
         showBreadcrumbs={false}
-        actionButtons={<UserActionButtons />}
+        actionButtons={<UserActionButtons selectedIds={selectedIds} />}
       >
         <UsersTable
           items={users}
           isLoading={isLoading}
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
         />
       </DataManagementLayout>
     </>

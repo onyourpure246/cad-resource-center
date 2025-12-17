@@ -1,3 +1,5 @@
+'use client';
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -10,30 +12,37 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import React, { useState, useTransition } from 'react';
-
-import { DeleteConfirmationDialogProps } from '@/types/documents';
-import { deleteItemById } from '@/actions/common-actions';
 import { toast } from 'sonner';
+import { bulkDeleteItems, BulkItem } from '@/actions/bulk-actions'; // Ensure this path is correct
 
-export const DeleteConfirmationDialog = ({
-    id,
-    name,
-    type,
+interface BulkDeleteDialogProps {
+    items: BulkItem[];
+    trigger: React.ReactNode;
+    onSuccess: () => void;
+}
+
+export const BulkDeleteDialog = ({
+    items,
     trigger,
     onSuccess
-}: DeleteConfirmationDialogProps) => {
+}: BulkDeleteDialogProps) => {
     const [open, setOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
 
     const handleDelete = async () => {
         startTransition(async () => {
-            const result = await deleteItemById(id, type);
+            const result = await bulkDeleteItems(items);
             if (result.success) {
                 toast.success(result.message);
                 setOpen(false);
                 onSuccess();
             } else {
                 toast.error(result.message);
+                if (result.successCount > 0) {
+                    // If some succeeded, still close and refresh
+                    setOpen(false);
+                    onSuccess();
+                }
             }
         });
     };
@@ -45,9 +54,9 @@ export const DeleteConfirmationDialog = ({
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>ยืนยันการลบ</AlertDialogTitle>
+                    <AlertDialogTitle>ยืนยันการลบ {items.length} รายการ</AlertDialogTitle>
                     <AlertDialogDescription>
-                        คุณแน่ใจหรือไม่ว่าต้องการลบ "{name}" ? <br />
+                        คุณแน่ใจหรือไม่ว่าต้องการลบรายการที่เลือกทั้งหมด {items.length} รายการ? <br />
                         การกระทำนี้ไม่สามารถย้อนกลับได้
                     </AlertDialogDescription>
                 </AlertDialogHeader>

@@ -60,7 +60,7 @@ export default function RootLayout({
             <SidebarProvider>
               <Navbar />
 
-              <main className="flex-1 pb-20">{children}</main>
+              <main className="flex-1">{children}</main>
               <Footer />
             </SidebarProvider>
 

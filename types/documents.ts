@@ -153,6 +153,8 @@ export interface ItemsTableProps extends BaseParentProps {
     onRefresh: () => void;
     sortConfig?: { key: keyof Item; direction: 'asc' | 'desc' } | null;
     onSort?: (key: keyof Item) => void;
+    selectedIds: (string | number)[];
+    onSelectionChange: (ids: (string | number)[]) => void;
 }
 
 export interface CategoryCardProps {
@@ -172,9 +174,12 @@ export interface ListItem {
 
 }
 
+// ActionButtons.tsx will be updated in next step.
+// This step updates types/documents.ts
 export interface ActionButtonsProps {
     parentId: number | null;
     onRefresh: () => void;
+    selectedItems?: Item[];
 }
 
 export interface SubFolderBadgesProps {
