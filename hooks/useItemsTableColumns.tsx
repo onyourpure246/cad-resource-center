@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, FileText, Folder } from "lucide-react";
+import { ArrowUpDown, File, FileText, Folder } from "lucide-react";
 import { Item } from '@/types/documents';
 import { DataTableColumn } from '@/types/common';
 import MuiIconRenderer from '@/components/ui/MuiIconRenderer';
@@ -36,7 +36,7 @@ export const useItemsTableColumns = ({
     const columns: DataTableColumn<Item>[] = React.useMemo(() => [
         {
             accessorKey: 'icon',
-            header: '',
+            header: <div className="flex justify-center"><File className='h-5 w-5' strokeWidth={1} /></div>,
             headerClassName: "w-[50px]",
             className: "w-[50px]",
             cell: (item) => {
@@ -55,12 +55,12 @@ export const useItemsTableColumns = ({
                 }
 
                 if (iconName) {
-                    return <MuiIconRenderer iconName={iconName} iconColor={iconColor} className="h-4 w-4" />;
+                    return <div className="flex justify-center"><MuiIconRenderer iconName={iconName} iconColor={iconColor} className="h-4 w-4" /></div>;
                 }
 
                 return item.type === "folder"
-                    ? <Folder className="h-4 w-4 text-yellow-500 fill-yellow-500/20" />
-                    : <FileText className="h-4 w-4 text-primary/80" />;
+                    ? <div className="flex justify-center"><Folder className="h-4 w-4 text-yellow-500 fill-yellow-500/20" /></div>
+                    : <div className="flex justify-center"><FileText className="h-4 w-4 text-primary/80" /></div>;
             },
         },
         {
@@ -106,7 +106,7 @@ export const useItemsTableColumns = ({
         },
         {
             accessorKey: 'modifiedBy',
-            header: <span className="font-bold uppercase tracking-wider text-muted-foreground">แก้ไขโดย</span>,
+            header: <span className="px-3 font-bold uppercase tracking-wider text-muted-foreground">แก้ไขโดย</span>,
             headerClassName: "w-[180px]",
             className: "w-[180px]",
             cell: (item) => <span className="text-muted-foreground text-sm">{item.modifiedBy}</span>,

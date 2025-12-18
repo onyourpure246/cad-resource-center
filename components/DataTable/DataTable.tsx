@@ -45,7 +45,7 @@ export function DataTable<T extends { id: string | number }>({
     const isSomeSelected = selectedIds.length > 0 && selectedIds.length < data.length;
 
     return (
-        <Table>
+        <Table className="table-fixed">
             <TableHeader>
                 <TableRow>
                     {enableRowSelection && (
@@ -58,12 +58,12 @@ export function DataTable<T extends { id: string | number }>({
                         </TableHead>
                     )}
                     {columns.map((column, index) => (
-                        <TableHead key={index} className={`py-2 text-left ${column.headerClassName ?? ''}`}>{column.header}</TableHead>
+                        <TableHead key={index} className={`py-2 ${column.headerClassName ?? ''}`}>{column.header}</TableHead>
                     ))}
                 </TableRow>
             </TableHeader>
             {isLoading ? (
-                <TableSkeleton />
+                <TableSkeleton showCheckbox={enableRowSelection} />
             ) : (
                 <TableBody>
                     {data.length === 0 ? (
@@ -86,7 +86,7 @@ export function DataTable<T extends { id: string | number }>({
                                     </TableCell>
                                 )}
                                 {columns.map((column, index) => (
-                                    <TableCell key={index} className={`px-4 py-2 ${column.className ?? ''}`}>{column.cell(item)}</TableCell>
+                                    <TableCell key={index} className={`px-3 py-2 ${column.className ?? ''}`}>{column.cell(item)}</TableCell>
                                 ))}
                             </TableRow>
                         ))
