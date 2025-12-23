@@ -1,6 +1,6 @@
 'use client';
 
-import { SubFolderBadgesProps } from '@/types/documents';
+import { SubFolderBadgesProps } from '@/types/components';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { ChevronLeft, FolderOpen, LayoutGrid } from 'lucide-react';

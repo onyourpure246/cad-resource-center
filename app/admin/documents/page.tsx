@@ -6,13 +6,14 @@ import ItemsTable from '@/components/Admin/DocManagement/ItemsTable';
 import Header from '@/components/Header/Header';
 import { useRootDocuments } from '@/hooks/useRootDocuments';
 import ActionButtons from '@/components/Admin/DocManagement/ActionButtons';
-import { Item } from '@/types/documents';
+import { Item } from '@/types/models';
 import { toast } from 'sonner';
 
 const DocumentManagementPage = () => {
     const { items, isLoading, error, refreshItems } = useRootDocuments();
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
+    const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
 
     React.useEffect(() => {
         if (error) {
@@ -28,6 +29,8 @@ const DocumentManagementPage = () => {
         }
     };
 
+    const selectedItems = items.filter(item => selectedIds.includes(item.id));
+
     return (
         <>
             <Header
@@ -35,14 +38,17 @@ const DocumentManagementPage = () => {
                 description="จัดการเอกสารและไฟล์ทั้งหมดในระบบ" />
 
             <DataManagementLayout
+                showSearch={false}
                 searchPlaceholder="ค้นหาเอกสาร..."
-                actionButtons={<ActionButtons parentId={null} onRefresh={refreshItems} />} >
+                actionButtons={<ActionButtons parentId={null} onRefresh={refreshItems} selectedItems={selectedItems} />} >
                 <ItemsTable
                     items={items}
                     parentId={null}
                     isLoading={isLoading}
                     onItemClick={handleItemClick}
                     onRefresh={refreshItems}
+                    selectedIds={selectedIds}
+                    onSelectionChange={setSelectedIds}
                 />
             </DataManagementLayout>
         </>

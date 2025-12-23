@@ -2,7 +2,7 @@ import { getDownloadPageData } from '@/utils/download-page-utils';
 import DownloadList from '@/components/DownloadsPage/DownloadLists';
 import SubFolderBadges from '@/components/DownloadsPage/SubFolderBadges';
 import Header from '@/components/Header/Header';
-import { DownloadFolderPageProps } from '@/types/documents';
+import { DownloadFolderPageProps } from '@/types/components';
 import React from 'react';
 
 const DownloadFolderPage = async ({ params }: DownloadFolderPageProps) => {

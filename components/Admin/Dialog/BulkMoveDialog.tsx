@@ -17,12 +17,7 @@ import { bulkMoveItems, BulkItem } from '@/actions/bulk-actions';
 import { adminGetRootFolder, adminGetFolderById } from '@/actions/folder-actions';
 import { FolderNode } from '@/types/MoveDialog.types';
 
-interface BulkMoveDialogProps {
-    items: BulkItem[];
-    currentParentId: number | null;
-    trigger: React.ReactNode;
-    onSuccess: () => void;
-}
+import { BulkMoveDialogProps } from '@/types/components';
 
 export const BulkMoveDialog = ({ items, currentParentId, trigger, onSuccess }: BulkMoveDialogProps) => {
     const [open, setOpen] = useState(false);

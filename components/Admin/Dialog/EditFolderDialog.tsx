@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { ReusableDialog } from './Dialog';
 import FolderForm from './FolderForm';
-import { EditFolderDialogProps } from '@/types/documents';
+import { EditFolderDialogProps } from '@/types/components';
 
 export const EditFolderDialog = ({ folder, parentId, trigger, onSuccess }: EditFolderDialogProps) => {
     const [open, setOpen] = useState(false);

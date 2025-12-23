@@ -3,12 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { AlertCircle } from 'lucide-react';
 
-interface ErrorStateProps {
-    title?: string;
-    description?: string;
-    retry?: () => void;
-    showReload?: boolean;
-}
+import { ErrorStateProps } from '@/types/components';
 
 export default function ErrorState({
     title,

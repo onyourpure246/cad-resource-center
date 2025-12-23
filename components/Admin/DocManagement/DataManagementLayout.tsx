@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input } from "@/components/ui/input";
-import { DataManagementLayoutProps } from '@/types/documents';
+import { DataManagementLayoutProps } from '@/types/components';
 
 import Link from 'next/link';
 import { ChevronRight, Home, Search } from 'lucide-react';

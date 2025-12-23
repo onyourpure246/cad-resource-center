@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import type { DownloadListProps } from '@/types/documents'
+import type { DownloadListProps } from '@/types/components'
 import { FileText } from 'lucide-react'
 import DownloadCard from './DownloadCard'
 

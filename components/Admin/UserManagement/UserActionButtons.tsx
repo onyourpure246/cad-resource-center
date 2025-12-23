@@ -3,10 +3,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { UserPlus, FolderSync, Trash2 } from "lucide-react";
 
-interface UserActionButtonsProps {
-    onRefresh?: () => void;
-    selectedIds?: (string | number)[];
-}
+import { UserActionButtonsProps } from '@/types/components';
 
 const UserActionButtons = ({ onRefresh, selectedIds = [] }: UserActionButtonsProps) => {
     const handleDelete = () => {

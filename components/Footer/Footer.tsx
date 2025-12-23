@@ -6,14 +6,11 @@ import { footerData } from '@/data/footerData';
 import ThemeLogo from '@/components/Navbar/ThemeLogo';
 import { StaticImageData } from 'next/image';
 
-type FooterItem =
-    | { type: 'text'; value: string; items?: undefined; src?: undefined; alt?: undefined; width?: undefined; height?: undefined }
-    | { type: 'image'; src: string | StaticImageData; alt?: string; width?: number; height?: number; value?: undefined; items?: undefined }
-    | { type: 'list'; items: string[]; value?: undefined; src?: undefined; alt?: undefined; width?: undefined; height?: undefined };
+import { FooterItem } from '@/types/footer';
 
 const Footer = () => {
     return (
-        <footer className="bg-sidebar border-t border-sidebar-border text-sidebar-foreground pt-4 pb-2">
+        <footer className="bg-accent border-t border-sidebar-border text-sidebar-foreground pt-4 pb-2">
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr_1fr_1.2fr] gap-4">
                     {/* Column 1: Logo & Branding */}
@@ -69,9 +66,6 @@ const Footer = () => {
                     ))}
                 </div>
 
-            </div>
-            <div className="w-full mt-4 pt-2 border-t border-sidebar-border text-center text-muted-foreground text-xs">
-                <p>© {new Date().getFullYear()} CAD Resource Center. All rights reserved.</p>
             </div>
         </footer>
     );

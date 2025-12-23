@@ -1,10 +1,23 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { HeroBackground } from './HeroBackground'
+import TagCloud from './TagCloud'
+import { POPULAR_TAGS } from '@/data/searchTags'
+import { useRouter } from 'next/navigation'
 
 const HeroSection = () => {
+    const router = useRouter();
+    const [query, setQuery] = useState('');
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (query.trim()) {
+            router.push(`/downloads/search?q=${encodeURIComponent(query)}`);
+        }
+    };
+
     return (
         <div className="relative py-12 md:py-14 overflow-hidden">
             <HeroBackground />
@@ -17,7 +30,7 @@ const HeroSection = () => {
                 </p>
 
                 <div className="max-w-xl mx-auto relative">
-                    <div className="relative group">
+                    <form onSubmit={handleSearch} className="relative group">
                         <div className="absolute -inset-1 bg-gradient-to-r from-primary to-blue-600 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
                         <div className="relative">
                             <Search className="z-15 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
@@ -25,10 +38,14 @@ const HeroSection = () => {
                                 type="text"
                                 placeholder="ค้นหาเอกสาร..."
                                 className="w-full pl-12 pr-4 h-14 text-lg bg-background/80 backdrop-blur-sm shadow-sm border-muted-foreground/20 focus-visible:ring-0 focus-visible:ring-offset-0 transition-all duration-300"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
                             />
                         </div>
-                    </div>
+                    </form>
                 </div>
+
+                <TagCloud tags={POPULAR_TAGS} />
             </div>
         </div>
     )

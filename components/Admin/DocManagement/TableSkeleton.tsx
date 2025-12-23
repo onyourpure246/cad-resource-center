@@ -7,10 +7,7 @@ import {
     TableCell,
     TableRow,
 } from "@/components/ui/table";
-
-interface TableSkeletonProps {
-    showCheckbox?: boolean;
-}
+import { TableSkeletonProps } from '@/types/components';
 
 const TableSkeleton = ({ showCheckbox = false }: TableSkeletonProps) => {
     return (

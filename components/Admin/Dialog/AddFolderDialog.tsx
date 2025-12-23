@@ -5,7 +5,7 @@ import { ReusableDialog } from './Dialog'
 import { Button } from '@/components/ui/button'
 import { FolderPlus } from 'lucide-react'
 import FolderForm from './FolderForm'
-import { AddFolderDialogProps } from '@/types/documents'
+import { AddFolderDialogProps } from '@/types/components'
 
 const AddFolderDialog = ({ parentId, onSuccess }: AddFolderDialogProps) => {
     const [open, setOpen] = useState(false);

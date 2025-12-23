@@ -1,18 +1,12 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, File, FileText, Folder } from "lucide-react";
-import { Item } from '@/types/documents';
+import { Item } from '@/types/models';
 import { DataTableColumn } from '@/types/common';
 import MuiIconRenderer from '@/components/ui/MuiIconRenderer';
 import { RowActions } from '@/components/Admin/DocManagement/RowActions';
 
-interface UseItemsTableColumnsProps {
-    parentId: number | null;
-    onItemClick: (item: Item) => void;
-    onRefresh: () => void;
-    sortConfig?: { key: keyof Item; direction: 'asc' | 'desc' } | null;
-    onSort?: (key: keyof Item) => void;
-}
+import { UseItemsTableColumnsProps } from '@/types/components';
 
 export const useItemsTableColumns = ({
     parentId,

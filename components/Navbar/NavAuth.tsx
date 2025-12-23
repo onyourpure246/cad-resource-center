@@ -26,8 +26,8 @@ const NavAuth = () => {
   return (
     <DropDownMenu
       trigger={
-        <Button variant="outline" size="icon" className='rounded-full'>
-          <User className="h-5 w-5 " />
+        <Button variant="ghost" size="icon" className='rounded-full cursor-pointer border-1 hover:bg-primary-foreground/10 text-primary-foreground hover:text-primary-foreground dark:text-foreground dark:hover:bg-accent dark:hover:text-accent-foreground dark:border-border'>
+          <User className="h-5 w-5" />
         </Button>
       }
     >

@@ -1,5 +1,5 @@
 import { adminGetFolderById, adminGetRootFolder, getFolderPath } from "@/actions/folder-actions";
-import { DownloadItem } from '@/types/documents';
+import { DownloadItem } from '@/types/models';
 import { notFound } from 'next/navigation';
 
 export async function getDownloadPageData(folderId: string) {

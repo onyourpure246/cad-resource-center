@@ -7,7 +7,7 @@ import { ReusableDrawer } from '@/components/Admin/DocManagement/RightSideDrawer
 // Dynamic imports for heavy components
 const CreateNewForm = dynamic(() => import('@/components/Admin/Dialog/CreateNewForm'), { ssr: false });
 const AddFolderDialog = dynamic(() => import('@/components/Admin/Dialog/AddFolderDialog'), { ssr: false });
-import { ActionButtonsProps } from '@/types/documents';
+import { ActionButtonsProps } from '@/types/components';
 import { BulkDeleteDialog } from "../Dialog/BulkDeleteDialog";
 import { BulkMoveDialog } from "../Dialog/BulkMoveDialog";
 import { BulkItem } from "@/actions/bulk-actions";

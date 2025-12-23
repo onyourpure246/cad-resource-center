@@ -17,9 +17,7 @@ import { Calendar, ArrowRight, Tag } from 'lucide-react';
 import { format } from 'date-fns';
 import { th } from 'date-fns/locale';
 
-interface AnnouncementCardProps {
-    announcement: Announcement;
-}
+import { AnnouncementCardProps } from '@/types/components';
 
 const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => {
     // Format date if available, otherwise use createdAt
@@ -34,7 +32,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                 transition={{ type: "spring", stiffness: 300 }}
                 className="h-full"
             >
-                <Card className="flex flex-col h-full overflow-hidden border-border/50 bg-background/50 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 rounded-[1.55rem]">
+                <Card className="flex flex-col h-full overflow-hidden border-border/ bg-background/50 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 rounded-[1.55rem]">
                     <CardHeader className="pb-0 space-y-2">
                         <div className="flex justify-between items-start gap-4">
                             <Badge

@@ -1,25 +1,23 @@
 'use client'
 import React from 'react'
-import { DownloadItem } from '@/types/documents'
+import { DownloadItem } from '@/types/models'
 import { Button } from '../ui/button'
 import { Download, FileText, Calendar, Clock } from 'lucide-react'
 import MuiIconRenderer from '@/components/ui/MuiIconRenderer'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 
-interface DownloadCardProps {
-    item: DownloadItem;
-}
+import { DownloadCardProps } from '@/types/components';
 
 const DownloadCard = ({ item }: DownloadCardProps) => {
     return (
         <Card
-            className="group border-0 shadow-sm hover:shadow-md transition-all duration-200 bg-card overflow-hidden"
+            className="group border-1 shadow-sm hover:shadow-md transition-all duration-200 bg-card overflow-hidden py-0"
         >
             <CardContent className="p-0">
                 <div className="flex flex-col md:flex-row items-stretch">
                     {/* Icon Section */}
-                    <div className="flex items-center justify-center p-6 bg-primary/5 md:w-24 shrink-0">
+                    <div className="flex items-center justify-center p-6 bg-primary/15 md:w-24 shrink-0">
                         <div className="w-12 h-12 rounded-xl bg-background shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                             {item.mui_icon ? (
                                 <MuiIconRenderer iconName={item.mui_icon} iconColor={item.mui_colour} className="w-6 h-6" />
@@ -30,30 +28,38 @@ const DownloadCard = ({ item }: DownloadCardProps) => {
                     </div>
 
                     {/* Content Section */}
-                    <div className="flex-1 p-6 flex flex-col justify-center min-w-0">
-                        <div className="flex items-start justify-between gap-4 mb-2">
+                    <div className="flex-1 p-6 grid grid-cols-1 md:grid-cols-2 gap-4 min-w-0">
+                        {/* Left Column */}
+                        <div className="flex flex-col justify-center gap-2">
                             <h3 className="font-semibold text-lg text-foreground line-clamp-1 group-hover:text-primary transition-colors">
                                 {item.name}
                             </h3>
+
+                            <p className="text-muted-foreground text-sm line-clamp-2">
+                                {item.description}
+                            </p>
+
+                            <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
+                                <div className="flex items-center gap-1.5">
+                                    <Calendar className="w-3.5 h-3.5" />
+                                    <span>{item.updated_at}</span>
+                                </div>
+                                <div className="w-1 h-1 rounded-full bg-border" />
+                                <div className="flex items-center gap-1.5">
+                                    <Clock className="w-3.5 h-3.5" />
+                                    <span>อัปเดตล่าสุด</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right Column */}
+                        <div className="flex flex-col items-start md:items-end gap-2">
                             <Badge variant="secondary" className="shrink-0 text-xs font-normal bg-muted text-muted-foreground">
                                 {item.filename.split('.').pop()?.toUpperCase() || 'FILE'}
                             </Badge>
-                        </div>
-
-                        <p className="text-muted-foreground text-sm line-clamp-2 mb-4">
-                            {item.description}
-                        </p>
-
-                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                            <div className="flex items-center gap-1.5">
-                                <Calendar className="w-3.5 h-3.5" />
-                                <span>{item.updated_at}</span>
-                            </div>
-                            <div className="w-1 h-1 rounded-full bg-border" />
-                            <div className="flex items-center gap-1.5">
-                                <Clock className="w-3.5 h-3.5" />
-                                <span>อัปเดตล่าสุด</span>
-                            </div>
+                            <span className="text-xs text-muted-foreground text-right truncate max-w-full">
+                                {item.filename}
+                            </span>
                         </div>
                     </div>
 

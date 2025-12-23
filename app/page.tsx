@@ -1,14 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import Landing from "@/assets/img/landing-banner.jpg";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import AnnounceSection from "@/components/HomePage/AnnounceSection";
@@ -45,7 +37,7 @@ const HomePage = () => {
               ศูนย์รวมข้อมูล เอกสาร และเครื่องมือสำหรับกลุ่มพัฒนาระบบตรวจสอบบัญชีคอมพิวเตอร์
             </p>
             <div className="flex gap-4 ml-10">
-              <Link href="/downloads"><Button size="lg" className="mt-4 cursor-pointer">
+              <Link href="/downloads"><Button variant="secondary" size="default" className="mt-4 cursor-pointer hover:bg-white/90">
                 ดาวน์โหลด
               </Button>
               </Link>

@@ -8,7 +8,7 @@ import { SubmitButton } from '@/components/Form/Button';
 import DialogFooter from './DialogFooter';
 import { Button } from '@/components/ui/button';
 import { DialogClose } from '@/components/ui/dialog';
-import { FolderFormProps } from '@/types/documents';
+import { FolderFormProps } from '@/types/components';
 import { State } from '@/types/common';
 import React, { useEffect, useActionState } from 'react';
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { adminGetRootFolder } from '@/actions/folder-actions';
-import { Item } from '@/types/documents';
+import { Item } from '@/types/models';
 
 const transformDataToItems = (data: Awaited<ReturnType<typeof adminGetRootFolder>>): Item[] => {
     const transformedFolders: Item[] = data.folders.map(folder => ({

@@ -1,6 +1,6 @@
 import React from 'react'
 import CategoryCard from './CategoryCard'
-import { Folder } from 'lucide-react'
+import { Boxes, Folder } from 'lucide-react'
 import HeroSection from './HeroSection'
 import { adminGetFolderById } from '@/actions/folder-actions'
 
@@ -16,7 +16,7 @@ const CategorySelection = async () => {
             {/* Category Grid */}
             <div className='container mx-auto max-w-[1920px] px-4'>
                 <div className="flex items-center gap-2 mb-6">
-                    <Folder className="w-6 h-6 text-primary" />
+                    <Boxes className="w-6 h-6 text-primary" />
                     <h2 className="text-2xl font-semibold">หมวดหมู่เอกสาร</h2>
                 </div>
 

@@ -3,13 +3,7 @@
 import React, { useState } from 'react';
 import { ReusableDrawer } from './RightSideDrawer';
 import EditFileForm from './EditFileForm';
-import { Item } from '@/types/documents';
-
-interface EditFileDrawerProps {
-    file: Item;
-    trigger: React.ReactNode;
-    onSuccess: () => void;
-}
+import { EditFileDrawerProps } from '@/types/components';
 
 export const EditFileDrawer = ({ file, trigger, onSuccess }: EditFileDrawerProps) => {
     const [open, setOpen] = useState(false);

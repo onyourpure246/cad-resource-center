@@ -6,14 +6,14 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card'
-import { CategoryCardProps } from '@/types/documents'
+import { CategoryCardProps } from '@/types/components'
 import { ArrowRight, Folder } from 'lucide-react'
 import MuiIconRenderer from '../ui/MuiIconRenderer'
 
-const CategoryCard = ({ title, description, href, icon, mui_icon, mui_colour }: CategoryCardProps & { mui_icon?: string, mui_colour?: string }) => {
+const CategoryCard = ({ title, description, href, icon, mui_icon, mui_colour }: CategoryCardProps) => {
     return (
         <Link href={href} className="block h-full group">
-            <Card className="h-full border-0 shadow-md hover:shadow-xl transition-all duration-300 ease-out hover:-translate-y-1 bg-card overflow-hidden relative">
+            <Card className="h-full border-1 shadow-md hover:shadow-xl transition-all duration-300 ease-out hover:-translate-y-1 bg-card overflow-hidden relative">
                 <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <ArrowRight className="w-5 h-5 text-primary" />
                 </div>

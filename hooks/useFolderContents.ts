@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { adminGetFolderById, getFolderPath } from '@/actions/folder-actions';
-import { Item as FolderItem, File as FileType } from '@/types/documents';
+import { Item as FolderItem, File as FileType } from '@/types/models';
 
 export const useFolderContents = (folderId: number) => {
     const [items, setItems] = useState<FolderItem[]>([]);

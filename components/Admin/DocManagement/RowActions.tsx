@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Download, Pencil, FolderOutput, Trash } from "lucide-react";
-import { Item } from '@/types/documents';
+import { RowActionsProps } from '@/types/components';
 
 // Dynamically import dialogs to reduce initial bundle size
 const DeleteConfirmationDialog = dynamic(() =>
@@ -25,12 +25,6 @@ const EditFileDrawer = dynamic(() =>
 const MoveDialog = dynamic(() =>
     import('@/components/Admin/Dialog/MoveDialog').then(mod => mod.MoveDialog)
 );
-
-interface RowActionsProps {
-    item: Item;
-    parentId: number | null;
-    onRefresh: () => void;
-}
 
 export const RowActions = ({ item, parentId, onRefresh }: RowActionsProps) => {
     return (

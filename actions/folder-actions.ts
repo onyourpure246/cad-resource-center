@@ -2,7 +2,7 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod';
 import { ApiResponse, State } from '@/types/common';
-import { FolderContentResponse } from '@/types/documents';
+import { FolderContentResponse } from '@/types/api';
 
 // fetch root folder
 export const adminGetRootFolder = async () => {

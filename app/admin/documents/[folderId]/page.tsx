@@ -4,7 +4,7 @@ import React, { useTransition } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import ItemsTable from '@/components/Admin/DocManagement/ItemsTable';
 import DataManagementLayout from '@/components/Admin/DocManagement/DataManagementLayout';
-import { Item as FolderItem } from '@/types/documents';
+import { Item as FolderItem } from '@/types/models';
 import ActionButtons from '@/components/Admin/DocManagement/ActionButtons';
 import Header from '@/components/Header/Header';
 import { useFolderContents } from '@/hooks/useFolderContents';
@@ -17,7 +17,6 @@ const FolderContentPage = () => {
     const params = useParams();
     const folderId = parseInt(params.folderId as string, 10);
     const [selectedIds, setSelectedIds] = React.useState<(string | number)[]>([]);
-
     const { items, isLoading, breadcrumbs, refresh, currentFolder } = useFolderContents(folderId);
     const {
         handleSearch,
@@ -51,6 +50,7 @@ const FolderContentPage = () => {
             >
             </Header>
             <DataManagementLayout
+                showSearch={false}
                 searchPlaceholder="ค้นหาในโฟลเดอร์นี้..."
                 actionButtons={<ActionButtons parentId={folderId} onRefresh={refresh} selectedItems={selectedItems} />}
                 breadcrumbs={breadcrumbs}

@@ -3,7 +3,7 @@
 import * as React from "react"
 import { useTheme } from "next-themes"
 import Image from "next/image"
-import LogoBlack from '@/assets/img/logo-black.png'
+import LogoBlack from '@/assets/img/logo-white.png'
 
 const ThemeLogo = () => {
     const { resolvedTheme } = useTheme()

@@ -4,16 +4,12 @@ import FormContainer from '@/components/Form/FormContainer';
 import TextAreaInput from '@/components/Form/TextAreaInput';
 import { SubmitButton } from '@/components/Form/Button';
 import { Button } from '@/components/ui/button';
-import { Item } from '@/types/documents';
+import { Item } from '@/types/models';
 import { State } from '@/types/common';
 import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import TextInput from '@/components/Form/TextInput';
 
-interface EditFileFormProps {
-    file: Item;
-    onSuccess: () => void;
-    onCancel: () => void;
-}
+import { EditFileFormProps } from '@/types/components';
 
 const initialState: State = {
     success: false,

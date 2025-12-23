@@ -2,11 +2,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-interface PaginationFooterProps {
-    currentPage: number;
-    totalPages: number;
-    onPageChange: (page: number) => void;
-}
+import { PaginationFooterProps } from '@/types/components';
 
 const PaginationFooter = ({ currentPage, totalPages, onPageChange }: PaginationFooterProps) => {
     return (

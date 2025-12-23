@@ -41,7 +41,7 @@ const Sidebar = () => {
 
     return (
         <aside className={cn(
-            "hidden md:flex flex-col min-h-[calc(100vh-80px)] p-4 bg-sidebar transition-all duration-300 ease-in-out",
+            "hidden md:flex flex-col min-h-[calc(100vh-80px)] p-4 bg-primary text-primary-foreground dark:bg-sidebar dark:text-foreground transition-all duration-300 ease-in-out",
             isCollapsed ? "w-20" : "w-64"
         )}>
             <div className="flex flex-col gap-2">
@@ -51,7 +51,7 @@ const Sidebar = () => {
                         ? "max-h-0 opacity-0 mb-0"
                         : "max-h-14 opacity-100 mb-2 px-4 py-2"
                 )}>
-                    <h2 className="text-lg font-semibold tracking-tight text-foreground">
+                    <h2 className="text-lg font-semibold tracking-tight text-primary-foreground dark:text-foreground">
                         ระบบสำหรับผู้ดูแล
                     </h2>
                 </div>
@@ -67,8 +67,8 @@ const Sidebar = () => {
                                 className={cn(
                                     "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-colors",
                                     isActive
-                                        ? "bg-primary text-primary-foreground shadow-sm"
-                                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                                        ? "bg-white text-primary shadow-sm dark:bg-accent dark:text-accent-foreground"
+                                        : "text-primary-foreground/80 hover:bg-white/10 hover:text-white dark:text-muted-foreground dark:hover:bg-accent dark:hover:text-accent-foreground",
                                     isCollapsed && "justify-center px-2"
                                 )}
                                 title={isCollapsed ? item.title : undefined}

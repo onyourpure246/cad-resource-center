@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Item as FolderItem } from '@/types/documents';
+import { Item as FolderItem } from '@/types/models';
 
 export const useTableData = (items: FolderItem[], itemsPerPage: number = 10) => {
     const [searchTerm, setSearchTerm] = useState('');

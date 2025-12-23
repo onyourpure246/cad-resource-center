@@ -15,11 +15,7 @@ import React, { useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import { bulkDeleteItems, BulkItem } from '@/actions/bulk-actions'; // Ensure this path is correct
 
-interface BulkDeleteDialogProps {
-    items: BulkItem[];
-    trigger: React.ReactNode;
-    onSuccess: () => void;
-}
+import { BulkDeleteDialogProps } from '@/types/components';
 
 export const BulkDeleteDialog = ({
     items,

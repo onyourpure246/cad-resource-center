@@ -113,10 +113,7 @@ const ICON_MAP: Record<string, React.ComponentType<any>> = {
     // MarkEmailUnread: dynamic(() => import('@mui/icons-material/MarkEmailUnread'))
 };
 
-interface MuiIconRendererProps extends SvgIconProps {
-    iconName?: string;
-    iconColor?: string;
-}
+import { MuiIconRendererProps } from '@/types/components';
 
 const MuiIconRenderer: React.FC<MuiIconRendererProps> = ({ iconName, iconColor, ...props }) => {
     if (!iconName) return null;

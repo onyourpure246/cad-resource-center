@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import React, { useState, useTransition } from 'react';
 
-import { DeleteConfirmationDialogProps } from '@/types/documents';
+import { DeleteConfirmationDialogProps } from '@/types/components';
 import { deleteItemById } from '@/actions/common-actions';
 import { toast } from 'sonner';
 

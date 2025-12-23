@@ -3,16 +3,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
-import { ThemeProvider } from "./theme-provider";
 import Providers from "./provider";
 import { sarabun, kanit } from "./fonts";
 import {
   ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
 } from '@clerk/nextjs'
 
 // const sarabun = Sarabun({

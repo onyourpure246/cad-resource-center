@@ -6,7 +6,7 @@ import TextAreaInput from '../../Form/TextAreaInput'
 import { SubmitButton } from '../../Form/Button'
 import { DrawerClose, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '../../ui/drawer'
 import { Button } from '../../ui/button'
-import { CreateNewFormProps } from '@/types/documents';
+import { CreateNewFormProps } from '@/types/components';
 import { State } from '@/types/common';
 import { useFormSubmission } from '@/hooks/useFormSubmission';
 

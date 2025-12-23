@@ -1,15 +1,6 @@
 import React from 'react';
 import { Folder, ChevronRight, ChevronDown, Check, Loader2 } from "lucide-react";
-import { FolderNode } from '../../../types/MoveDialog.types';
-
-interface FolderTreeProps {
-    nodes: FolderNode[];
-    selectedFolderId: number | null;
-    itemId: number;
-    onToggle: (folder: FolderNode, e: React.MouseEvent) => void;
-    onSelect: (id: number) => void;
-    level?: number;
-}
+import { FolderTreeProps } from '../../../types/MoveDialog.types';
 
 export const FolderTree = ({ nodes, selectedFolderId, itemId, onToggle, onSelect, level = 0 }: FolderTreeProps) => {
     return (

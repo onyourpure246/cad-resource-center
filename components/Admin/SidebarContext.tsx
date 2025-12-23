@@ -2,10 +2,7 @@
 
 import React, { createContext, useContext, useState } from 'react'
 
-type SidebarContextType = {
-    isCollapsed: boolean
-    toggleSidebar: () => void
-}
+import { SidebarContextType } from '@/types/components';
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined)
 
