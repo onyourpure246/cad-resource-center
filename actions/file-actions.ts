@@ -137,14 +137,11 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
     const { id, name, description, filename } = parsed.data;
     const parentId = rawData.parent ? parseInt(rawData.parent as string, 10) : null;
 
-    // Server-side validation for duplicate filename
-    // We need to check in the target folder (parentId) if 'filename' already exists
     try {
         const targetFolderContents = parentId
             ? await adminGetFolderById(parentId)
             : await adminGetRootFolder();
 
-        // Check if any file in the target folder has the same filename, excluding the current file itself
         const isDuplicate = targetFolderContents.files.some(
             file => file.filename === filename && file.id !== parseInt(id)
         );
@@ -154,10 +151,6 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
         }
     } catch (error) {
         console.error("Failed to validate duplicate filename:", error);
-        // Optionally tolerate error or return failure. 
-        // For safety, maybe better to fail? Or just proceed? 
-        // If we can't check, we might risk duplicate. Let's log and proceed or fail.
-        // Let's decide to fail validation if we can't fetch folder.
         return { success: false, message: 'เกิดข้อผิดพลาดในการตรวจสอบชื่อไฟล์ซ้ำ' };
     }
 
@@ -165,7 +158,6 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
     if (name) body.name = name;
     if (description !== undefined) body.description = description;
     if (filename) body.filename = filename;
-    // Only set parent if it's explicitly provided in the form data (meaning we intend to move it or confirm it)
     if (rawData.parent !== undefined) body.parent = parentId;
 
     const res = await fetch(`${API_URL}/dl/file/${id}`, {

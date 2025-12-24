@@ -29,8 +29,6 @@ export const bulkDeleteItems = async (items: BulkItem[]) => {
             console.error(`Error deleting ${item.type} ${item.id}:`, error);
         }
     }
-
-    // Revalidate once at the end (though deleteItemById also does it, doing it here ensures consistency)
     revalidatePath('/admin/documents', 'layout');
 
     return {
@@ -49,13 +47,8 @@ export const bulkMoveItems = async (items: BulkItem[], targetParentId: number | 
         try {
             const formData = new FormData();
             formData.append('id', item.id.toString());
-            // If targetParentId is null, send empty string or handle logic as per existing actions
-            // In hooks/useMoveDialog.ts: formData.append('parent', selectedFolderId !== null ? selectedFolderId.toString() : '');
             formData.append('parent', targetParentId !== null ? targetParentId.toString() : '');
-
-            // Name is required for updateFolder logic validation, though technically we aren't changing it.
-            // updateFolder schema: name: z.string().min(1)
-            // So we must pass the current name.
+            formData.append('name', item.name);
             formData.append('name', item.name);
 
             let result;

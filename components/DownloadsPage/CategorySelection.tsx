@@ -9,7 +9,7 @@ const CategorySelection = async () => {
     const folderContents = await adminGetFolderById(1);
     const folders = folderContents.folders;
     return (
-        <div className='flex flex-col gap-12 pb-20'>
+        <div className='flex flex-col gap-8 pb-20'>
             {/* Hero Section */}
             <HeroSection />
 

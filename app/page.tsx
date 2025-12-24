@@ -37,7 +37,7 @@ const HomePage = () => {
               ศูนย์รวมข้อมูล เอกสาร และเครื่องมือสำหรับกลุ่มพัฒนาระบบตรวจสอบบัญชีคอมพิวเตอร์
             </p>
             <div className="flex gap-4 ml-10">
-              <Link href="/downloads"><Button variant="secondary" size="default" className="mt-4 cursor-pointer hover:bg-white/90">
+              <Link href="/downloads"><Button variant="default" size="default" className="mt-4 cursor-pointer">
                 ดาวน์โหลด
               </Button>
               </Link>

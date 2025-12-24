@@ -56,10 +56,6 @@ const traverseAndSearch = async (
         }
 
         // 2. Recurse into subfolders
-        // We do this sequentially to be kind to the server, or Promise.all for speed.
-        // For now, let's do parallel for speed but limit concurrency if needed.
-        // Since depth is small, Promise.all is okay.
-
         const folderPromises = content.folders.map(folder => {
             const newPath = currentPath ? `${currentPath} > ${folder.name}` : folder.name;
             return traverseAndSearch(folder.id, query, newPath, results, depth + 1);

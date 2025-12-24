@@ -220,7 +220,6 @@ export const getFolderPath = async (targetId: number): Promise<{ id: number; nam
         }
 
         // 2. BFS Search
-        // Queue holds: { folderId: number, path: {id, name}[] }
         // We start with root folders
         let queue = rootFolders.map(f => ({
             id: f.id,
@@ -233,10 +232,6 @@ export const getFolderPath = async (targetId: number): Promise<{ id: number; nam
 
         while (queue.length > 0 && attempts < MAX_ATTEMPTS) {
             attempts++;
-            // Process level by level to find shortest path (though tree path is unique)
-            // To optimize, we can process the whole queue in parallel if we want, 
-            // but let's do one by one or small batches to avoid rate limits.
-            // For simplicity and to avoid complex concurrency management here: shift one.
 
             const current = queue.shift();
             if (!current) continue;
