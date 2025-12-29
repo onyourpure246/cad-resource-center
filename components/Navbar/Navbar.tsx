@@ -1,12 +1,16 @@
+'use client'
 import React from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import ThemeLogo from './ThemeLogo'
 import NavAuth from './NavAuth'
 import { ModeToggle } from './ModeToggle'
 import { Button } from '@/components/ui/button'
 
-const Navbar = async () => {
+const Navbar = () => {
+  const pathname = usePathname()
 
+  if (pathname === '/login') return null
 
   return (
     <nav className='bg-primary dark:bg-sidebar text-primary-foreground dark:text-foreground shadow-md transition-colors duration-300'>

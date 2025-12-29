@@ -1,31 +1,47 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-import { NextResponse } from 'next/server'
+import NextAuth from 'next-auth';
+import { authConfig } from './auth.config';
+import { NextResponse } from 'next/server';
 
+const { auth } = NextAuth(authConfig);
 
+export default auth((req) => {
+  const { nextUrl } = req;
+  const isLoggedIn = !!req.auth;
 
-const isProtectedRoute = createRouteMatcher(
-  [
-    // Always run for API routes
-    '/(api|trpc)(.*)',
-    '/downloads(.*)',
-    '/admin(.*)',
-  ],
-) // Corrected closing brace for createRouteMatcher
+  const isApiAuthRoute = nextUrl.pathname.startsWith('/api/auth');
+  const isDownloadsRoute = nextUrl.pathname.startsWith('/downloads');
+  const isAdminRoute = nextUrl.pathname.startsWith('/admin');
+  const isLoginRoute = nextUrl.pathname === '/login';
 
-export default clerkMiddleware(async (auth, req) => {
-  // 1. Protect routes that require authentication
-  if (isProtectedRoute(req)) await auth.protect()
-
-  if (req.nextUrl.pathname === '/admin') {
-    return NextResponse.redirect(new URL('/admin/documents', req.url))
+  if (isApiAuthRoute) {
+    return;
   }
+
+  if (isLoginRoute) {
+    if (isLoggedIn) {
+      return NextResponse.redirect(new URL('/admin/documents', nextUrl));
+    }
+    return;
+  }
+
+  if (isAdminRoute || isDownloadsRoute) {
+    if (!isLoggedIn) {
+      let callbackUrl = nextUrl.pathname;
+      if (nextUrl.search) {
+        callbackUrl += nextUrl.search;
+      }
+      const encodedCallbackUrl = encodeURIComponent(callbackUrl);
+      return NextResponse.redirect(new URL(`/login?callbackUrl=${encodedCallbackUrl}`, nextUrl));
+    }
+
+    if (nextUrl.pathname === '/admin') {
+      return NextResponse.redirect(new URL('/admin/documents', nextUrl));
+    }
+  }
+
+  return;
 })
 
 export const config = {
-  matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
-  ],
-}
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+};

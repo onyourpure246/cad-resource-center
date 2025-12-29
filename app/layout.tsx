@@ -5,9 +5,6 @@ import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import Providers from "./provider";
 import { sarabun, kanit } from "./fonts";
-import {
-  ClerkProvider,
-} from '@clerk/nextjs'
 
 // const sarabun = Sarabun({
 //   weight: ['400'],
@@ -37,30 +34,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          async
+          crossOrigin="anonymous"
+          src="https://tweakcn.com/live-preview.min.js"
+        />
+      </head>
+      <body
+        className={`${sarabun.variable} ${kanit.variable} ${sarabun.className} antialiased min-h-screen flex flex-col`}
+      >
+        <Providers>
+          <SidebarProvider>
+            <Navbar />
 
-      <html lang="en" suppressHydrationWarning>
-        <head>
-          <script
-            async
-            crossOrigin="anonymous"
-            src="https://tweakcn.com/live-preview.min.js"
-          />
-        </head>
-        <body
-          className={`${sarabun.variable} ${kanit.variable} ${sarabun.className} antialiased min-h-screen flex flex-col`}
-        >
-          <Providers>
-            <SidebarProvider>
-              <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </SidebarProvider>
 
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </SidebarProvider>
-
-          </Providers>
-        </body>
-      </html>
-    </ClerkProvider>
+        </Providers>
+      </body>
+    </html>
   );
 }
