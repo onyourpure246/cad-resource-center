@@ -65,13 +65,16 @@ export const useItemsTableColumns = ({
                     {getSortIcon('name')}
                 </Button>
             ),
+            headerClassName: "flex-1 min-w-[200px]",
+            className: "flex-1 min-w-[200px]",
             cell: (item) => (
-                <span
-                    className={`hover:underline font-medium ${item.type === 'folder' ? 'cursor-pointer hover:text-primary transition-colors' : 'text-foreground'}`}
+                <div
+                    className={`hover:underline font-medium truncate max-w-[300px] 2xl:max-w-[500px] block ${item.type === 'folder' ? 'cursor-pointer hover:text-primary transition-colors' : 'text-foreground'}`}
                     onClick={() => onItemClick(item)}
+                    title={item.type === 'file' && item.filename ? item.filename : (item.name || "")}
                 >
                     {item.type === 'file' && item.filename ? item.filename : item.name}
-                </span>
+                </div>
             ),
         },
         {
