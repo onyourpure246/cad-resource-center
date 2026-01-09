@@ -13,13 +13,21 @@ import {
 import { User } from 'lucide-react'
 
 const NavAuth = () => {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const isSignedIn = !!session?.user
   const user = session?.user
 
   const handleSignOut = async () => {
     await signOut({ callbackUrl: '/' })
     toast.success('ออกจากระบบสำเร็จ')
+  }
+
+  if (status === 'loading') {
+    return (
+      <Button variant="ghost" size="icon" disabled className='rounded-full cursor-pointer border-1 hover:bg-primary-foreground/10 text-primary-foreground hover:text-primary-foreground dark:text-foreground dark:hover:bg-accent dark:hover:text-accent-foreground dark:border-border'>
+        <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+      </Button>
+    )
   }
 
   return (
@@ -40,8 +48,7 @@ const NavAuth = () => {
       <DropdownMenuSeparator />
 
       {/* Admin Menu Items */}
-      {/* Assuming all logged in users have access for now, or check generic role if available */}
-      {isSignedIn && (
+      {isSignedIn && user?.role === 'admin' && (
         <>
           <DropdownMenuLabel className='text-xs text-muted-foreground'>สำหรับผู้ดูแลระบบ</DropdownMenuLabel>
           <DropdownMenuItem><Link href="/admin/documents" className='w-full'>จัดการรายการดาวน์โหลด</Link></DropdownMenuItem>

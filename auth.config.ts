@@ -1,6 +1,7 @@
 import type { NextAuthConfig } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import { authenticateWithBackend } from "./lib/backend-api-mock"
+import { verifyEmployeeStatus } from "./lib/backend-api-mock"
+import { getThaIDOwner } from "./lib/thaid-service"
 
 export const authConfig = {
     pages: {
@@ -45,8 +46,35 @@ export const authConfig = {
                 const code = credentials.code as string;
                 if (!code) return null;
 
-                const user = await authenticateWithBackend(code);
-                return user;
+                console.log("[Auth] Starting authentication flow...");
+
+                // 1. Exchange Code -> PID (via ThaID Service)
+                // This runs on Next.js Server Side
+                const thaidUser = await getThaIDOwner(code);
+
+                if (!thaidUser || !thaidUser.pid) {
+                    console.error("[Auth] Failed to retrieve PID from ThaID.");
+                    return null;
+                }
+
+                console.log(`[Auth] ThaID Verified. PID: ${thaidUser.pid}, Name: ${thaidUser.name}`);
+
+                // 2. Verify PID -> Employee Info (via Internal Backend)
+                // TODO: When Real API is ready, update verifyEmployeeStatus in /lib/backend-api-mock.ts to fetch from your actual endpoint.
+                const employeeInfo = await verifyEmployeeStatus(thaidUser.pid);
+
+                if (!employeeInfo) {
+                    console.error(`[Auth] PID ${thaidUser.pid} is not a valid employee.`);
+                    return null; // Reject login if not an employee
+                }
+
+                // 3. Return User Session
+                return {
+                    id: thaidUser.pid,
+                    name: thaidUser.name,
+                    email: employeeInfo.email,
+                    role: employeeInfo.role,
+                };
             }
         })
     ],

@@ -9,7 +9,7 @@ export default async function AdminLayout({
 }) {
     const session = await auth();
     // Check role, if not admin redirect to home
-    if (!session?.user) {
+    if (!session?.user || session.user.role !== 'admin') {
         redirect('/')
     }
 

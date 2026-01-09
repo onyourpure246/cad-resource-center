@@ -4,13 +4,15 @@ import { Button } from "@/components/ui/button";
 export function ThaIDLoginButton() {
     const THAID_AUTH_URL =
         process.env.NEXT_PUBLIC_THAID_AUTH_URL ||
-        "https://imauth.bora.dopa.go.th/api/v2/oauth2/auth";
+        "https://imauthsbx.bora.dopa.go.th/api/v2/oauth2/auth/"; // Sandbox + Trailing Slash
     const CLIENT_ID =
-        process.env.NEXT_PUBLIC_THAID_CLIENT_ID || "YOUR_THAID_CLIENT_ID";
+        process.env.NEXT_PUBLIC_THAID_CLIENT_ID || "bDNWUDBJYVNJVE4xNDhPRUhsTDdZSXNRM0RLZzl6WE4"; // Sandbox Client ID
     // Fixed: Changed from REDIRECT_URL to REDIRECT_URI and updated the query param
     const REDIRECT_URI = "http://localhost:3000/auth/callback";
 
-    const thaidUrl = `${THAID_AUTH_URL}?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=openid offline_access pid name&state=random_state_string`;
+    // Sandbox Supported Scopes: openid pid name given_name family_name
+    // Removing 'offline_access' as it causes invalid_scope in Sandbox
+    const thaidUrl = `${THAID_AUTH_URL}?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=openid pid name&state=random_state_string`;
 
     return (
         <div className="space-y-4">

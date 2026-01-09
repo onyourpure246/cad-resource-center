@@ -15,7 +15,13 @@ export function ModeToggle() {
     }, [])
 
     if (!mounted) {
-        return <div className="w-11 h-6 rounded-full bg-muted" /> // Placeholder to prevent hydration mismatch
+        return (
+            <div className="flex items-center space-x-2">
+                <div className="h-[1.2rem] w-[1.2rem]" />
+                <div className="w-11 h-6 rounded-full bg-muted" />
+                <div className="h-[1.2rem] w-[1.2rem]" />
+            </div>
+        )
     }
 
     return (
