@@ -16,16 +16,19 @@ const ThemeLogo = () => {
     if (!mounted) {
         // Render a placeholder or the default logo to avoid layout shift/hydration mismatch
         // Defaulting to LogoBlack as it was the original default
-        return <Image src={LogoBlack} alt="logo" className='w-[236px]' priority />
+        return <Image src={LogoBlack} alt="logo" className='w-[180px]' priority sizes="180px" quality={90} unoptimized />
     }
 
     return (
-        <div className="relative w-[236px] h-auto">
+        <div className="relative w-[180px] h-auto">
             <Image
                 src={LogoBlack}
                 alt="logo"
                 className={`w-full h-auto transition-all duration-300 ${resolvedTheme === 'light' ? 'drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]' : ''}`}
                 priority
+                sizes="180px"
+                quality={90}
+                unoptimized
             />
         </div>
     )

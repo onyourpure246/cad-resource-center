@@ -1,18 +1,15 @@
-
 "use client";
 import React from 'react';
 import Image from 'next/image';
 import { footerData } from '@/data/footerData';
 import ThemeLogo from '@/components/Navbar/ThemeLogo';
-import { StaticImageData } from 'next/image';
-
 import { FooterItem } from '@/types/footer';
 
 const Footer = () => {
     return (
         <footer className="bg-primary dark:bg-sidebar text-primary-foreground dark:text-foreground border-t border-sidebar-border pt-4 pb-2">
             <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr_1fr_1.2fr] gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_2fr_1fr_1fr] gap-4">
                     {/* Column 1: Logo & Branding */}
                     <div className="flex flex-col space-y-2">
                         <div className="w-[150px]">
@@ -50,9 +47,9 @@ const Footer = () => {
                                     }
                                     if (footerItem.type === 'list') {
                                         return (
-                                            <ul key={i} className="space-y-0.5">
+                                            <ul key={i} className="columns-2 gap-x-4 space-y-1">
                                                 {footerItem.items?.map((li: string, liIndex: number) => (
-                                                    <li key={liIndex} className="text-sm text-primary-foreground/75 dark:text-foreground/75 border-l-2 border-primary-foreground/50 dark:border-primary/50 pl-2">
+                                                    <li key={liIndex} className="text-sm text-primary-foreground/75 dark:text-foreground/75 border-l-2 border-primary-foreground/50 dark:border-primary/50 pl-2 break-inside-avoid">
                                                         {li}
                                                     </li>
                                                 ))}

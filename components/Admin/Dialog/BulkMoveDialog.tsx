@@ -8,6 +8,7 @@ import {
     DialogTitle,
     DialogTrigger,
     DialogFooter,
+    DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Folder, Check } from "lucide-react";
@@ -160,6 +161,9 @@ export const BulkMoveDialog = ({ items, currentParentId, trigger, onSuccess }: B
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>ย้าย {items.length} รายการไปที่...</DialogTitle>
+                    <DialogDescription className="sr-only">
+                        เลือกโฟลเดอร์ที่ต้องการย้ายรายการไป
+                    </DialogDescription>
                 </DialogHeader>
                 <div className="py-4 max-h-[400px] overflow-y-auto">
                     {isLoadingRoot ? (

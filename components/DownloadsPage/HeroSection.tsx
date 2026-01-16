@@ -36,7 +36,7 @@ const HeroSection = () => {
 
     return (
         <LazyMotion features={domAnimation}>
-            <div className="relative py-12 md:py-14 overflow-hidden" onMouseMove={handleMouseMove}>
+            <div className="relative py-8 md:py-10 overflow-hidden min-h-[450px] flex items-center justify-center" onMouseMove={handleMouseMove}>
                 <HeroBackground mouseX={springX} mouseY={springY} />
                 <div className="container font-kanit mx-auto max-w-[1920px] px-4 text-center relative z-10">
                     <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 bg-gradient-to-r from-teal-600 via-emerald-500 to-teal-600 dark:from-teal-300 dark:via-emerald-300 dark:to-teal-300 bg-clip-text text-transparent drop-shadow-lg leading-relaxed dark:drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] animate-text-shimmer">
@@ -50,9 +50,9 @@ const HeroSection = () => {
                         <form onSubmit={handleSearch} className="relative group/search z-50 max-w-2xl mx-auto">
                             {/* Organic Aurora Glow (Apple Intelligence Vibe) - Theme Colors */}
                             <div className="absolute -inset-[3px] rounded-full bg-transparent overflow-hidden blur-md opacity-60 transition duration-500 group-hover/search:opacity-100 group-hover/search:blur-lg">
-                                <div className="absolute top-[-50%] left-[-20%] w-[80%] h-[200%] bg-teal-400 rounded-full mix-blend-screen filter blur-xl opacity-70 animate-blob"></div>
-                                <div className="absolute top-[-20%] right-[-20%] w-[80%] h-[200%] bg-emerald-500 rounded-full mix-blend-screen filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-                                <div className="absolute -bottom-32 left-[20%] w-[80%] h-[200%] bg-lime-400 rounded-full mix-blend-screen filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+                                <div className="absolute top-[-50%] left-[-20%] w-[80%] h-[200%] bg-teal-400 rounded-full mix-blend-screen filter blur-xl opacity-70 animate-blob transform-gpu will-change-transform"></div>
+                                <div className="absolute top-[-20%] right-[-20%] w-[80%] h-[200%] bg-emerald-500 rounded-full mix-blend-screen filter blur-xl opacity-70 animate-blob animation-delay-2000 transform-gpu will-change-transform"></div>
+                                <div className="absolute -bottom-32 left-[20%] w-[80%] h-[200%] bg-lime-400 rounded-full mix-blend-screen filter blur-xl opacity-70 animate-blob animation-delay-4000 transform-gpu will-change-transform"></div>
                             </div>
 
                             {/* Glass Container */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { m, MotionValue } from "framer-motion";
+import { m, MotionValue, useTransform } from "framer-motion";
 
 interface HeroBackgroundProps {
     mouseX?: MotionValue<number>;
@@ -8,13 +8,19 @@ interface HeroBackgroundProps {
 }
 
 export const HeroBackground = ({ mouseX, mouseY }: HeroBackgroundProps) => {
+    // Transform mouse coordinates to center the 300px blob
+    // This uses CSS transforms (translate) instead of layout properties (top/left)
+    // preventing Cumulative Layout Shift (CLS) issues.
+    const x = useTransform(mouseX || new MotionValue(0), (val) => val - 150);
+    const y = useTransform(mouseY || new MotionValue(0), (val) => val - 150);
+
     return (
         <div className="absolute inset-0 overflow-hidden -z-10 bg-background">
             <div className="absolute inset-0 bg-grid-black/[0.02] z-0" />
 
             {/* 1. Deep Emerald Base - The Foundation */}
             <m.div
-                className="absolute top-[5%] left-[5%] w-[90%] h-[90%] rounded-full bg-emerald-500/40 dark:bg-emerald-600/30 blur-[120px] mix-blend-multiply dark:mix-blend-screen"
+                className="absolute top-[5%] left-[5%] w-[90%] h-[90%] rounded-full bg-emerald-500/40 dark:bg-emerald-600/30 blur-[120px] mix-blend-multiply dark:mix-blend-screen will-change-transform transform-gpu"
                 animate={{
                     x: [0, 100, -50, 0],
                     y: [0, 50, -50, 0],
@@ -29,7 +35,7 @@ export const HeroBackground = ({ mouseX, mouseY }: HeroBackgroundProps) => {
 
             {/* 2. Luminous Teal Beam - The Energy */}
             <m.div
-                className="absolute top-[10%] right-[10%] w-[80%] h-[80%] rounded-full bg-teal-400/40 dark:bg-teal-500/30 blur-[130px] mix-blend-color-dodge dark:mix-blend-plus-lighter"
+                className="absolute top-[10%] right-[10%] w-[80%] h-[80%] rounded-full bg-teal-400/40 dark:bg-teal-500/30 blur-[130px] mix-blend-color-dodge dark:mix-blend-plus-lighter will-change-transform transform-gpu"
                 animate={{
                     x: [0, -100, 50, 0],
                     y: [0, 100, -50, 0],
@@ -45,7 +51,7 @@ export const HeroBackground = ({ mouseX, mouseY }: HeroBackgroundProps) => {
 
             {/* 3. Bright Cyan Highlight - The Spark */}
             <m.div
-                className="absolute bottom-[0%] left-[20%] w-[70%] h-[70%] rounded-full bg-cyan-300/40 dark:bg-cyan-400/30 blur-[110px] mix-blend-plus-lighter"
+                className="absolute bottom-[0%] left-[20%] w-[70%] h-[70%] rounded-full bg-cyan-300/40 dark:bg-cyan-400/30 blur-[110px] mix-blend-plus-lighter will-change-transform transform-gpu"
                 animate={{
                     x: [0, 80, -80, 0],
                     y: [0, -80, 50, 0],
@@ -60,31 +66,18 @@ export const HeroBackground = ({ mouseX, mouseY }: HeroBackgroundProps) => {
                 }}
             />
 
-            {/* 4. White/Ethereal Glow - The AI Core */}
-            <m.div
-                className="absolute top-[30%] left-[30%] w-[60%] h-[60%] rounded-full bg-white/30 dark:bg-white/10 blur-[90px] mix-blend-overlay dark:mix-blend-plus-lighter"
-                animate={{
-                    x: [0, -60, 60, 0],
-                    y: [0, -40, 40, 0],
-                    scale: [0.9, 1.1, 0.9],
-                    opacity: [0.4, 0.7, 0.4],
-                }}
-                transition={{
-                    duration: 12,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                }}
-            />
+
+
 
             {/* Interactive Mouse Follower Blob - AI "Spark" style */}
             {mouseX && mouseY && (
                 <m.div
-                    className="absolute w-[300px] h-[300px] blur-[90px] rounded-full pointer-events-none mix-blend-plus-lighter opacity-80"
+                    className="absolute w-[300px] h-[300px] blur-[90px] rounded-full pointer-events-none mix-blend-plus-lighter opacity-80 will-change-transform transform-gpu"
                     style={{
-                        left: mouseX,
-                        top: mouseY,
-                        x: "-50%",
-                        y: "-50%"
+                        x,
+                        y,
+                        left: 0,
+                        top: 0
                     }}
                     animate={{
                         backgroundColor: [
@@ -103,12 +96,7 @@ export const HeroBackground = ({ mouseX, mouseY }: HeroBackgroundProps) => {
                 />
             )}
 
-            {/* Noise Texture Overlay for Modern Feel */}
-            <div className="absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay"
-                style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.5'/%3E%3C/svg%3E")`,
-                }}
-            />
+
         </div>
     );
 };

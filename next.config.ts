@@ -2,6 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    qualities: [25, 50, 75, 80, 90, 100],
+  },
   experimental: {
     serverActions: {
       bodySizeLimit: '20mb',

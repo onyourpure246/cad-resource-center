@@ -62,11 +62,11 @@ const CreateNewForm = ({ parentId, onSuccess }: CreateNewFormProps) => {
                 <DrawerFooter>
                     <div className="flex justify-end gap-2">
                         <DrawerClose asChild>
-                            <Button variant="outline">ยกเลิก</Button>
+                            <Button variant="outline" className='cursor-pointer'>ยกเลิก</Button>
                         </DrawerClose>
                         <SubmitButton
                             text="ยืนยันการอัปโหลด"
-                            className='font-bold'
+                            className='cursor-pointer font-bold'
                         />
                     </div>
                 </DrawerFooter>
