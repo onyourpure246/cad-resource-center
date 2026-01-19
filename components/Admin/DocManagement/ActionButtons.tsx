@@ -63,24 +63,20 @@ const ActionButtons = ({ parentId, onRefresh, selectedItems = [] }: ActionButton
             <Button size="default" variant="outline" onClick={onRefresh} className="cursor-pointer">
                 <FolderSync className="mr-2 h-4 w-4" /> รีเฟรช
             </Button>
-            {parentId !== null && (
-                <>
-                    <AddFolderDialog parentId={parentId} onSuccess={onRefresh} />
-                    <ReusableDrawer
-                        trigger={
-                            <Button size="default" className='cursor-pointer' variant="secondary" onClick={() => setIsDrawerOpen(true)}>
-                                <FileUp className="mr-2 h-4 w-4" /> อัปโหลดไฟล์
-                            </Button>
-                        }
-                        open={isDrawerOpen}
-                        onOpenChange={setIsDrawerOpen}
-                        side="right"
-                        className="sm:max-w-[530px]"
-                    >
-                        <CreateNewForm parentId={parentId} onSuccess={handleUploadSuccess} />
-                    </ReusableDrawer>
-                </>
-            )}
+            <AddFolderDialog parentId={parentId} onSuccess={onRefresh} />
+            <ReusableDrawer
+                trigger={
+                    <Button size="default" className='cursor-pointer' variant="secondary" onClick={() => setIsDrawerOpen(true)}>
+                        <FileUp className="mr-2 h-4 w-4" /> อัปโหลดไฟล์
+                    </Button>
+                }
+                open={isDrawerOpen}
+                onOpenChange={setIsDrawerOpen}
+                side="right"
+                className="sm:max-w-[530px]"
+            >
+                <CreateNewForm parentId={parentId} onSuccess={handleUploadSuccess} />
+            </ReusableDrawer>
         </div>
     );
 };

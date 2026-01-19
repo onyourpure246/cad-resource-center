@@ -19,11 +19,24 @@ import { th } from 'date-fns/locale';
 
 import { AnnouncementCardProps } from '@/types/components';
 
+const stripHtml = (html: string) => {
+    if (!html) return "";
+    return html.replace(/<[^>]*>?/gm, '');
+};
+
 const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => {
     // Format date if available, otherwise use createdAt
     const displayDate = announcement.publishDate
-        ? announcement.publishDate
+        ? format(new Date(announcement.publishDate), 'dd MMM yyyy', { locale: th })
         : (announcement.createdAt ? format(new Date(announcement.createdAt), 'dd MMM yyyy', { locale: th }) : '');
+
+    // Default Category
+    const category = announcement.category || "ทั่วไป";
+
+    // Image URL - Use the local proxy which handles the backend authentication
+    const imageUrl = announcement.cover_image
+        ? `/api/images/${announcement.cover_image}`
+        : null;
 
     return (
         <Dialog>
@@ -33,14 +46,34 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                 className="h-full"
             >
                 <Card className="flex flex-col h-full overflow-hidden border-border/ bg-background/50 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 rounded-[1.55rem]">
-                    <CardHeader className="pb-0 space-y-2">
+
+                    {/* Cover Image */}
+                    {imageUrl ? (
+                        <div className="relative w-full h-48 overflow-hidden bg-muted">
+                            <img
+                                src={imageUrl}
+                                alt={announcement.title}
+                                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                                onError={(e) => {
+                                    // Fallback if image fails
+                                    (e.target as HTMLImageElement).style.display = 'none';
+                                }}
+                            />
+                        </div>
+                    ) : (
+                        <div className="relative w-full h-48 bg-gradient-to-br from-muted/50 to-muted flex items-center justify-center">
+                            <Tag className="w-12 h-12 text-muted-foreground/20" />
+                        </div>
+                    )}
+
+                    <CardHeader className="pb-2 space-y-2">
                         <div className="flex justify-between items-start gap-4">
                             <Badge
                                 variant={announcement.categoryVariant || "default"}
                                 className="rounded-full px-2 py-0.5 text-sm  font-normal flex items-center gap-1"
                             >
                                 <Tag className="w-3 h-3" />
-                                {announcement.category}
+                                {category}
                             </Badge>
                             {displayDate && (
                                 <div className="flex items-center text-sm text-muted-foreground font-sarabun bg-muted/50 px-2 py-0.5 rounded-full">
@@ -57,9 +90,9 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                         </div>
                     </CardHeader>
 
-                    <CardContent className="flex-grow pb-3 px-5 pt-0 -mt-1.5">
-                        <p className="font-sarabun text-muted-foreground line-clamp-3 leading-relaxed text-sm indent-4">
-                            {announcement.content}
+                    <CardContent className="flex-grow pb-3 px-5 pt-0">
+                        <p className="font-sarabun text-muted-foreground line-clamp-3 leading-relaxed text-sm indent-0">
+                            {stripHtml(announcement.content)}
                         </p>
                     </CardContent>
 
@@ -83,13 +116,22 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
 
             <DialogContent className="sm:max-w-3xl max-h-[85vh] overflow-y-auto">
                 <DialogHeader className="space-y-4">
+                    {imageUrl && (
+                        <div className="w-full h-64 overflow-hidden rounded-xl mb-4 bg-muted">
+                            <img
+                                src={imageUrl}
+                                alt={announcement.title}
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+                    )}
                     <div className="flex items-center gap-3">
                         <Badge
                             variant={announcement.categoryVariant || "default"}
                             className="rounded-full px-3 py-1 text-sm font-normal flex items-center gap-1.5 w-fit"
                         >
                             <Tag className="w-3.5 h-3.5" />
-                            {announcement.category}
+                            {category}
                         </Badge>
                         {displayDate && (
                             <div className="flex items-center text-sm text-muted-foreground font-sarabun bg-muted px-2.5 py-1 rounded-full">
@@ -104,9 +146,11 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                 </DialogHeader>
 
                 <div className="mt-4">
-                    <div className="font-sarabun text-foreground leading-relaxed whitespace-pre-wrap text-base">
-                        {announcement.content}
-                    </div>
+                    {/* Safe HTML Rendering */}
+                    <div
+                        className="font-sarabun text-foreground leading-relaxed whitespace-pre-wrap text-base prose prose-sm max-w-none dark:prose-invert"
+                        dangerouslySetInnerHTML={{ __html: announcement.content }}
+                    />
                 </div>
 
                 <div className="mt-6 pt-4 border-t flex justify-end">

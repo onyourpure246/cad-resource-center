@@ -1,302 +1,210 @@
 # คู่มือมาตรฐานการพัฒนา Web Application (Development Manual)
 
-เอกสารฉบับนี้จัดทำขึ้นเพื่อเป็น **Technical Specification & Development Guideline** สำหรับการพัฒนาและดูแลรักษา Web Application "Resource Center" ของกลุ่มพัฒนาระบบตรวจสอบบัญชีคอมพิวเตอร์ เนื้อหาครอบคลุมตั้งแต่แนวคิดการออกแบบ สถาปัตยกรรมระบบ ไปจนถึงมาตรฐานการเขียนโค้ดและการ Deploy
+เอกสารฉบับนี้จัดทำขึ้นเพื่อเป็น **Technical Specification & Development Guideline** สำหรับการพัฒนาและดูแลรักษา Web Application "Resource Center" ของกลุ่มพัฒนาระบบตรวจสอบบัญชีคอมพิวเตอร์ เนื้อหาครอบคลุมตั้งแต่แนวคิดการออกแบบ สถาปัตยกรรมระบบ จนถึงมาตรฐานในการ Deployment และ Maintenance
 
 ---
 
 ## 1. ภาพรวมโครงการ (Project Overview)
-**Resource Center** คือศูนย์รวมข้อมูล เอกสาร และเครื่องมือสำหรับเจ้าหน้าที่กลุ่มพัฒนาระบบตรวจสอบบัญชีคอมพิวเตอร์ มุ่งเน้นการใช้งานที่ง่าย สะอาดตา และมีความทันสมัย รองรับการจัดการเนื้อหาโดย Admin และการเข้าถึงข้อมูลโดย User ทั่วไป
+**Resource Center** คือศูนย์รวมข้อมูล เอกสาร และเครื่องมือสำหรับเจ้าหน้าที่กลุ่มพัฒนาระบบตรวจสอบบัญชีคอมพิวเตอร์ (CAD) มุ่งเน้นการใช้งานที่ง่าย สะอาดตา และมีความทันสมัย
+- **Target Audience**: เจ้าหน้าที่ภายในองค์กร (Intranet/Internal Use)
+- **Key Features**:
+  - **Document Repository**: ระบบจัดเก็บและดาวน์โหลดไฟล์เอกสารคู่มือต่างๆ
+  - **Announcements**: ระบบแจ้งข่าวสารประชาสัมพันธ์
+  - **Authentication**: ยืนยันตัวตนผ่าน **ThaID** (Digital ID) และตรวจสอบสิทธิ์พนักงานผ่าน Internal API
 
 ---
 
 ## 2. สถาปัตยกรรมและข้อตกลง (Architecture & Conventions)
 
 ### 2.1 Architecture Pattern
-โครงการใช้สถาปัตยกรรมแบบ **Modular Monolith** บน **Next.js App Router** โดยเน้นการแยกส่วนตาม Feature (Feature-based) เพื่อให้ง่ายต่อการขยายระบบ
+โครงการใช้สถาปัตยกรรมแบบ **Modular Monolith** บน **Next.js App Router** โดยเน้นการแยกส่วนตาม Feature (Feature-based) และมีการเชื่อมต่อกับ External Systems
 
--   **Server Components by Default**: ใช้ Server Components เป็นหลักเพื่อประสิทธิภาพ (SEO, Initial Load) และใช้ Client Components (`'use client'`) เฉพาะเมื่อต้องการ Interactive (State, Effects) หรือใช้ Library ที่ต้องการ Browser APIs (เช่น `framer-motion`)
--   **Server Actions**: ใช้สำหรับ Logic การจัดการข้อมูล (Mutations) แทนการสร้าง API Route แยก เพื่อลดความซับซ้อนและ Type Safety ที่ดีกว่า
--   **Directory Oriented**: เก็บไฟล์ที่เกี่ยวข้องไว้ในโฟลเดอร์เดียวกัน (เช่น `components/Admin/Dialog` เก็บทั้ง UI และ Logic ของ Dialog นั้น)
+-   **Frontend as a Gateway**: Next.js ทำหน้าที่เป็น Frontend และ API Gateway (BFF - Backend for Frontend) ในตัว
+-   **Helper Services (`lib/`)**: แยก Logic การติดต่อกับ External Services ออกเป็น Modules ชัดเจน
+    -   `thaid-service.ts`: จัดการ OAuth/OIDC Flow กับ ThaID
+    -   `backend-api-mock.ts`: ตัวจำลอง (และ Interface จริงในอนาคต) สำหรับตรวจสอบสถานะพนักงาน
+-   **Server Actions**: ใช้สำหรับ Logic การจัดการข้อมูล (Mutations) และ Proxy Requests ไปยัง Backend API หลัก เพื่อความปลอดภัย (Hide API Tokens server-side)
 
-### 2.2 Performance Patterns
--   **Lazy Loading Icons**: สำหรับ Component ที่มีการเรียกใช้ Icons จำนวนมาก (เช่น `MuiIconRenderer`) **ต้อง** ใช้ `next/dynamic` หรือ Dynamic Imports เพื่อลด Bundle Size เริ่มต้น
--   **Package Optimization**: กำหนด `optimizePackageImports` ใน `next.config.ts` สำหรับ heavy libraries เช่น `@mui/icons-material`, `@mui/material`, `lucide-react`
--   **Bundler**: ใช้ **Turbopack** (`next dev --turbo`) สำหรับ Development Environment เพื่อความรวดเร็ว
+### 2.2 Authentication Flow (Custom Provider)
+ระบบใช้ **Auth.js (NextAuth v5)** ในรูปแบบ **Custom Credentials Provider** เพื่อรองรับ Flow พิเศษ:
+1.  **Frontend**: รับ `code` จากการ Redirect ของ ThaID
+2.  **NextAuth (Authorize)**: นำ `code` ไปแลก Token และดึงข้อมูลบัตรประชาชน (PID) ผ่าน `thaid-service`
+3.  **Verification**: นำ PID ที่ได้ ไปตรวจสอบกับ Internal DB ผ่าน `backend-api-mock` (หรือ Real API) ว่าเป็นพนักงานปัจจุบันหรือไม่
+4.  **Session Creation**: สร้าง Session โดยผูกข้อมูล `PID`, `Role`, `Name` เข้ากับ User Session
 
-### 2.3 Naming Conventions
--   **Folders/Files**: `kebab-case` สำหรับ Route (เช่น `app/user-management/page.tsx`) และ `PascalCase` สำหรับ Components (เช่น `components/Navbar.tsx`)
--   **Variables/Functions**: `camelCase` (เช่น `fetchUserData`, `isLoading`)
--   **Types/Interfaces**: `PascalCase` (เช่น `UserResponse`, `FolderItem`)
--   **Constants**: `UPPER_SNAKE_CASE` (เช่น `MAX_UPLOAD_SIZE`)
+### 2.3 Styling & UI Pattern
+-   **Framework**: Tailwind CSS v4 (Engine ใหม่ เร็วกว่าเดิม)
+-   **Animation**: `framer-motion` สำหรับ Interaction ที่ซับซ้อน และ `tw-animate-css` สำหรับ CSS Keyframes พื้นฐาน
+-   **Design System**: ใช้ OKLCH Color Space เพื่อความสดใสและรองรับ Dark Mode อย่างสมบูรณ์
 
 ---
 
 ## 3. เทคโนโลยีที่ใช้ (Technology Stack)
+
+### Core Framework
 -   **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
 -   **Language**: TypeScript (Strict Mode)
--   **UI Library**: [React 19](https://react.dev/)
--   **Styling**: 
-    -   [Tailwind CSS 4](https://tailwindcss.com/) (Utility-first)
-    -   [Tailwind Animate](https://github.com/jamiebuilds/tailwindcss-animate)
-    -   [tw-animate-css](https://www.npmjs.com/package/tw-animate-css)
--   **Animation**: [Framer Motion](https://www.framer.com/motion/) (Complex Animations, Gestures, Spring Physics)
--   **Icons**: 
-    -   [Lucide React](https://lucide.dev/) (Primary Icons)
-    -   [@mui/icons-material](https://mui.com/material-ui/material-icons/) (Specific Folder Icons - Loaded Dynamically)
--   **Date Handling**: [date-fns](https://date-fns.org/) (with `th` locale for Buddhist Era formatting)
--   **Component Library**:
+-   **Runtime**: Node.js (Latest LTS recommended)
+
+### UI & UX
+-   **Library**: [React 19](https://react.dev/)
+-   **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+-   **Components**: 
     -   [Radix UI](https://www.radix-ui.com/) (Headless Primitives)
-    -   [Shadcn UI](https://ui.shadcn.com/) (Reusable Components Base)
-    -   [Vaul](https://vaul.emilkowal.ski/) (Drawer Component)
+    -   [Shadcn UI](https://ui.shadcn.com/) (Component Base)
     -   [Sonner](https://sonner.emilkowal.ski/) (Toast Notifications)
--   **Authentication**: [Clerk](https://clerk.com/) (Current), [NextAuth.js](https://authjs.dev/) (Planned Migration)
+    -   [Vaul](https://vaul.emilkowal.ski/) (Drawer)
+-   **Icons**: [Lucide React](https://lucide.dev/) (Primary), [@mui/icons-material](https://mui.com/) (Secondary/Dynamic)
+
+### Backend Integration & State
+-   **Auth**: [Auth.js (NextAuth v5)](https://authjs.dev/)
 -   **Validation**: [Zod](https://zod.dev/)
--   **State Management**: React Hooks (`useActionState`, `useState`)
+-   **Data Fetching**: Native `fetch` with Server Actions
 
 ---
 
-## 4. ระบบการออกแบบ (Design System)
-
-### 4.1 Typography
-ใช้ Google Fonts โดยกำหนดผ่าน `app/fonts.ts` และ `globals.css`:
--   **Body**: `Sarabun` (Variable) - อ่านง่าย เหมาะสำหรับเนื้อหาทั่วไป
--   **Headings**: `Kanit` (Variable) - ทันสมัย เหมาะสำหรับหัวข้อ (Titles, Buttons, Badges)
--   **Indentation**: สำหรับเนื้อหาย่อหน้ายาวๆ (เช่นใน Announcement Card) ให้ใช้ `indent-4` เพื่อความเป็นระเบียบ
-
-### 4.2 Color Palette (OKLCH)
-ระบบสีใช้ **OKLCH** เพื่อความสดใสและรองรับ Dark Mode อย่างสมบูรณ์ (กำหนดใน `globals.css`)
--   **Primary**: `oklch(0.562 0.095 203.275)` (สีฟ้าคราม) - ปุ่มหลัก, Active State
--   **Destructive**: `oklch(0.573 0.190 25.541)` (สีแดง) - ปุ่มลบ, Error
--   **Background**:
-    -   Light: `oklch(0.949 0.009 197.013)` (ขาวอมเทา)
-    -   Dark: `oklch(0.207 0.025 224.453)` (น้ำเงินเข้ม)
--   **Surface/Card**: มีการแยกสี Card และ Popover เพื่อมิติที่ชัดเจน โดยใช้ `backdrop-blur` ร่วมกับ `bg-opacity`
-
-### 4.3 Design Tokens
--   **Radius**: `1.55rem` (Custom Value) - ใช้สำหรับ Cards, Modal และ Container หลัก เพื่อให้ความรู้สึก Soft & Modern
--   **Shadows**: ใช้ **Colored Shadows** (`hsl(185 70% 30%)`) ไล่ระดับตั้งแต่ `shadow-2xs` ถึง `shadow-2xl` เพื่อให้เงามีความลึกและกลมกลืนกับ Theme ไม่ใช่แค่สีดำทึบ
--   **Spacing**: 
-    -   เน้นความกระชับ (Compact) ในส่วนของ Card Content
-    -   สามารถใช้ **Negative Margin** (เช่น `-mt-1.5`) เพื่อปรับระยะห่างระหว่าง Element ให้ชิดกันมากกว่าค่ามาตรฐานได้ หากต้องการ Visual Hierarchy ที่แนบเนียน
--   **Visual Effects**:
-    -   **Glassmorphism**: ใช้ `backdrop-blur-sm/md` สำหรับ Card Background
-    -   **Hover Effects**: ใช้ `framer-motion` (`whileHover={{ y: -5 }}`) พร้อม `spring` transition (`stiffness: 300`) เพื่อความนุ่มนวล
-
----
-
-## 5. โครงสร้างไฟล์ (Project Structure)
+## 4. โครงสร้างไฟล์ (Project Structure)
 ```
 .
-├─ actions
-│  └─ actions.ts
-├─ app
-│  ├─ admin
-│  │  ├─ announcement
-│  │  │  ├─ create
-│  │  │  │  └─ page.tsx
-│  │  │  └─ page.tsx
-│  │  ├─ dashboard
-│  │  │  └─ page.tsx
-│  │  ├─ documents
-│  │  │  ├─ [folderId]
-│  │  │  │  └─ page.tsx
-│  │  │  └─ page.tsx
-│  │  ├─ usermanagement
-│  │  │  └─ page.tsx
-│  │  └─ layout.tsx
-│  ├─ downloads
-│  │  ├─ [folderId]
-│  │  │  └─ page.tsx
-│  │  └─ page.tsx
-│  ├─ error.tsx
-│  ├─ favicon.ico
-│  ├─ fonts.ts
-│  ├─ global-error.tsx
-│  ├─ globals.css
-│  ├─ layout.tsx
-│  ├─ page.tsx
-│  ├─ provider.tsx
-│  └─ theme-provider.tsx
-├─ assets
-│  └─ img
-│     └─ clients
-├─ components
-│  ├─ Admin
-│  │  ├─ Announcement
-│  │  │  ├─ AnnouncementCard.tsx
-│  │  │  ├─ AnnouncementTable.tsx
-│  │  │  └─ CreateNewAnnouncement.tsx
-│  │  ├─ Dialog
-│  │  │  ├─ AddFolderDialog.tsx
-│  │  │  ├─ CreateNewForm.tsx
-│  │  │  ├─ DeleteConfirmationDialog.tsx
-│  │  │  ├─ DialogFooter.tsx
-│  │  │  ├─ Dialog.tsx
-│  │  │  ├─ EditFolderDialog.tsx
-│  │  │  ├─ FolderForm.tsx
-│  │  │  ├─ FolderTree.tsx
-│  │  │  └─ MoveDialog.tsx
-│  │  ├─ DocManagement
-│  │  │  ├─ ActionButtons.tsx
-│  │  │  ├─ DataManagementLayout.tsx
-│  │  │  ├─ ItemsTable.tsx
-│  │  │  ├─ PaginationFooter.tsx
-│  │  │  ├─ RightSideDrawer.tsx
-│  │  │  └─ TableSkeleton.tsx
-│  │  ├─ SidebarContext.tsx
-│  │  ├─ Sidebar.tsx
-│  │  └─ UserManagement.tsx
-│  ├─ DataTable
-│  │  └─ DataTable.tsx
-│  ├─ DownloadsPage
-│  │  ├─ CategoryCard.tsx
-│  │  ├─ CategorySelection.tsx
-│  │  ├─ DownloadCard.tsx
-│  │  ├─ DownloadLists.tsx
-│  │  ├─ HeroBackground.tsx
-│  │  ├─ HeroSection.tsx
-│  │  └─ SubFolderBadges.tsx
-│  ├─ Footer
-│  │  └─ Footer.tsx
-│  ├─ Form
-│  │  ├─ Button.tsx
-│  │  ├─ CategorySelect.tsx
-│  │  ├─ DateAndTime.tsx
-│  │  ├─ DatePicker.tsx
-│  │  ├─ FormContainer.tsx
-│  │  ├─ TextAreaInput.tsx
-│  │  └─ TextInput.tsx
-│  ├─ Header
-│  │  └─ Header.tsx
-│  ├─ HomePage
-│  │  ├─ AnnounceSection.tsx
-│  │  └─ ContactSection.tsx
-│  ├─ Navbar
-│  │  ├─ DropDownMenu.tsx
-│  │  ├─ ModeToggle.tsx
-│  │  ├─ NavAuth.tsx
-│  │  ├─ Navbar.tsx
-│  │  ├─ Search.tsx
-│  │  └─ ThemeLogo.tsx
-│  └─ ui
-├─ data
-│  ├─ announceData.ts
-│  ├─ contactData.ts
-│  └─ footerData.ts
-├─ hooks
-│  ├─ useAnnouncementColumns.tsx
-│  ├─ useFolderContents.ts
-│  ├─ useFormSubmission.ts
-│  ├─ useItemsTableColumns.tsx
-│  ├─ useMoveDialog.ts
-│  ├─ useRootDocuments.ts
-│  └─ useTableData.ts
-├─ lib
-│  └─ utils.ts
-├─ public
-│  ├─ file.svg
-│  ├─ globe.svg
-│  ├─ next.svg
-│  ├─ vercel.svg
-│  └─ window.svg
-├─ types
-│  ├─ announcement.ts
-│  ├─ common.ts
-│  ├─ documents.ts
-│  ├─ footer.ts
-│  └─ MoveDialog.types.ts
-├─ utils
-│  ├─ download-page-utils.ts
-│  └─ newcdm_types.ts
-├─ components.json
-├─ CONCEPT_MANUAL.md
-├─ .env.local
-├─ eslint.config.mjs
-├─ .gitignore
-├─ middleware.ts
-├─ next.config.ts
-├─ next-env.d.ts
-├─ package.json
-├─ package-lock.json
-├─ postcss.config.mjs
-├─ README.md
-└─ tsconfig.json
-
+├── actions/                  # Server Actions (Backend Proxy Logic)
+│   ├── folder-actions.ts     # Manage Folders (Proxies to External API)
+│   ├── file-actions.ts       # Manage Files
+│   └── ...
+├── app/                      # Next.js App Router
+│   ├── admin/                # Admin Routes (Protected)
+│   ├── api/                  # API Routes (Auth Handlers)
+│   ├── auth/                 # Auth Callback Pages
+│   ├── downloads/            # Public/User Routes
+│   ├── login/                # Login Page
+│   └── ...
+├── components/               # React Components
+│   ├── Admin/                # Admin-specific Components
+│   ├── DownloadsPage/        # User-facing Components
+│   └── ...
+├── lib/                      # Business Logic & Service Integrations
+│   ├── thaid-service.ts      # ThaID API Integration
+│   ├── backend-api-mock.ts   # Internal Employee API Interface
+│   └── utils.ts              # Helper Functions
+├── types/                    # TypeScript Entities
+├── auth.config.ts            # Auth.js Configuration
+├── middleware.ts             # Route Protection Middleware
+├── next.config.ts            # Next.js Config
+└── package.json
 ```
 
 ---
 
-## 6. Data Model & Business Logic
+## 5. การตั้งค่า Environment Variables (.env.local)
 
-### 6.1 Data Models (`types/`)
--   **Folder**: `id`, `name`, `abbr`, `parent` (Recursive Structure)
--   **File**: `id`, `name`, `filename`, `parent`, `isactive`, `mui_icon`, `mui_colour`
--   **Announcement**: 
-    -   `id`, `title`, `content` (Main Description), `status`, `category`
-    -   `categoryVariant` (Theme styling), `createdBy`, `createdAt`, `updatedAt`
-    -   **Note**: Model ไม่ใช้ field `description` แล้ว ให้ใช้ `content` เป็นหลักเพื่อลดความซ้ำซ้อน
+โปรเจคนี้ต้องการ Environment Variables จำนวนมากสำหรับการเชื่อมต่อ External Services **ห้าม** Commit ไฟล์ `.env.local` ขึ้น Git
 
-### 6.2 Business Logic (`actions/`)
--   **Separation of Concerns**: แยกไฟล์ Actions ตาม Domain เพื่อความชัดเจน (`actions/`)
-    -   `file-actions.ts`: จัดการไฟล์ (Upload, Update, Delete)
-    -   `folder-actions.ts`: จัดการโฟลเดอร์ (Create, Move, Delete Structure)
-    -   `announcement-actions.ts`: จัดการประกาศ
-    -   `common-actions.ts`: Shared Logic
--   **Validation**: ทุก Action ที่มีการรับข้อมูล (Create/Update) **ต้อง** ผ่านการ Validate ด้วย `Zod` Schema เสมอ
--   **Error Handling**: Return object `State` (`{ success: boolean, message: string, errors?: object }`) เพื่อให้ Client นำไปแสดงผลได้ง่ายผ่าน `useActionState`
+### General Config
+```env
+NEXT_PUBLIC_APP_URL=http://localhost:3000   # URL ของหน้าเว็บ
+AUTH_SECRET=...                             # Generate using: npx auth secret
+```
 
----
+### External API (Resource Backend : casdu-farside)
+```env
+# URL ของ Backend ที่รันในเครื่อง Local (Port 64197)
+API_URL=http://localhost:64197/api/fy2569
 
-## 7. Security & Deployment
+# Service Token (ต้องตรงกับ AUTH_SECRET ใน .env ของ Backend)
+API_TOKEN=dev-secret-key-change-in-production
+```
 
-### 7.1 Security Guidelines
--   **Authentication**: ใช้ **Clerk** จัดการ Identity
--   **Authorization (RBAC)**:
-    -   ตรวจสอบสิทธิ์ผ่าน `middleware.ts`
-    -   `/admin/*`: เฉพาะผู้ที่มีสิทธิ์ Admin (ตรวจสอบผ่าน Clerk Role หรือ Metadata)
-    -   `/downloads/*`: เฉพาะ Authenticated Users
--   **Input Validation**: ห้ามเชื่อข้อมูลจาก Client ต้อง Validate ฝั่ง Server เสมอ (Zod)
--   **Environment Variables**: ห้าม Hardcode Secret Key ในโค้ด ให้ใช้ `.env.local`
+### ThaID Service (Identity Provider)
+```env
+THAID_TOKEN_URL=https://...                 # URL สำหรับแลก Access Token
+THAID_USERINFO_URL=https://...              # URL สำหรับดึงข้อมูลผู้ใช้
+THAID_BASIC_TOKEN=...                       # Basic Auth Token สำหรับ Client Credentials
+THAID_API_KEY=...                           # (Optional) API Key ถ้ามี require
+```
 
-### 7.2 Deployment Strategy
--   **Build**: `npm run build` (Next.js Build) - **ต้อง** ตรวจสอบ `next.config.ts` ให้แน่ใจว่าเปิด options `optimizePackageImports` เพื่อลดขนาด Build
--   **Environment**:
-    -   `API_URL`: URL ของ Backend API
-    -   `API_TOKEN`: Token สำหรับ Server-to-Server Communication
-    -   `NEXT_PUBLIC_CLERK_...`: Clerk Keys
+### Internal Employee Verification
+```env
+# ถ้าใช้ Real Mode ใน backend-api-mock.ts
+EMPLOYEE_API_URL=https://...
+EMPLOYEE_API_KEY=...
+```
 
 ---
 
-## 8. UX & Interaction Guidelines
+## 6. การ Run และ Deploy (Operations)
 
--   **Feedback**:
-    -   **Success**: แสดง Toast สีเขียว/ปกติ เมื่อทำรายการสำเร็จ
-    -   **Error**: แสดง Toast สีแดง หรือ Inline Error ใต้ Input เมื่อเกิดข้อผิดพลาด
--   **Loading State**:
-    -   ปุ่ม Submit ต้องมีสถานะ `Disabled` และแสดง `Spinner` ขณะกำลังประมวลผล (`useFormStatus` หรือ `isPending`)
-    -   หน้าโหลดข้อมูลใช้ `Skeleton` หรือ `Loading Spinner`
--   **Responsive**: 
-    -   ออกแบบโดยยึดหลัก **Mobile-First** (ใช้ `md:`, `lg:` สำหรับหน้าจอใหญ่)
-    -   **Grid Layout**: ปรับ Column อัตโนมัติ (เช่น 1 col on Mobile -> 3 cols on Desktop)
--   **Component States**:
-    -   **Hover**: ปุ่มและการ์ดต้องมี Hover State ที่ชัดเจน (Shadow Increase, Lift Up)
-    -   **Active**: แสดงสีเข้มขึ้นเมื่อถูกกด
+### 6.1 Development Mode
+รันโปรเจคในเครื่อง Local:
+```bash
+npm run dev
+# หรือ next dev --turbo (ถ้าต้องการใช้ Turbopack)
+```
+**Mock Mode**:
+-   ใน `dev` mode: สามารถกรอก Code `TEST_ADMIN` ในหน้า Login เพื่อข้ามการเชื่อมต่อ ThaID ของจริงและ Login เป็น Admin ได้ทันที (ตั้งค่าใน `lib/thaid-service.ts`)
+
+### 6.2 Building for Production
+โปรเจคนี้ Generate เป็น Standalone Application:
+```bash
+npm run build
+npm start
+```
+*Note: ตรวจสอบให้แน่ใจว่า `next.config.ts` เปิด `output: 'standalone'` หากต้องการนำไป Deploy บน Docker/Container*
+
+### 6.3 Security Checklist ก่อน Deploy
+-   [ ] ตรวจสอบ `API_TOKEN` ว่าไม่ใช่ของ Dev Environment
+-   [ ] ปิด Mock Logic ใน `lib/thaid-service.ts` หรือ `backend-api-mock.ts` (หากมีการ Hardcode ไว้)
+-   [ ] ตั้งค่า `AUTH_TRUST_HOST=true` หาก Deploy หลัง Reverse Proxy
+
+---
+
+## 7. Data Model Concept (Frontend View)
+
+เนื่องจาก Frontend ต่อกับ API ภายนอก Data Model จึงอิงตาม Response ของ API เป็นหลัก:
+
+-   **Folder (Virtual Folder)**:
+    *   **Concept**: เป็นเพียง Metadata ใน Database เพื่อจัดหมวดหมู่ ไม่มีการสร้าง Folder จริงบน Disk
+    *   **Structure**: Recursive (มี `parent_id` ชี้หา Folder แม่)
+    *   **UI Properties**: มี `mui_colour` และ `mui_icon` สำหรับการแสดงผล Custom Icon
+    *   **Note**: การย้าย Folder/File เพียงแค่แก้ ID ใน Database ไม่ต้องย้ายไฟล์จริง
+-   **File**:
+    -   เก็บ Physical Path หรือ Link จริงไว้ที่ Backend
+    -   Frontend รับรู้เพียง Metadata (Name, Size, Type) และ ID สำหรับสั่ง Download
+-   **User (Session)**:
+    -   `id`: PID (เลขบัตรประชาชน)
+    -   `role`: 'admin' | 'user' (ได้จากการ Verify Role ผ่าน API)
 
 ---
 
-## 9. Glossary & Role Definition
+## 8. Development Guidelines พัฒนาเพิ่มเติม
 
-### 9.1 บทบาท (Roles)
-| Role | Permissions |
-| :--- | :--- |
-| **User** | เข้าสู่ระบบ, ดูรายการดาวน์โหลด, ดาวน์โหลดไฟล์, แก้ไข Profile ตนเอง |
-| **Admin** | จัดการโฟลเดอร์/ไฟล์ (CRUD), จัดการประกาศ, จัดการผู้ใช้งาน, เข้าถึง Dashboard |
+### การเพิ่มหน้าใหม่ (New Page)
+1.  สร้าง Folder ใน `app/` โดยใช้ชื่อ `kebab-case`
+2.  สร้าง `page.tsx`
+3.  หากต้องการ Client Interactivity ให้ใส่ `'use client'` บรรทัดแรก
+4.  หากต้องการดึงข้อมูล ให้สร้าง Function ใน `actions/` และเรียกใช้แบบ Async ใน Server Component (`page.tsx`)
 
-### 9.2 คำศัพท์ (Glossary)
--   **Root Folder**: โฟลเดอร์ระดับสูงสุด (`parent = null`)
--   **Sub-folder**: โฟลเดอร์ที่อยู่ภายใต้โฟลเดอร์อื่น
--   **Active**: สถานะไฟล์ที่พร้อมให้ User ดาวน์โหลด
--   **Draft**: สถานะประกาศที่ยังไม่เผยแพร่
+### การเพิ่ม Action (Mutation)
+1.  สร้าง Function ใน `actions/` พร้อมระบุ `'use server'`
+2.  ใช้ `zod` validate input เสมอ
+3.  ใช้ `try/catch` และ Return format `{ success: boolean, message: string }`
+4.  ใช้ `useActionState` (React Hook) ในการเชื่อมต่อกับ Form ใน Client Component
 
 ---
-*เอกสารนี้ปรับปรุงล่าสุดเมื่อ: 16 ธันวาคม 2025 (Updated to Development Manual, removed DaisyUI)*
+*Updated: 19 มกราคม 2026 (Migrated to Auth.js & ThaID Integration)*
+
+---
+
+## 9. ข้อตกลงการแก้ไขและอัปเดต (Maintenance Protocol)
+
+เอกสารนี้ถือเป็น **"สัญญา" (Contract)** ระหว่าง Frontend และ Backend หากมีการแก้ไขต้องทำตามขั้นตอนดังนี้:
+
+1.  **Backend เปลี่ยน Logic/Structure**:
+    *   ต้องมาอัปเดตเอกสารนี้ **ก่อน** หรือ **พร้อมกับ** การแก้โค้ดเสมอ
+    *   เช่น ถ้าเปลี่ยน URL API, เปลี่ยนชื่อ Field, หรือเปลี่ยนวิธีคำนวณ ต้องแก้หัวข้อที่เกี่ยวข้อง (เช่น ข้อ 5 หรือ 7) ทันที
+
+2.  **Frontend ต้องการ Field เพิ่ม**:
+    *   ให้แจ้ง Backend Developer เพื่อเพิ่ม Field ใน Database และ API
+    *   Backend Developer อัปเดตเอกสารนี้ แล้วแจ้ง Frontend ให้ทราบ
+
+3.  **การ Sync ข้อมูลข้าม Project**:
+    *   ให้ยึดไฟล์ `DEVELOPMENT_MANUAL.md` ในโปรเจค **Backend** เป็น Master Copy
+    *   หากมีการแก้ไขสำคัญ ควร Copy ไฟล์นี้ไปทับในโปรเจค Frontend ด้วย (เพื่อให้ทีม Frontend เห็นภาพล่าสุดเสมอ)

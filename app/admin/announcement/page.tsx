@@ -1,14 +1,11 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import DataManagementLayout from '@/components/Admin/DocManagement/DataManagementLayout';
 import Header from '@/components/Header/Header'
 import { Button } from '@/components/ui/button'
 import { CirclePlus } from 'lucide-react';
 import AnnouncementTable from '@/components/Admin/Announcement/AnnouncementTable';
-import { Announcement } from '@/types/announcement';
+import { getAnnouncements } from '@/actions/announcement-actions';
 import Link from 'next/link';
-import { announceData } from '@/data/announceData';
 
 const actionButtons = (
   <>
@@ -20,19 +17,9 @@ const actionButtons = (
   </>
 )
 
-const AnnouncementPage = () => {
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate fetching data
-    const timer = setTimeout(() => {
-      setAnnouncements(announceData);
-      setIsLoading(false);
-    }, 1000); // Simulate 1 second loading time
-
-    return () => clearTimeout(timer);
-  }, []);
+const AnnouncementPage = async () => {
+  const announcements = await getAnnouncements();
+  const isLoading = false; // Server component doesn't need loading state for initial render in this way, or we use Suspense
 
   return (
     <>

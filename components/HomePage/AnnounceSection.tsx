@@ -1,8 +1,10 @@
 import React from 'react'
 import AnnouncementCard from '../Admin/Announcement/AnnouncementCard'
-import { announceData } from '@/data/announceData'
+import { getAnnouncements } from '@/actions/announcement-actions';
 
-const AnnounceSection = () => {
+const AnnounceSection = async () => {
+    const announcements = await getAnnouncements('published');
+
     return (
         <section className="py-4 md:py-6">
             <div className="container mx-auto px-6 lg:px-8">
@@ -14,9 +16,15 @@ const AnnounceSection = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {announceData.map((announcement) => (
-                        <AnnouncementCard key={announcement.id} announcement={announcement} />
-                    ))}
+                    {announcements.length > 0 ? (
+                        announcements.map((announcement) => (
+                            <AnnouncementCard key={announcement.id} announcement={announcement} />
+                        ))
+                    ) : (
+                        <div className="col-span-full text-center py-10 text-muted-foreground">
+                            ไม่มีข่าวประกาศในขณะนี้
+                        </div>
+                    )}
                 </div>
             </div>
         </section>

@@ -64,20 +64,33 @@ export const useAnnouncementColumns = () => {
             header: '',
             headerClassName: "text-right w-[50px]",
             className: "text-right w-[50px]",
-            cell: (item) => (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer hover:bg-muted">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-[160px]">
-                        <DropdownMenuItem className="cursor-pointer">แก้ไข</DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive">ลบ</DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            ),
+            cell: (item) => {
+                const handleDelete = async () => {
+                    if (confirm('คุณต้องการลบประกาศนี้ใช่หรือไม่?')) {
+                        const { deleteAnnouncement } = await import('@/actions/announcement-actions');
+                        await deleteAnnouncement(Number(item.id));
+                    }
+                };
+
+                return (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer hover:bg-muted">
+                                <span className="sr-only">Open menu</span>
+                                <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-[160px]">
+                            <DropdownMenuItem className="cursor-pointer">
+                                แก้ไข (Coming Soon)
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive" onClick={handleDelete}>
+                                ลบ
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                )
+            },
         }
     ];
 

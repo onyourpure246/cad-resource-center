@@ -8,8 +8,9 @@ import TextInput from '@/components/Form/TextInput'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { State } from '@/types/common'
-import React, { useActionState, useState } from 'react'
 import { Label } from '@/components/ui/label';
+import { Editor } from '@/components/blocks/editor-00/editor';
+import React, { useActionState, useState } from 'react'
 
 const initialState: State = {
     success: false,
@@ -22,6 +23,7 @@ const CreateNewAnnouncement = ({ className }: { className?: string }) => {
     const [state, formAction] = useActionState(createAnnouncement, initialState);
     const [scheduleDate, setScheduleDate] = useState<Date | undefined>();
     const [scheduleTime, setScheduleTime] = useState<string>("10:30:00");
+    const [contentHTML, setContentHTML] = useState<string>('');
 
     const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setScheduleTime(event.target.value);
@@ -51,10 +53,19 @@ const CreateNewAnnouncement = ({ className }: { className?: string }) => {
                                 />
                             </div>
                             <div className='mb-4 flex flex-col gap-1'>
-                                <TextAreaInput
-                                    name='messages'
-                                    label='ข้อความ'
-                                    placeholder=''
+                                <Label className='mb-1'>ข้อความ</Label>
+                                <div className="min-h-[300px]">
+                                    <Editor onChangeHtml={setContentHTML} />
+                                </div>
+                                <input type="hidden" name="messages" value={contentHTML} />
+                            </div>
+                            <div className='mb-4 flex flex-col gap-1'>
+                                <TextInput
+                                    name='cover_image'
+                                    type='file'
+                                    label='รูปภาพหน้าปก'
+                                    placeholder='เลือกไฟล์รูปภาพ'
+                                    accept="image/*"
                                 />
                             </div>
                         </div>

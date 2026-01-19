@@ -4,7 +4,7 @@ import { Label } from '../ui/label'
 import { cn } from '@/lib/utils'
 import { FormInputProps } from '@/types/common'
 
-const TextInput = (props: FormInputProps) => {
+const TextInput = (props: FormInputProps & { accept?: string }) => {
     const
         {
             name,
@@ -16,7 +16,8 @@ const TextInput = (props: FormInputProps) => {
             pattern,
             title,
             errorMessage,
-            disabled
+            disabled,
+            accept
         } = props;
     return (
         <div className='mb-2 flex flex-col gap-1'>
@@ -34,6 +35,7 @@ const TextInput = (props: FormInputProps) => {
                 title={title}
                 className={cn(errorMessage && 'border-red-500 focus-visible:ring-red-500')}
                 disabled={disabled}
+                accept={accept}
             />
             {errorMessage && (
                 <p className="text-xs text-red-500 mt-1">{errorMessage}</p>

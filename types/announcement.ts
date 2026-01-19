@@ -9,6 +9,7 @@ export interface Announcement {
     updatedAt: string; // วันที่อัปเดต
     publishDate?: string; // วันที่ประกาศ
     category?: string; // หมวดหมู่
+    cover_image?: string; // รูปภาพหน้าปก
 }
 
 export interface AnnouncementTableProps {
