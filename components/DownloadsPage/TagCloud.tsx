@@ -13,7 +13,7 @@ const TagCloud = ({ tags }: TagCloudProps) => {
     };
 
     return (
-        <div className="flex flex-wrap justify-center gap-2 mt-6 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-backwards">
+        <div className="flex flex-wrap justify-center gap-2 mt-8 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-backwards">
             <span className="text-sm text-muted-foreground self-center mr-2">คำค้นยอดนิยม:</span>
             {tags.map((tag, index) => (
                 <Badge
