@@ -63,10 +63,12 @@ export interface ReusableDrawerProps {
 export type btnSize = 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg'
 
 export type SubmitButtonProps = {
-    className: string,
+    className?: string,
     size?: btnSize,
     text?: string,
-    disabled?: boolean
+    disabled?: boolean,
+    variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link",
+    onClick?: () => void
 }
 
 export type CategoryItem = {
@@ -116,6 +118,7 @@ export type FormInputProps = {
     title?: string;
     errorMessage?: string;
     disabled?: boolean;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface HeaderProps {

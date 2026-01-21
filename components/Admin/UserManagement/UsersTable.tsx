@@ -3,7 +3,7 @@
 import React from 'react';
 import { UsersTableProps } from '@/types/user';
 import { DataTable } from '@/components/DataTable/DataTable';
-import { getUserColumns } from './Columns';
+import { getUserColumns } from './userColumns';
 import { Box } from 'lucide-react';
 
 const UsersTable = ({

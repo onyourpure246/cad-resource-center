@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import Landing from "@/assets/img/landing-banner.jpg";
+import Landing from "@/assets/img/landing_page_banner.png";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import AnnounceSection from "@/components/HomePage/AnnounceSection";
@@ -8,7 +8,7 @@ import Link from "next/link";
 
 const HomePage = () => {
   return (
-    <div className="pb-20">
+    <div className="pb-16">
       <section className="relative w-full h-[210px] md:h-[210px] overflow-hidden">
         {/* Background Image */}
         <Image

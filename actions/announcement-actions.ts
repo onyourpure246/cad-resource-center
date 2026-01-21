@@ -78,11 +78,9 @@ export const createAnnouncement = async (prevState: any, formData: FormData): Pr
         // Map frontend fields to backend expected fields
         const title = formData.get('name') as string;
         const content = formData.get('messages') as string;
-        const scheduleDateStr = formData.get('scheduleDate') as string;
-        const scheduleTimeStr = formData.get('scheduleTime') as string;
-
-        // Default status to 'published' for now
-        const status = 'published';
+        const category = formData.get('category') as string;
+        // Default status to 'draft' if not specified
+        const status = (formData.get('status') as string) || 'draft';
 
         if (!title) {
             return { success: false, message: 'กรุณาระบุหัวข้อประกาศ' };
@@ -92,18 +90,8 @@ export const createAnnouncement = async (prevState: any, formData: FormData): Pr
         backendFormData.append('content', content || '');
         backendFormData.append('status', status);
 
-        // Handle publish_date
-        if (scheduleDateStr) {
-            // scheduleDateStr is ISO (e.g., 2024-01-01T00:00:00.000Z)
-            // scheduleTimeStr is HH:mm:ss (e.g. 10:30:00)
-            try {
-                const datePart = scheduleDateStr.split('T')[0]; // YYYY-MM-DD
-                const timePart = scheduleTimeStr || '00:00:00';
-                const publishDate = `${datePart} ${timePart}`;
-                backendFormData.append('publish_date', publishDate);
-            } catch (e) {
-                console.warn("Error parsing schedule date/time", e);
-            }
+        if (category) {
+            backendFormData.append('category', category);
         }
 
         // Handle Cover Image

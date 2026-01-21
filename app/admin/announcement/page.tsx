@@ -30,7 +30,9 @@ const AnnouncementPage = async () => {
       <DataManagementLayout
         searchPlaceholder="ค้นหาประกาศ"
         showBreadcrumbs={false}
-        actionButtons={actionButtons} >
+        actionButtons={actionButtons}
+        showBorder={false}
+      >
         <AnnouncementTable
           announcements={announcements}
           isLoading={isLoading}

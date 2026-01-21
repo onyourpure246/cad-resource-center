@@ -8,7 +8,9 @@ export const SubmitButton = ({
     className,
     size,
     text,
-    disabled
+    disabled,
+    variant,
+    onClick
 }: SubmitButtonProps) => {
 
     const { pending } = useFormStatus()
@@ -18,6 +20,8 @@ export const SubmitButton = ({
             disabled={pending || disabled}
             size={size}
             type='submit'
+            variant={variant}
+            onClick={onClick}
             className={`${className} capitalize`}>
             {
                 pending

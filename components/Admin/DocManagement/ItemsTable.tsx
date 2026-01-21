@@ -4,7 +4,7 @@ import React from 'react';
 import { Folder } from "lucide-react";
 import { ItemsTableProps } from '@/types/components';
 import { DataTable } from '@/components/DataTable/DataTable';
-import { useItemsTableColumns } from '@/hooks/useItemsTableColumns';
+import { getItemColumns } from './itemColumns';
 
 const ItemsTable = ({
     items,
@@ -18,7 +18,7 @@ const ItemsTable = ({
     onSelectionChange
 }: ItemsTableProps) => {
 
-    const columns = useItemsTableColumns({
+    const columns = getItemColumns({
         parentId,
         onItemClick,
         onRefresh,

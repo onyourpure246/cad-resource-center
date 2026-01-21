@@ -14,11 +14,12 @@ const DataManagementLayout = ({
     showBreadcrumbs = true,
     showSearch = true,
     onSearchChange,
-    footer
-}: DataManagementLayoutProps) => {
+    footer,
+    showBorder = true // Default to true to maintain existing behavior
+}: DataManagementLayoutProps & { showBorder?: boolean }) => {
     return (
         <div className="py-2 px-4 sm:py-4 sm:px-6 lg:py-4 lg:px-4">
-            <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
                 <div className="flex gap-2">
                     {actionButtons}
                 </div>
@@ -57,7 +58,7 @@ const DataManagementLayout = ({
             )}
 
 
-            <div className="border rounded-lg">
+            <div className={showBorder ? "border rounded-lg" : ""}>
                 {children}
             </div>
             {footer && <div className="mt-1">{footer}</div>}

@@ -4,10 +4,10 @@ export interface Announcement {
     content: string; // รายละเอียด
     categoryVariant?: "default" | "secondary" | "destructive" | "outline"; // ประเภท (สีของ badge)
     status: 'Published' | 'Draft'; // สถานะ (Published/Draft)
-    createdBy: string; // ผู้สร้าง
-    createdAt: string; // วันที่สร้าง
-    updatedAt: string; // วันที่อัปเดต
-    publishDate?: string; // วันที่ประกาศ
+    created_by: string; // ผู้สร้าง
+    created_at: string; // วันที่สร้าง
+    updated_at: string; // วันที่อัปเดต
+    publish_date?: string; // วันที่ประกาศ
     category?: string; // หมวดหมู่
     cover_image?: string; // รูปภาพหน้าปก
 }
