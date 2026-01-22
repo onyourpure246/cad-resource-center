@@ -8,12 +8,16 @@ import { getAnnouncementColumns } from './announcementColumns';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const AnnouncementTable = ({ announcements, isLoading }: AnnouncementTableProps) => {
+import { useRouter } from 'next/navigation';
 
-    const columns = getAnnouncementColumns();
+const AnnouncementTable = ({ announcements, isLoading }: AnnouncementTableProps) => {
+    const router = useRouter();
+    const columns = getAnnouncementColumns(router);
 
     const publishedAnnouncements = announcements.filter(a => a.status.toLowerCase() === 'published');
     const draftAnnouncements = announcements.filter(a => a.status.toLowerCase() === 'draft');
+    const archivedAnnouncements = announcements.filter(a => a.status.toLowerCase() === 'archived');
+    // NOTE: If status comes as "Archived" (capital A), make sure to handle it correctly. The filter uses toLowerCase() so it should be fine.
 
     return (
         <div className="space-y-4">
@@ -32,6 +36,12 @@ const AnnouncementTable = ({ announcements, isLoading }: AnnouncementTableProps)
                             className="data-[state=active]:bg-amber-500/15 data-[state=active]:text-amber-700 dark:data-[state=active]:bg-amber-500/20 dark:data-[state=active]:text-amber-400"
                         >
                             ฉบับร่าง ({draftAnnouncements.length})
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="archived"
+                            className="data-[state=active]:bg-muted data-[state=active]:text-muted-foreground"
+                        >
+                            จัดเก็บแล้ว ({archivedAnnouncements.length})
                         </TabsTrigger>
                     </TabsList>
                 </div>
@@ -62,6 +72,16 @@ const AnnouncementTable = ({ announcements, isLoading }: AnnouncementTableProps)
                         data={draftAnnouncements}
                         isLoading={isLoading}
                         noResultsMessage="ไม่พบประกาศฉบับร่าง"
+                        enableRowSelection={true}
+                    />
+                </TabsContent>
+
+                <TabsContent value="archived" className="mt-0">
+                    <DataTable
+                        columns={columns}
+                        data={archivedAnnouncements}
+                        isLoading={isLoading}
+                        noResultsMessage="ไม่พบประกาศที่ถูกจัดเก็บ"
                         enableRowSelection={true}
                     />
                 </TabsContent>

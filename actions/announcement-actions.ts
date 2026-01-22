@@ -161,6 +161,21 @@ export const updateAnnouncement = async (id: number, formData: FormData): Promis
     }
 }
 
+/**
+ * Update announcement status (PATCH /news/:id/status)
+ * or re-use update endpoint if backend supports partial updates
+ */
+export const updateAnnouncementStatus = async (id: number, status: string): Promise<State> => {
+    try {
+        const formData = new FormData();
+        formData.append('status', status);
+        return await updateAnnouncement(id, formData);
+    } catch (error) {
+        console.error('Update status error:', error);
+        return { success: false, message: 'เกิดข้อผิดพลาดในการเปลี่ยนสถานะ' };
+    }
+}
+
 
 /**
  * Delete an announcement (DELETE /news/:id)

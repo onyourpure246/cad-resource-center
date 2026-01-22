@@ -6,7 +6,10 @@ import {
 } from "@lexical/react/LexicalComposer"
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin"
 import { EditorState, SerializedEditorState } from "lexical"
-import { $generateHtmlFromNodes } from "@lexical/html"
+import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html"
+import * as React from "react"
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
+import { $getRoot } from "lexical"
 
 import { editorTheme } from "@/components/editor/themes/editor-theme"
 import { TooltipProvider } from "@/components/ui/tooltip"
@@ -29,12 +32,14 @@ export function Editor({
   onChange,
   onSerializedChange,
   onChangeHtml,
+  initialHtml,
 }: {
   editorState?: EditorState
   editorSerializedState?: SerializedEditorState
   onChange?: (editorState: EditorState) => void
   onSerializedChange?: (editorSerializedState: SerializedEditorState) => void
   onChangeHtml?: (html: string) => void
+  initialHtml?: string
 }) {
   return (
     <div className="bg-background overflow-hidden rounded-lg border shadow">
@@ -64,8 +69,31 @@ export function Editor({
               }
             }}
           />
+          {initialHtml && <LoadHtmlPlugin html={initialHtml} />}
         </TooltipProvider>
       </LexicalComposer>
     </div>
   )
+}
+
+function LoadHtmlPlugin({ html }: { html: string }) {
+  const [isLoaded, setIsLoaded] = React.useState(false);
+  const [editor] = useLexicalComposerContext();
+
+  React.useEffect(() => {
+    if (!isLoaded && html) {
+      editor.update(() => {
+        const parser = new DOMParser();
+        const dom = parser.parseFromString(html, 'text/html');
+        const nodes = $generateNodesFromDOM(editor, dom);
+        // Select the root
+        const root = $getRoot();
+        root.clear();
+        root.append(...nodes);
+      });
+      setIsLoaded(true);
+    }
+  }, [editor, html, isLoaded]);
+
+  return null;
 }

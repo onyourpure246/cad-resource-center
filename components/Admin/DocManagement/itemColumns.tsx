@@ -63,16 +63,16 @@ export const getItemColumns = ({
         helper.custom({
             accessorKey: 'name',
             header: (
-                <Button variant="ghost" onClick={() => onSort?.('name')} className="hover:bg-transparent px-0 font-bold uppercase tracking-wider text-muted-foreground justify-start w-full">
+                <Button variant="ghost" onClick={() => onSort?.('name')} className="hover:bg-transparent px-0 font-bold uppercase tracking-wider text-muted-foreground justify-start w-1/2">
                     ชื่อ
                     {getSortIcon('name')}
                 </Button>
             ),
-            headerClassName: "flex-1 min-w-[200px]",
-            className: "flex-1 min-w-[200px]",
+            headerClassName: "",
+            className: "truncate max-w-[1px]", // Force fluid width and truncation
             cell: (item) => (
                 <div
-                    className={`hover:underline font-medium truncate max-w-[300px] 2xl:max-w-[500px] block ${item.type === 'folder' ? 'cursor-pointer hover:text-primary transition-colors' : 'text-foreground'}`}
+                    className={`hover:underline font-medium truncate block w-full ${item.type === 'folder' ? 'cursor-pointer hover:text-primary transition-colors' : 'text-foreground'}`}
                     onClick={() => onItemClick(item)}
                     title={item.type === 'file' && item.filename ? item.filename : (item.name || "")}
                 >
@@ -82,21 +82,21 @@ export const getItemColumns = ({
         }),
         // Refactored to use simplified helper.text setup but with custom cell still needed for date string format in this specific table
         // Actually, this table uses pre-formatted strings for dates ('created', 'modified'), so helper.text is appropriate, NOT helper.date (which expects Date object)
-        helper.text('created', 'สร้างเมื่อ', {
+        helper.date('created', 'สร้างเมื่อ', {
             sortable: true,
             onSort: onSort ? () => onSort('created') : undefined,
-            headerClassName: "w-[180px]",
-            className: "w-[180px] text-muted-foreground text-sm",
+            headerClassName: "w-[180px] hidden xl:table-cell",
+            className: "w-[180px] text-muted-foreground text-sm hidden xl:table-cell",
         }),
-        helper.text('modified', 'แก้ไขล่าสุด', {
+        helper.date('modified', 'แก้ไขล่าสุด', {
             sortable: true,
             onSort: onSort ? () => onSort('modified') : undefined,
-            headerClassName: "w-[180px]",
-            className: "w-[180px] text-muted-foreground text-sm",
+            headerClassName: "w-[180px] hidden lg:table-cell",
+            className: "w-[180px] text-muted-foreground text-sm hidden lg:table-cell",
         }),
         helper.text('modifiedBy', 'แก้ไขโดย', {
-            headerClassName: "w-[180px]",
-            className: "w-[180px] text-muted-foreground text-sm",
+            headerClassName: "w-[180px] hidden xl:table-cell",
+            className: "w-[180px] text-muted-foreground text-sm hidden xl:table-cell",
         }),
         helper.custom({
             accessorKey: 'actions',

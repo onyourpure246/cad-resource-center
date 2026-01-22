@@ -3,7 +3,7 @@ export interface Announcement {
     title: string; // หัวข้อ
     content: string; // รายละเอียด
     categoryVariant?: "default" | "secondary" | "destructive" | "outline"; // ประเภท (สีของ badge)
-    status: 'Published' | 'Draft'; // สถานะ (Published/Draft)
+    status: 'Published' | 'Draft' | 'Archived'; // สถานะ (Published/Draft/Archived)
     created_by: string; // ผู้สร้าง
     created_at: string; // วันที่สร้าง
     updated_at: string; // วันที่อัปเดต
