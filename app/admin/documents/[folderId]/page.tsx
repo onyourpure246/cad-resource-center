@@ -6,7 +6,7 @@ import ItemsTable from '@/components/Admin/DocManagement/ItemsTable';
 import DataManagementLayout from '@/components/Admin/DocManagement/DataManagementLayout';
 import { Item as FolderItem } from '@/types/models';
 import ActionButtons from '@/components/Admin/DocManagement/ActionButtons';
-import Header from '@/components/Header/Header';
+import Header from '@/components/Layout/Header/Header';
 import { useFolderContents } from '@/hooks/useFolderContents';
 import { useTableData } from '@/hooks/useTableData';
 import PaginationFooter from '@/components/Admin/DocManagement/PaginationFooter';

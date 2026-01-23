@@ -130,7 +130,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                 </Card>
             </motion.div>
 
-            <DialogContent className="sm:max-w-3xl max-h-[85vh] overflow-y-auto">
+            <DialogContent className="sm:max-w-5xl max-h-[85vh] overflow-y-auto">
                 <DialogHeader className="space-y-4">
                     {imageUrl && (
                         <div className="w-full h-64 overflow-hidden rounded-xl mb-4 bg-muted">
@@ -163,8 +163,9 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
 
                 <div className="mt-4">
                     {/* Safe HTML Rendering */}
+                    {/* Safe HTML Rendering */}
                     <div
-                        className="font-sarabun text-foreground leading-relaxed whitespace-pre-wrap text-base prose prose-sm max-w-none dark:prose-invert"
+                        className="font-sarabun text-foreground text-base w-full break-words leading-normal"
                         dangerouslySetInnerHTML={{ __html: announcement.content }}
                     />
                 </div>

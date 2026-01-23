@@ -12,9 +12,10 @@ import { cn } from "@/lib/utils";
 interface ActionItem {
     label: string;
     icon?: React.ReactNode;
-    onClick: () => void;
+    onClick?: () => void;
     className?: string;
     disabled?: boolean;
+    render?: (props: { label: string; icon: React.ReactNode; className?: string; disabled?: boolean }) => React.ReactNode;
 }
 
 interface ActionsCellProps {
@@ -52,17 +53,31 @@ const ActionsCell = ({
                         </DropdownMenuItem>
                     )}
 
-                    {additionalActions.map((action, index) => (
-                        <DropdownMenuItem
-                            key={index}
-                            className={cn("cursor-pointer", action.className)}
-                            onClick={action.onClick}
-                            disabled={action.disabled}
-                        >
-                            {action.icon}
-                            {action.label}
-                        </DropdownMenuItem>
-                    ))}
+                    {additionalActions.map((action, index) => {
+                        if (action.render) {
+                            return (
+                                <React.Fragment key={index}>
+                                    {action.render({
+                                        label: action.label,
+                                        icon: action.icon,
+                                        className: action.className,
+                                        disabled: action.disabled
+                                    })}
+                                </React.Fragment>
+                            );
+                        }
+                        return (
+                            <DropdownMenuItem
+                                key={index}
+                                className={cn("cursor-pointer", action.className)}
+                                onClick={action.onClick}
+                                disabled={action.disabled}
+                            >
+                                {action.icon}
+                                {action.label}
+                            </DropdownMenuItem>
+                        );
+                    })}
 
                     {(onEdit || additionalActions.length > 0) && onDelete && (
                         <div className="h-px bg-muted my-1" />

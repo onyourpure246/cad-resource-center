@@ -43,10 +43,11 @@ type ColumnHelper<T> = {
             deleteLabel?: string;
             additionalActions?: (item: T) => Array<{
                 label: string;
-                onClick: () => void;
+                onClick?: () => void;
                 icon?: React.ReactNode;
                 className?: string;
                 disabled?: boolean;
+                render?: (props: { label: string; icon?: React.ReactNode; className?: string; disabled?: boolean }) => React.ReactNode;
             }>;
             align?: "start" | "end" | "center";
         } & Partial<DataTableColumn<T>>

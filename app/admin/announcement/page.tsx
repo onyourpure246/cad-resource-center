@@ -1,6 +1,6 @@
 import React from 'react';
 import DataManagementLayout from '@/components/Admin/DocManagement/DataManagementLayout';
-import Header from '@/components/Header/Header'
+import Header from '@/components/Layout/Header/Header'
 import { Button } from '@/components/ui/button'
 import { CirclePlus } from 'lucide-react';
 import AnnouncementTable from '@/components/Admin/Announcement/AnnouncementTable';

@@ -2,7 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { footerData } from '@/data/footerData';
-import ThemeLogo from '@/components/Navbar/ThemeLogo';
+import ThemeLogo from '@/components/Layout/Navbar/ThemeLogo';
 import { FooterItem } from '@/types/footer';
 
 const Footer = () => {

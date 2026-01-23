@@ -1,6 +1,6 @@
 'use client'
 
-import Header from '@/components/Header/Header'
+import Header from '@/components/Layout/Header'
 import React, { useState } from 'react'
 import DataManagementLayout from '@/components/Admin/DocManagement/DataManagementLayout'
 import UserActionButtons from '@/components/Admin/UserManagement/UserActionButtons'

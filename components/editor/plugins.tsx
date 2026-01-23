@@ -25,7 +25,7 @@ export function Plugins() {
       <div className="relative flex-1">
         <RichTextPlugin
           contentEditable={
-            <div className="min-h-[300px] p-4">
+            <div className="min-h-[300px] p-6">
               <div className="h-full" ref={onRef}>
                 <ContentEditable className="h-full outline-none" placeholder={"Start typing ..."} />
               </div>

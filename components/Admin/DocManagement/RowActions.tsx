@@ -14,16 +14,16 @@ import { RowActionsProps } from '@/types/components';
 
 // Dynamically import dialogs to reduce initial bundle size
 const DeleteConfirmationDialog = dynamic(() =>
-    import('@/components/Admin/Dialog/DeleteConfirmationDialog').then(mod => mod.DeleteConfirmationDialog)
+    import('@/components/Admin/DocManagement/Dialogs/DeleteConfirmationDialog').then(mod => mod.DeleteConfirmationDialog)
 );
 const EditFolderDialog = dynamic(() =>
-    import('@/components/Admin/Dialog/EditFolderDialog').then(mod => mod.EditFolderDialog)
+    import('@/components/Admin/DocManagement/Dialogs/EditFolderDialog').then(mod => mod.EditFolderDialog)
 );
 const EditFileDrawer = dynamic(() =>
     import('@/components/Admin/DocManagement/EditFileDrawer').then(mod => mod.EditFileDrawer)
 );
 const MoveDialog = dynamic(() =>
-    import('@/components/Admin/Dialog/MoveDialog').then(mod => mod.MoveDialog)
+    import('@/components/Admin/DocManagement/Dialogs/MoveDialog').then(mod => mod.MoveDialog)
 );
 
 export const RowActions = ({ item, parentId, onRefresh }: RowActionsProps) => {

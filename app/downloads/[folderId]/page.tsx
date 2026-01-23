@@ -1,7 +1,7 @@
 import { getDownloadPageData } from '@/utils/download-page-utils';
 import DownloadList from '@/components/DownloadsPage/DownloadLists';
 import SubFolderBadges from '@/components/DownloadsPage/SubFolderBadges';
-import Header from '@/components/Header/Header';
+import Header from '@/components/Layout/Header/Header';
 import { DownloadFolderPageProps } from '@/types/components';
 import React from 'react';
 

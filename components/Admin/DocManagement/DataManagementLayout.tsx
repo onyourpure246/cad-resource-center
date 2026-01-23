@@ -18,8 +18,8 @@ const DataManagementLayout = ({
     showBorder = true // Default to true to maintain existing behavior
 }: DataManagementLayoutProps & { showBorder?: boolean }) => {
     return (
-        <div className="py-2 px-4 sm:py-4 sm:px-6 lg:py-4 lg:px-4">
-            <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+        <div className="py-0 px-4 sm:py-2 sm:px-6 lg:py-2 lg:px-4">
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-3 gap-4">
                 <div className="flex gap-2">
                     {actionButtons}
                 </div>

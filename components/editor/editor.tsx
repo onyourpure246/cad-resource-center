@@ -42,7 +42,7 @@ export function Editor({
   initialHtml?: string
 }) {
   return (
-    <div className="bg-background overflow-hidden rounded-lg border shadow">
+    <div className="bg-background overflow-hidden rounded-lg border shadow font-sarabun">
       <LexicalComposer
         initialConfig={{
           ...editorConfig,
