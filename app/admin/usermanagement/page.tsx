@@ -1,11 +1,10 @@
 'use client'
-
-import Header from '@/components/Layout/Header'
 import React, { useState } from 'react'
 import DataManagementLayout from '@/components/Admin/DocManagement/DataManagementLayout'
 import UserActionButtons from '@/components/Admin/UserManagement/UserActionButtons'
 import UsersTable from '@/components/Admin/UserManagement/UsersTable'
 import { User } from '@/types/user'
+import Header from '@/components/Layout/Header/Header'
 
 const MOCK_USERS: User[] = [
   { id: '1', username: 'admin', email: 'admin@example.com', firstName: 'Admin', lastName: 'System', role: 'admin', status: 'active', createdAt: '2024-01-01' },

@@ -1,11 +1,11 @@
 import React from 'react'
-import FormContainer from '../../Form/FormContainer'
+import FormContainer from '@/components/Form/FormContainer'
 import { uploadFile } from '@/actions/file-actions'
-import TextInput from '../../Form/TextInput'
-import TextAreaInput from '../../Form/TextAreaInput'
-import { SubmitButton } from '../../Form/Button'
-import { DrawerClose, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '../../ui/drawer'
-import { Button } from '../../ui/button'
+import TextInput from '@/components/Form/TextInput'
+import TextAreaInput from '@/components/Form/TextAreaInput'
+import { SubmitButton } from '@/components/Form/Button'
+import { DrawerClose, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
+import { Button } from '@/components/ui/button'
 import { CreateNewFormProps } from '@/types/components';
 import { State } from '@/types/common';
 import { useFormSubmission } from '@/hooks/useFormSubmission';

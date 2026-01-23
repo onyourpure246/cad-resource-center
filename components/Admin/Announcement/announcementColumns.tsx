@@ -42,7 +42,7 @@ export const getAnnouncementColumns = (router: any) => [
             // 1. Status Transition Actions
             if (isArchived) {
                 actions.push({
-                    label: 'คืนสู่สถานะร่าง',
+                    label: 'เรียกคืน',
                     icon: <Undo className="h-4 w-4" />,
                     render: (props: any) => (
                         <ConfirmationDialog
@@ -55,8 +55,8 @@ export const getAnnouncementColumns = (router: any) => [
                                     {props.label}
                                 </DropdownMenuItem>
                             }
-                            title="ยืนยันการคืนค่า"
-                            description="คุณต้องการคืนค่าประกาศนี้สู่สถานะ 'ร่าง' ใช่หรือไม่?"
+                            title="ยืนยันการเรียกคืน"
+                            description="คุณต้องการเรียกคืนประกาศนี้สู่สถานะ 'ร่าง' ใช่หรือไม่?"
                             confirmLabel="ยืนยัน"
                             onConfirm={async () => {
                                 await updateAnnouncementStatus(Number(item.id), 'Draft');

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ReusableDialog } from './Dialog';
+import { ReusableDialog } from '@/components/Common/ReusableDialog';
 import FolderForm from './FolderForm';
 import { EditFolderDialogProps } from '@/types/components';
 

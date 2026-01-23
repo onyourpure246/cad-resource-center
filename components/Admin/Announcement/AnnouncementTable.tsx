@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { DataTable } from '@/components/DataTable/DataTable';
 import { AnnouncementTableProps } from '@/types/announcement';
 import { Megaphone } from 'lucide-react';
@@ -9,40 +9,110 @@ import { getAnnouncementColumns } from './announcementColumns';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 const AnnouncementTable = ({ announcements, isLoading }: AnnouncementTableProps) => {
     const router = useRouter();
     const columns = getAnnouncementColumns(router);
 
+    const [activeTab, setActiveTab] = useState("all");
+
     const publishedAnnouncements = announcements.filter(a => a.status.toLowerCase() === 'published');
     const draftAnnouncements = announcements.filter(a => a.status.toLowerCase() === 'draft');
     const archivedAnnouncements = announcements.filter(a => a.status.toLowerCase() === 'archived');
-    // NOTE: If status comes as "Archived" (capital A), make sure to handle it correctly. The filter uses toLowerCase() so it should be fine.
+
+    // Configuration for tabs to keep code clean and manageable
+    const tabs = [
+        {
+            value: "all",
+            label: "ทั้งหมด",
+            count: null,
+            activeColor: "bg-primary text-primary-foreground",
+        },
+        {
+            value: "published",
+            label: "เผยแพร่แล้ว",
+            count: publishedAnnouncements.length,
+            activeColor: "bg-emerald-500 text-white hover:bg-emerald-600 border-none",
+        },
+        {
+            value: "draft",
+            label: "ฉบับร่าง",
+            count: draftAnnouncements.length,
+            activeColor: "bg-amber-500/15 text-amber-700 dark:text-amber-400 hover:bg-amber-500/25 border-amber-200/50",
+        },
+        {
+            value: "archived",
+            label: "จัดเก็บแล้ว",
+            count: archivedAnnouncements.length,
+            activeColor: "bg-muted text-muted-foreground hover:bg-muted border-transparent",
+        }
+    ];
 
     return (
         <div className="space-y-4">
-            <Tabs defaultValue="all" className="w-full">
-                <div className="flex items-center justify-between mb-2">
-                    <TabsList>
-                        <TabsTrigger value="all">ทั้งหมด</TabsTrigger>
-                        <TabsTrigger
-                            value="published"
-                            className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white dark:data-[state=active]:bg-emerald-500"
-                        >
-                            เผยแพร่แล้ว ({publishedAnnouncements.length})
-                        </TabsTrigger>
-                        <TabsTrigger
-                            value="draft"
-                            className="data-[state=active]:bg-amber-500/15 data-[state=active]:text-amber-700 dark:data-[state=active]:bg-amber-500/20 dark:data-[state=active]:text-amber-400"
-                        >
-                            ฉบับร่าง ({draftAnnouncements.length})
-                        </TabsTrigger>
-                        <TabsTrigger
-                            value="archived"
-                            className="data-[state=active]:bg-muted data-[state=active]:text-muted-foreground"
-                        >
-                            จัดเก็บแล้ว ({archivedAnnouncements.length})
-                        </TabsTrigger>
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <div className="flex items-center justify-between mb-4">
+                    <TabsList className="bg-muted/50 p-1 gap-1 relative overflow-hidden">
+                        {tabs.map((tab) => {
+                            // Define exact active classes for each tab based on StatusBadge values
+                            // We explicitly use data-[state=active] to override default component styles
+                            let activeClass = "";
+                            let bgClass = "";
+
+                            switch (tab.value) {
+                                case "published":
+                                    // bg-emerald-500 text-white
+                                    activeClass = "data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:hover:bg-emerald-600";
+                                    bgClass = "bg-emerald-500";
+                                    break;
+                                case "draft":
+                                    // bg-amber-500/15 text-amber-700
+                                    activeClass = "data-[state=active]:bg-amber-500/15 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400 data-[state=active]:hover:bg-amber-500/25 data-[state=active]:border-amber-200/50";
+                                    bgClass = "bg-amber-500/15";
+                                    break;
+                                case "archived":
+                                    // bg-muted text-muted-foreground
+                                    activeClass = "data-[state=active]:bg-muted data-[state=active]:text-muted-foreground data-[state=active]:hover:bg-muted";
+                                    bgClass = "bg-muted";
+                                    break;
+                                case "all":
+                                default:
+                                    // bg-primary text-primary-foreground
+                                    activeClass = "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground";
+                                    bgClass = "bg-primary";
+                                    break;
+                            }
+
+                            return (
+                                <TabsTrigger
+                                    key={tab.value}
+                                    value={tab.value}
+                                    className={cn(
+                                        "relative z-10 transition-none data-[state=active]:shadow-none",
+                                        activeClass,
+                                        // Default non-active state
+                                        activeTab !== tab.value && "text-muted-foreground hover:text-foreground hover:bg-transparent"
+                                    )}
+                                >
+                                    {activeTab === tab.value && (
+                                        <motion.div
+                                            layoutId="active-tab-bg"
+                                            className={cn(
+                                                "absolute inset-0 rounded-sm z-[-1]",
+                                                bgClass
+                                            )}
+                                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                        />
+                                    )}
+                                    <span className="relative z-10 flex items-center gap-2">
+                                        {tab.label}
+                                        {tab.count !== null && <span className="text-xs opacity-75">({tab.count})</span>}
+                                    </span>
+                                </TabsTrigger>
+                            );
+                        })}
                     </TabsList>
                 </div>
 

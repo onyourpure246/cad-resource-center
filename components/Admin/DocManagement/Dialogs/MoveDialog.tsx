@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Folder, Check } from "lucide-react";
-import { MoveDialogProps } from '../../../types/MoveDialog.types';
-import { useMoveDialog } from '../../../hooks/useMoveDialog';
+import { MoveDialogProps } from '@/types/MoveDialog.types';
+import { useMoveDialog } from '@/hooks/useMoveDialog';
 import { FolderTree } from './FolderTree';
 
 export const MoveDialog = ({ item, currentParentId, trigger, onMoveSuccess }: MoveDialogProps) => {

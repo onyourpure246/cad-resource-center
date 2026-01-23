@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ReusableDialog } from './Dialog'
+import { ReusableDialog } from '@/components/Common/ReusableDialog'
 import { Button } from '@/components/ui/button'
 import { FolderPlus } from 'lucide-react'
 import FolderForm from './FolderForm'
