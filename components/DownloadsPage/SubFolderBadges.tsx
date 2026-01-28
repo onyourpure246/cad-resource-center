@@ -15,7 +15,7 @@ const SubFolderBadges = ({ subFolders, parentFolderId, backLink }: SubFolderBadg
     const allLink = isRoot ? `/downloads/${parentFolderId}` : (backLink || `/downloads/${parentFolderId}`);
 
     return (
-        <div className="mb-8 flex flex-col gap-6">
+        <div className="mb-4 flex flex-col gap-4">
             {backLink && (
                 <div className="flex items-center">
                     <Button variant="ghost" size="sm" asChild className="pl-0 hover:bg-transparent hover:text-primary transition-colors group">

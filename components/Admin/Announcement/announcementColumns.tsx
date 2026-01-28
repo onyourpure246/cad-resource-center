@@ -19,8 +19,8 @@ export const getAnnouncementColumns = (router: any) => [
         className: "w-[150px] hidden lg:table-cell",
     }),
     helper.status('status', 'สถานะ', {
-        headerClassName: "w-[100px]",
-        className: "w-[100px]",
+        headerClassName: "w-[150px]",
+        className: "w-[150px]",
     }),
     helper.text('created_by', 'สร้างโดย', {
         headerClassName: "w-[150px] hidden lg:table-cell",

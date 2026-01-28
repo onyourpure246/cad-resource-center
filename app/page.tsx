@@ -31,10 +31,10 @@ const HomePage = () => {
               กลุ่มพัฒนาระบบตรวจสอบบัญชีคอมพิวเตอร์
             </Badge>
             <h1 className="text-4xl md:text-4xl font-bold leading-tight">
-              Resource Center
+              ศูนย์บริการข้อมูลและทรัพยากร
             </h1>
             <p className="text-sm md:text-sm">
-              ศูนย์รวมข้อมูล เอกสาร และเครื่องมือสำหรับกลุ่มพัฒนาระบบตรวจสอบบัญชีคอมพิวเตอร์
+              รวมเอกสาร และเครื่องมือสำหรับตรวจสอบบัญชี
             </p>
             <div className="flex gap-4 ml-10">
               <Link href="/downloads"><Button variant="default" size="default" className="mt-4 cursor-pointer">

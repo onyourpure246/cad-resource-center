@@ -1,6 +1,6 @@
 'use server'
 
-import { adminGetFolderById } from './folder-actions';
+import { adminGetFolderById, adminGetRootFolder } from './folder-actions';
 import { File, Folder } from '@/types/models';
 
 // Define a Search Result type that flattens the structure
@@ -74,9 +74,20 @@ export const searchFiles = async (query: string): Promise<SearchResultItem[]> =>
 
     const results: SearchResultItem[] = [];
 
-    // Start search from Root (assuming ID 1 is Root based on observed code)
-    // Adjust root ID if necessary.
-    await traverseAndSearch(1, query, "หน้าหลัก", results);
+    try {
+        // 1. Get all root folders
+        const rootData = await adminGetRootFolder();
+
+        // 2. Search in each root folder tree
+        const searchPromises = rootData.folders.map(folder =>
+            traverseAndSearch(folder.id, query, folder.name, results)
+        );
+
+        await Promise.all(searchPromises);
+
+    } catch (error) {
+        console.error("Error initializing search:", error);
+    }
 
     return results;
 };

@@ -11,9 +11,6 @@ const AnnounceSection = async () => {
             <div className="container mx-auto px-4 lg:px-8">
                 <div className="text-center mb-4">
                     <h2 className="text-2xl md:text-3xl font-bold">ข่าวประกาศ</h2>
-                    <p className="text-muted-foreground mt-2">
-                        ติดตามข่าวสารและอัปเดตล่าสุดจากเรา
-                    </p>
                 </div>
 
                 <AnnouncementList announcements={announcements} />

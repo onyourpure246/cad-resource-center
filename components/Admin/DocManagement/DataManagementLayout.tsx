@@ -29,7 +29,7 @@ const DataManagementLayout = ({
                         <Input
                             type="search"
                             placeholder={searchPlaceholder}
-                            className="w-full sm:w-[300px] pl-10 h-10 bg-background border-muted-foreground/40 focus-visible:ring-primary/50 transition-all hover:border-primary/60"
+                            className="w-full sm:w-[300px] pl-10 h-9 bg-background border-muted-foreground/40 focus-visible:ring-primary/50 transition-all hover:border-primary/60"
                             onChange={(e) => onSearchChange?.(e.target.value)}
                         />
                     </div>

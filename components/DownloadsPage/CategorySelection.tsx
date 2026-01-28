@@ -2,11 +2,11 @@ import React from 'react'
 import CategoryCard from './CategoryCard'
 import { Boxes, Folder } from 'lucide-react'
 import HeroSection from './HeroSection'
-import { adminGetFolderById } from '@/actions/folder-actions'
+import { adminGetRootFolder } from '@/actions/folder-actions'
 
 const CategorySelection = async () => {
 
-    const folderContents = await adminGetFolderById(1);
+    const folderContents = await adminGetRootFolder();
     const folders = folderContents.folders;
     return (
         <div className='flex flex-col gap-6 pb-20'>

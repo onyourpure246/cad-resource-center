@@ -19,15 +19,27 @@ const TableSkeleton = ({ showCheckbox = false }: TableSkeletonProps) => {
                             <Skeleton className="h-4 w-4 rounded-sm" />
                         </TableCell>
                     )}
-                    <TableCell className="px-4 py-2 w-[50px]">
-                        <Skeleton className="h-5 w-5 rounded-md" />
+                    <TableCell className="px-2 py-2 w-[50px]">
+                        <div className="flex justify-center">
+                            <Skeleton className="h-5 w-5 rounded-md" />
+                        </div>
                     </TableCell>
-                    <TableCell className="px-4 py-2"><Skeleton className="h-4 w-[250px]" /></TableCell>
-                    <TableCell className="px-4 py-2 w-[180px]"><Skeleton className="h-4 w-[100px]" /></TableCell>
-                    <TableCell className="px-4 py-2 w-[180px]"><Skeleton className="h-4 w-[100px]" /></TableCell>
-                    <TableCell className="px-4 py-2 w-[180px]"><Skeleton className="h-4 w-[80px]" /></TableCell>
-                    <TableCell className="px-4 py-2 text-right w-[50px]">
-                        <Skeleton className="h-8 w-8 ml-auto" />
+                    <TableCell className="px-2 py-2">
+                        <Skeleton className="h-4 w-[60%] min-w-[150px]" />
+                    </TableCell>
+                    <TableCell className="px-2 py-2 w-[180px] hidden xl:table-cell">
+                        <Skeleton className="h-4 w-[100px]" />
+                    </TableCell>
+                    <TableCell className="px-2 py-2 w-[180px] hidden lg:table-cell">
+                        <Skeleton className="h-4 w-[100px]" />
+                    </TableCell>
+                    <TableCell className="px-2 py-2 w-[180px] hidden xl:table-cell">
+                        <Skeleton className="h-4 w-[80px]" />
+                    </TableCell>
+                    <TableCell className="px-2 py-2 text-right w-[50px]">
+                        <div className="flex justify-end">
+                            <Skeleton className="h-8 w-8" />
+                        </div>
                     </TableCell>
                 </TableRow>
             ))}

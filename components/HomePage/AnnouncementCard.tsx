@@ -42,12 +42,8 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
     // Category Color Mapping (consistent with Admin columns)
     const categoryColors: Record<string, string> = {
         'ประชาสัมพันธ์': 'bg-blue-500/15 text-blue-700 dark:text-blue-400 hover:bg-blue-500/25 border-blue-200/50',
-        'news': 'bg-blue-500/15 text-blue-700 dark:text-blue-400 hover:bg-blue-500/25 border-blue-200/50',
         'กิจกรรม': 'bg-orange-500/15 text-orange-700 dark:text-orange-400 hover:bg-orange-500/25 border-orange-200/50',
-        'activity': 'bg-orange-500/15 text-orange-700 dark:text-orange-400 hover:bg-orange-500/25 border-orange-200/50',
-        'system': 'bg-destructive/15 text-destructive hover:bg-destructive/25 border-destructive/20',
         'แจ้งเตือนระบบ': 'bg-destructive/15 text-destructive hover:bg-destructive/25 border-destructive/20',
-        'official': 'bg-sky-500/15 text-sky-700 dark:text-sky-400 hover:bg-sky-500/25 border-sky-200/50',
         'ระเบียบ/คำสั่ง': 'bg-sky-500/15 text-sky-700 dark:text-sky-400 hover:bg-sky-500/25 border-sky-200/50',
     };
 
@@ -90,7 +86,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                                 {category}
                             </Badge>
                             {displayDate && (
-                                <div className="flex items-center text-xs text-muted-foreground font-sarabun bg-muted/50 px-2 py-0.5 rounded-full whitespace-nowrap">
+                                <div className="flex items-center text-xs text-muted-foreground font-sarabun bg-muted/50 px-2 py-0.5 rounded-full whitespace-nowrap border">
                                     <Calendar className="w-3 h-3 mr-1" />
                                     <span>{displayDate}</span>
                                 </div>
@@ -141,7 +137,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                             />
                         </div>
                     )}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between">
                         <Badge
                             variant="outline"
                             className={`rounded-full px-3 py-1 text-sm font-normal flex items-center gap-1.5 w-fit border-transparent ${badgeColorClass}`}
@@ -150,7 +146,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                             {category}
                         </Badge>
                         {displayDate && (
-                            <div className="flex items-center text-sm text-muted-foreground font-sarabun bg-muted px-2.5 py-1 rounded-full">
+                            <div className="flex items-center text-sm text-muted-foreground font-sarabun bg-muted px-2.5 py-1 rounded-full border">
                                 <Calendar className="w-3.5 h-3.5 mr-1.5" />
                                 <span>{displayDate}</span>
                             </div>

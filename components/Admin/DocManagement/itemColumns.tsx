@@ -63,7 +63,7 @@ export const getItemColumns = ({
         helper.custom({
             accessorKey: 'name',
             header: (
-                <Button variant="ghost" onClick={() => onSort?.('name')} className="hover:bg-transparent px-0 font-bold uppercase tracking-wider text-muted-foreground justify-start w-1/2">
+                <Button variant="ghost" onClick={() => onSort?.('name')} className="hover:bg-transparent font-bold uppercase tracking-wider text-muted-foreground justify-start w-1/2 pl-0">
                     ชื่อ
                     {getSortIcon('name')}
                 </Button>
@@ -72,7 +72,7 @@ export const getItemColumns = ({
             className: "truncate max-w-[1px]", // Force fluid width and truncation
             cell: (item) => (
                 <div
-                    className={`hover:underline font-medium truncate block w-full ${item.type === 'folder' ? 'cursor-pointer hover:text-primary transition-colors' : 'text-foreground'}`}
+                    className={`hover:underline pl-3 font-medium truncate block w-full ${item.type === 'folder' ? 'cursor-pointer hover:text-primary transition-colors' : 'text-foreground'}`}
                     onClick={() => onItemClick(item)}
                     title={item.type === 'file' && item.filename ? item.filename : (item.name || "")}
                 >
@@ -85,13 +85,13 @@ export const getItemColumns = ({
         helper.date('created', 'สร้างเมื่อ', {
             sortable: true,
             onSort: onSort ? () => onSort('created') : undefined,
-            headerClassName: "w-[180px] hidden xl:table-cell",
+            headerClassName: "w-[180px] hidden xl:table-cell px-2",
             className: "w-[180px] text-muted-foreground text-sm hidden xl:table-cell",
         }),
         helper.date('modified', 'แก้ไขล่าสุด', {
             sortable: true,
             onSort: onSort ? () => onSort('modified') : undefined,
-            headerClassName: "w-[180px] hidden lg:table-cell",
+            headerClassName: "w-[180px] hidden lg:table-cell px-2",
             className: "w-[180px] text-muted-foreground text-sm hidden lg:table-cell",
         }),
         helper.text('modifiedBy', 'แก้ไขโดย', {

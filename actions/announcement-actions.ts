@@ -138,6 +138,9 @@ export const updateAnnouncement = async (id: number, formData: FormData): Promis
         if (title) backendFormData.append('title', title);
         if (content) backendFormData.append('content', content);
 
+        const category = formData.get('category') as string;
+        if (category) backendFormData.append('category', category);
+
         // Handle logic for status updates if needed
         const status = formData.get('status') as string;
         if (status) backendFormData.append('status', status);

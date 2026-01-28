@@ -87,7 +87,7 @@ export function DataTable<T extends { id: string | number }>({
                                         </TableCell>
                                     )}
                                     {columns.map((column, index) => (
-                                        <TableCell key={index} className={`px-3 py-2 ${column.className ?? ''}`}>{column.cell(item)}</TableCell>
+                                        <TableCell key={index} className={`px-2 py-2 ${column.className ?? ''}`}>{column.cell(item)}</TableCell>
                                     ))}
                                 </TableRow>
                             ))

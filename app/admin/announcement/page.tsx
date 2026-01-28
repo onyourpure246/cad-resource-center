@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 const actionButtons = (
   <>
-    <Button variant="outline" className="cursor-pointer" asChild>
+    <Button variant="default" className="cursor-pointer" asChild>
       <Link href="/admin/announcement/create">
         <CirclePlus className=" mr-2 h-4 w-4" /> เพิ่มประกาศใหม่
       </Link>

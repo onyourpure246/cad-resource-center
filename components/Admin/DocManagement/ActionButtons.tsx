@@ -59,7 +59,7 @@ const ActionButtons = ({ parentId, onRefresh, selectedItems = [] }: ActionButton
     }
 
     return (
-        <div className="flex items-center gap-2 justify-between">
+        <div className="flex items-center gap-2">
             <Button size="default" variant="outline" onClick={onRefresh} className="cursor-pointer">
                 <FolderSync className="mr-2 h-4 w-4" /> รีเฟรช
             </Button>

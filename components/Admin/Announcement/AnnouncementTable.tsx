@@ -54,7 +54,7 @@ const AnnouncementTable = ({ announcements, isLoading }: AnnouncementTableProps)
         <div className="space-y-4">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <div className="flex items-center justify-between mb-4">
-                    <TabsList className="bg-muted/50 p-1 gap-1 relative overflow-hidden">
+                    <TabsList className="bg-muted/50 gap-1 relative overflow-hidden">
                         {tabs.map((tab) => {
                             // Define exact active classes for each tab based on StatusBadge values
                             // We explicitly use data-[state=active] to override default component styles
@@ -64,23 +64,23 @@ const AnnouncementTable = ({ announcements, isLoading }: AnnouncementTableProps)
                             switch (tab.value) {
                                 case "published":
                                     // bg-emerald-500 text-white
-                                    activeClass = "data-[state=active]:bg-emerald-500 data-[state=active]:text-white data-[state=active]:hover:bg-emerald-600";
+                                    activeClass = "data-[state=active]:text-white";
                                     bgClass = "bg-emerald-500";
                                     break;
                                 case "draft":
                                     // bg-amber-500/15 text-amber-700
-                                    activeClass = "data-[state=active]:bg-amber-500/15 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400 data-[state=active]:hover:bg-amber-500/25 data-[state=active]:border-amber-200/50";
+                                    activeClass = "data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400 data-[state=active]:border-amber-200/50";
                                     bgClass = "bg-amber-500/15";
                                     break;
                                 case "archived":
                                     // bg-muted text-muted-foreground
-                                    activeClass = "data-[state=active]:bg-muted data-[state=active]:text-muted-foreground data-[state=active]:hover:bg-muted";
+                                    activeClass = "data-[state=active]:text-muted-foreground";
                                     bgClass = "bg-muted";
                                     break;
                                 case "all":
                                 default:
                                     // bg-primary text-primary-foreground
-                                    activeClass = "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground";
+                                    activeClass = "data-[state=active]:text-primary-foreground";
                                     bgClass = "bg-primary";
                                     break;
                             }
@@ -90,7 +90,7 @@ const AnnouncementTable = ({ announcements, isLoading }: AnnouncementTableProps)
                                     key={tab.value}
                                     value={tab.value}
                                     className={cn(
-                                        "relative z-10 transition-none data-[state=active]:shadow-none",
+                                        "relative z-10 transition-none data-[state=active]:shadow-none data-[state=active]:bg-transparent",
                                         activeClass,
                                         // Default non-active state
                                         activeTab !== tab.value && "text-muted-foreground hover:text-foreground hover:bg-transparent"

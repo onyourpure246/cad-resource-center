@@ -42,12 +42,12 @@ const DownloadCard = ({ item }: DownloadCardProps) => {
                             <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
                                 <div className="flex items-center gap-1.5">
                                     <Calendar className="w-3.5 h-3.5" />
-                                    <span>{item.updated_at}</span>
+                                    <span>{item.created_at}</span>
                                 </div>
                                 <div className="w-1 h-1 rounded-full bg-border" />
                                 <div className="flex items-center gap-1.5">
                                     <Clock className="w-3.5 h-3.5" />
-                                    <span>อัปเดตล่าสุด</span>
+                                    <span>{item.updated_at}</span>
                                 </div>
                             </div>
                         </div>

@@ -16,19 +16,15 @@ const defaultStatusColorMapping: Record<string, string> = {
     suspended: 'bg-red-100 text-red-800 hover:bg-red-100 border-transparent',
 
     // Publication Status
-    published: 'bg-emerald-500 text-white hover:bg-emerald-600 border-none', // User preferred vibrant green
+    published: 'bg-emerald-500 text-white hover:bg-emerald-600 border', // User preferred vibrant green
     draft: 'bg-amber-500/15 text-amber-700 dark:text-amber-400 hover:bg-amber-500/25 border-amber-200/50',
-    archived: 'bg-muted text-muted-foreground hover:bg-muted border-transparent',
+    archived: 'bg-muted text-muted-foreground hover:bg-muted border',
 
     // Announcement Categories
     'ประชาสัมพันธ์': 'bg-blue-500/15 text-blue-700 dark:text-blue-400 hover:bg-blue-500/25 border-blue-200/50',
-    'news': 'bg-blue-500/15 text-blue-700 dark:text-blue-400 hover:bg-blue-500/25 border-blue-200/50',
     'กิจกรรม': 'bg-orange-500/15 text-orange-700 dark:text-orange-400 hover:bg-orange-500/25 border-orange-200/50',
-    'activity': 'bg-orange-500/15 text-orange-700 dark:text-orange-400 hover:bg-orange-500/25 border-orange-200/50',
     'แจ้งเตือนระบบ': 'bg-destructive/15 text-destructive hover:bg-destructive/25 border-destructive/20',
-    'system': 'bg-destructive/15 text-destructive hover:bg-destructive/25 border-destructive/20',
     'ระเบียบ/คำสั่ง': 'bg-sky-500/15 text-sky-700 dark:text-sky-400 hover:bg-sky-500/25 border-sky-200/50',
-    'official': 'bg-sky-500/15 text-sky-700 dark:text-sky-400 hover:bg-sky-500/25 border-sky-200/50',
 
     // Roles
     admin: 'bg-red-100 text-red-800 hover:bg-red-100 border-transparent',

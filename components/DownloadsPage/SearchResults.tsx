@@ -4,6 +4,7 @@ import React from 'react';
 import { File } from 'lucide-react';
 import Link from 'next/link';
 import { SearchResultItem } from '@/actions/search-actions';
+import { Badge } from '@/components/ui/badge';
 
 interface SearchResultsProps {
     results: SearchResultItem[];
@@ -11,6 +12,31 @@ interface SearchResultsProps {
 }
 
 const SearchResults: React.FC<SearchResultsProps> = ({ results, query }) => {
+    // Helper function to highlight text
+    const highlightText = (text: string, highlight: string) => {
+        if (!highlight.trim()) {
+            return text;
+        }
+
+        // Escape special regex characters
+        const escapedHighlight = highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const parts = text.split(new RegExp(`(${escapedHighlight})`, 'gi'));
+
+        return (
+            <span>
+                {parts.map((part, i) =>
+                    part.toLowerCase() === highlight.toLowerCase() ? (
+                        <span key={i} className="bg-primary/20 text-primary font-bold rounded px-0.5">
+                            {part}
+                        </span>
+                    ) : (
+                        part
+                    )
+                )}
+            </span>
+        );
+    };
+
     return (
         <div className="container mx-auto max-w-[1920px] px-4 py-8 pb-20">
             <div className="mb-6">
@@ -30,12 +56,20 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results, query }) => {
                                     <div>
                                         <h3 className="font-semibold text-lg hover:text-primary transition-colors">
                                             <a href={`/downloads/${item.folderId}`} className="hover:underline">
-                                                {item.name || item.filename}
+                                                {highlightText(item.name || item.filename || "", query)}
                                             </a>
                                         </h3>
                                         <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                                            {item.description || "ไม่มีคำอธิบาย"}
+                                            {item.description ? highlightText(item.description, query) : "ไม่มีคำอธิบาย"}
                                         </p>
+                                    </div>
+                                    <div className="flex flex-col items-end gap-2 ml-4 shrink-0">
+                                        <Badge variant="secondary" className="shrink-0 text-xs font-normal bg-muted text-muted-foreground">
+                                            {item.filename?.split('.').pop()?.toUpperCase() || 'FILE'}
+                                        </Badge>
+                                        <span className="text-xs text-muted-foreground text-right">
+                                            {highlightText(item.filename || "", query)}
+                                        </span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">

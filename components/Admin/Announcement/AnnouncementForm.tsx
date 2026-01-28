@@ -252,7 +252,7 @@ const AnnouncementForm = ({ announcement, className }: AnnouncementFormProps) =>
                         <button type="submit" ref={restoreBtnRef} name="status" value="Draft" className="hidden" />
                     </div>
 
-                    <div className="flex justify-end gap-2 mt-8">
+                    <div className="flex justify-end gap-2 mt-4 mb-4">
                         <Link href="/admin/announcement">
                             <Button variant="outline" type="button" className='cursor-pointer'>
                                 {isReadOnly ? 'ย้อนกลับ' : 'ยกเลิก'}

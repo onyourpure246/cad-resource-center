@@ -89,7 +89,7 @@ export const createColumnHelper = <T,>(): ColumnHelper<T> => {
                     <Button
                         variant="ghost"
                         onClick={() => options.onSort?.(accessorKey)}
-                        className="hover:bg-transparent px-0 font-bold uppercase tracking-wider text-muted-foreground justify-start w-full"
+                        className="hover:bg-transparent !px-0 font-bold uppercase tracking-wider text-muted-foreground justify-start w-full"
                     >
                         {header}
                         <ArrowUpDown className="ml-2 h-4 w-4" />

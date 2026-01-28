@@ -4,7 +4,7 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin"
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin"
 import { ListPlugin } from "@lexical/react/LexicalListPlugin"
 
-import { ContentEditable } from "@/components/editor/editor-ui/content-editable"
+import { ContentEditable } from "@/components/Editor/editor-ui/content-editable"
 import { ToolbarPlugin } from "./toolbar-plugin"
 
 export function Plugins() {
