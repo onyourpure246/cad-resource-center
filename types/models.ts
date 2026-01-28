@@ -43,7 +43,8 @@ export interface File {
 }
 
 export interface Item {
-    id: number;
+    id: string;
+    resourceId: number;
     name: string | null;
     description?: string | null;
     abbr?: string | null;

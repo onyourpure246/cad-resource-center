@@ -6,22 +6,24 @@ import { Item } from '@/types/models';
 
 const transformDataToItems = (data: Awaited<ReturnType<typeof adminGetRootFolder>>): Item[] => {
     const transformedFolders: Item[] = data.folders.map(folder => ({
-        id: folder.id,
+        id: `folder-${folder.id}`,
+        resourceId: folder.id,
         name: folder.name,
         type: "folder",
-        created: folder.created_at?.split('T')[0] || '',
-        modified: folder.updated_at?.split('T')[0] || '',
+        created: folder.created_at || '',
+        modified: folder.updated_at || '',
         modifiedBy: folder.updated_by?.toString() || "Admin",
         mui_icon: folder.mui_icon,
         mui_colour: folder.mui_colour,
     }));
 
     const transformedFiles: Item[] = data.files.map(file => ({
-        id: file.id,
+        id: `file-${file.id}`,
+        resourceId: file.id,
         name: file.name,
         type: "file",
-        created: file.created_at?.split('T')[0] || '',
-        modified: file.updated_at?.split('T')[0] || '',
+        created: file.created_at || '',
+        modified: file.updated_at || '',
         modifiedBy: file.updated_by?.toString() || "Admin",
         mui_icon: file.mui_icon,
         mui_colour: file.mui_colour,

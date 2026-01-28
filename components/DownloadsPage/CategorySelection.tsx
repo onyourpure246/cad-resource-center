@@ -10,16 +10,17 @@ const CategorySelection = async () => {
     const folders = folderContents.folders;
     return (
         <div className='flex flex-col gap-6 pb-20'>
-            {/* Hero Section */}
-            <HeroSection />
 
             {/* Category Grid */}
-            <div className='container mx-auto max-w-[1920px] px-4'>
-                <div className="flex items-center gap-2 mb-6">
-                    <Boxes className="w-6 h-6 text-primary" />
-                    <h2 className="text-2xl font-semibold">หมวดหมู่เอกสาร</h2>
+            {/* Category Banner Strip */}
+            <div className="w-full bg-primary text-primary-foreground py-3 shadow-md">
+                <div className='container mx-auto max-w-full px-4 flex items-center gap-3'>
+                    <Boxes className="w-5 h-5 text-primary-foreground/90" />
+                    <h2 className="text-xl font-medium tracking-wide">หมวดหมู่เอกสาร</h2>
                 </div>
+            </div>
 
+            <div className='container mx-auto max-w-[1920px] px-4'>
                 {/* Category Grid */}
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
                     {folders.map((folder) => (

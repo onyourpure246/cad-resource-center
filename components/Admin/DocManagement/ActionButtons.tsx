@@ -23,7 +23,7 @@ const ActionButtons = ({ parentId, onRefresh, selectedItems = [] }: ActionButton
     if (selectedItems.length > 0) {
         // Transform items for bulk actions
         const bulkItems: BulkItem[] = selectedItems.map(item => ({
-            id: item.id,
+            id: item.resourceId,
             type: item.type,
             name: item.name || '' // Ensure name is a string
         }));

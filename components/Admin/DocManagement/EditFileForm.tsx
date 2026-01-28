@@ -36,7 +36,7 @@ const EditFileForm = ({ file, onSuccess, onCancel }: EditFileFormProps) => {
             </DrawerHeader>
             <FormContainer action={formAction} state={state}>
                 <div className="h-full flex flex-col">
-                    <input type="hidden" name="id" value={file.id} />
+                    <input type="hidden" name="id" value={file.resourceId} />
                     {/* Pass parent ID to server action for context (to check duplicates in the same folder) */}
                     <input type="hidden" name="parent" value={file.parent || ''} />
                     {/* Preserve original name if nice name is used, or maybe backend handles it. But we must send what we edit. */}

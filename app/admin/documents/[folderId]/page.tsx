@@ -33,7 +33,7 @@ const FolderContentPage = () => {
         if (item.type === 'folder') {
             // Navigate to the sub-folder
             startTransition(() => {
-                router.push(`/admin/documents/${item.id}?abbr=${item.abbr || ''}`);
+                router.push(`/admin/documents/${item.resourceId}?abbr=${item.abbr || ''}`);
             });
         } else {
             console.log(`Clicked on file: ${item.name} (ID: ${item.id})`);

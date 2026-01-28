@@ -27,27 +27,29 @@ export const useFolderContents = (folderId: number) => {
             }
 
             const transformedFolders: FolderItem[] = data.folders.map((folder: any) => ({
-                id: folder.id,
+                id: `folder-${folder.id}`,
+                resourceId: folder.id,
                 name: folder.name,
                 description: folder.description,
                 abbr: folder.abbr,
                 type: "folder",
-                created: folder.created_at?.split('T')[0] || '',
-                modified: folder.updated_at?.split('T')[0] || '',
+                created: folder.created_at || '',
+                modified: folder.updated_at || '',
                 modifiedBy: folder.updated_by?.toString() || "Admin",
                 mui_icon: folder.mui_icon,
                 mui_colour: folder.mui_colour,
             }));
 
             const transformedFiles: FolderItem[] = data.files.map((file: any) => ({
-                id: file.id,
+                id: `file-${file.id}`,
+                resourceId: file.id,
                 name: file.name,
                 description: file.description,
                 filename: file.filename,
                 parent: file.parent,
                 type: "file",
-                created: file.created_at?.split('T')[0] || '',
-                modified: file.updated_at?.split('T')[0] || '',
+                created: file.created_at || '',
+                modified: file.updated_at || '',
                 modifiedBy: file.updated_by?.toString() || "Admin",
                 mui_icon: file.mui_icon,
                 mui_colour: file.mui_colour,

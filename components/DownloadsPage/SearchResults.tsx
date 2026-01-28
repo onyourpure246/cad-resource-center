@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
-import { File } from 'lucide-react';
+import { File, X } from 'lucide-react';
 import Link from 'next/link';
 import { SearchResultItem } from '@/actions/search-actions';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface SearchResultsProps {
     results: SearchResultItem[];
@@ -40,7 +41,15 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results, query }) => {
     return (
         <div className="container mx-auto max-w-[1920px] px-4 py-8 pb-20">
             <div className="mb-6">
-                <h2 className="text-2xl font-bold mb-2">ผลการค้นหาสำหรับ: <span className="text-primary">"{query}"</span></h2>
+                <div className="flex items-center gap-3 mb-2">
+                    <h2 className="text-2xl font-bold">ผลการค้นหาสำหรับ: <span className="text-primary">"{query}"</span></h2>
+                    <Link href="/downloads">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-muted" title="ล้างการค้นหา">
+                            <X className="h-5 w-5" />
+                            <span className="sr-only">ล้างการค้นหา</span>
+                        </Button>
+                    </Link>
+                </div>
                 <p className="text-muted-foreground">พบเอกสารทั้งหมด {results.length} รายการ</p>
             </div>
 

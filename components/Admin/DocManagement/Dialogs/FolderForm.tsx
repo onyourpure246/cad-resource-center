@@ -43,7 +43,7 @@ const FolderForm = ({ folder, parentId, onSuccess }: FolderFormProps) => {
         <FormContainer action={formAction} state={state}>
             {/* Hidden Fields */}
             {isEditMode ? (
-                <input type="hidden" name="id" value={folder!.id} />
+                <input type="hidden" name="id" value={folder!.resourceId} />
             ) : null}
 
             {/* Parent ID is needed for Create, and optional for Update (but usually preserved or handled by server if omitted/same) */}

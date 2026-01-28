@@ -1,60 +1,103 @@
 import React from 'react';
-import { Folder, ChevronRight, ChevronDown, Check, Loader2 } from "lucide-react";
-import { FolderTreeProps } from '../../../types/MoveDialog.types';
+import { Folder, FolderOpen, ChevronRight, Check, Loader2 } from "lucide-react";
+import { FolderTreeProps } from '@/types/MoveDialog.types';
 
-export const FolderTree = ({ nodes, selectedFolderId, itemId, onToggle, onSelect, level = 0 }: FolderTreeProps) => {
+export const FolderTree = ({ nodes, selectedFolderId, itemId, itemType, onToggle, onSelect, level = 0 }: FolderTreeProps) => {
+    // Only show folders, not files (though logic might handle this upstream, good to be safe if reused)
+    // Assuming nodes are only folders based on useMoveDialog logic
+
     return (
         <>
-            {nodes.map(node => (
-                <div key={node.id}>
-                    <div
-                        className={`flex items-center p-2 rounded-md cursor-pointer hover:bg-accent ${selectedFolderId === node.id ? 'bg-accent' : ''}`}
-                        style={{ paddingLeft: `${(level * 16) + 8}px` }}
-                        onClick={() => {
-                            if (node.id !== itemId) {
-                                onSelect(node.id);
-                            }
-                        }}
-                    >
+            {nodes.map(node => {
+                const isSelected = selectedFolderId === node.id;
+                // Fix: Only disable if we are moving a FOLDER and the ID matches.
+                // If we are moving a FILE, it cannot be a folder node, so no collision check needed.
+                const isDisabled = itemType === 'folder' && node.id === itemId;
+                const hasChildren = node.children && node.children.length > 0;
+                // If hasLoaded is false, we assume it MIGHT have children, so show chevron. 
+                // If loaded and no children, no chevron.
+                const showChevron = !node.hasLoaded || hasChildren;
+
+                return (
+                    <div key={node.id}>
                         <div
-                            className="p-1 mr-1 hover:bg-muted rounded-sm cursor-pointer"
-                            onClick={(e) => onToggle(node, e)}
+                            className={`
+                                group flex items-center py-2 pr-2 rounded-md cursor-pointer transition-colors px-2
+                                ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}
+                                ${isSelected
+                                    ? 'bg-primary/10 text-primary font-medium'
+                                    : isDisabled
+                                        ? ''
+                                        : 'hover:bg-muted/60 text-foreground'
+                                }
+                            `}
+                            style={{
+                                paddingLeft: `${(level * 12) + 8}px` // Reduced indent slightly for tighter tree
+                            }}
+                            onClick={() => {
+                                if (!isDisabled) {
+                                    onSelect(node.id);
+                                }
+                            }}
                         >
-                            {node.isLoading ? (
-                                <Loader2 className="h-3 w-3 animate-spin" />
-                            ) : (
-                                // Only show chevron if it's not the item itself (can't move into itself) 
-                                // AND (it has children OR we haven't loaded yet so it MIGHT have children)
-                                // Actually, even if we loaded and it has no children, we might want to show empty state or no chevron.
-                                // If hasLoaded is true and children is empty, no chevron.
-                                (node.id !== itemId) && (!node.hasLoaded || (node.children && node.children.length > 0)) ? (
-                                    node.isOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />
+                            {/* Chevron Toggle */}
+                            <div
+                                className={`
+                                    flex items-center justify-center h-6 w-6 mr-1 rounded-sm transition-colors
+                                    ${!showChevron ? 'invisible' : ''}
+                                    ${!isDisabled && 'hover:bg-muted/80'}
+                                `}
+                                onClick={(e) => {
+                                    if (!isDisabled) {
+                                        e.stopPropagation();
+                                        onToggle(node, e);
+                                    }
+                                }}
+                            >
+                                {node.isLoading ? (
+                                    <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />
                                 ) : (
-                                    <div className="w-3 h-3" /> // Spacer
-                                )
+                                    <ChevronRight
+                                        className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${node.isOpen ? 'rotate-90' : ''}`}
+                                    />
+                                )}
+                            </div>
+
+                            {/* Folder Icon */}
+                            {node.isOpen ? (
+                                <FolderOpen className={`h-5 w-5 mr-3 transition-colors ${isSelected ? 'text-primary fill-primary/20' : 'text-blue-500'}`} />
+                            ) : (
+                                <Folder className={`h-5 w-5 mr-3 transition-colors ${isSelected ? 'text-primary fill-primary/20' : 'text-blue-500'}`} />
+                            )}
+
+                            {/* Folder Name */}
+                            <span className="flex-1 text-sm truncate select-none">
+                                {node.name}
+                            </span>
+
+                            {/* Selection Indicator */}
+                            {isSelected && (
+                                <Check className="h-4 w-4 text-primary flex-shrink-0 animate-in zoom-in spin-in-50 duration-300" />
                             )}
                         </div>
 
-                        <Folder className={`h-4 w-4 mr-2 ${node.id === itemId ? 'text-muted-foreground/50' : 'text-blue-500'}`} />
-                        <span className={`flex-1 text-sm truncate ${node.id === itemId ? 'text-muted-foreground line-through' : ''}`}>
-                            {node.name}
-                        </span>
-                        {selectedFolderId === node.id && <Check className="h-4 w-4 text-primary ml-2" />}
+                        {/* Recursive Children */}
+                        {node.isOpen && node.children && (
+                            <div className="animate-in slide-in-from-top-1 duration-200 fade-in-0">
+                                <FolderTree
+                                    nodes={node.children}
+                                    selectedFolderId={selectedFolderId}
+                                    itemId={itemId}
+                                    itemType={itemType}
+                                    onToggle={onToggle}
+                                    onSelect={onSelect}
+                                    level={level + 1}
+                                />
+                            </div>
+                        )}
                     </div>
-                    {node.isOpen && node.children && (
-                        <div>
-                            <FolderTree
-                                nodes={node.children}
-                                selectedFolderId={selectedFolderId}
-                                itemId={itemId}
-                                onToggle={onToggle}
-                                onSelect={onSelect}
-                                level={level + 1}
-                            />
-                        </div>
-                    )}
-                </div>
-            ))}
+                );
+            })}
         </>
     );
 };

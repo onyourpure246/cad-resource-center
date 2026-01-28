@@ -36,7 +36,7 @@ const HeroSection = () => {
 
     return (
         <LazyMotion features={domAnimation}>
-            <div className="relative py-4 md:py-4 overflow-hidden min-h-[300px] flex items-center justify-center" onMouseMove={handleMouseMove}>
+            <div className="relative py-4 md:py-4 overflow-hidden min-h-[290px] flex items-center justify-center" onMouseMove={handleMouseMove}>
                 <HeroBackground mouseX={springX} mouseY={springY} />
                 <div className="container font-kanit mx-auto max-w-[1920px] px-4 text-center relative z-10">
                     <p className="text-lg md:text-lg text-foreground/80 font-medium max-w-2xl mx-auto mb-6 drop-shadow-md dark:text-muted-foreground dark:drop-shadow-none">
@@ -62,7 +62,7 @@ const HeroSection = () => {
                                     <Input
                                         type="text"
                                         placeholder="ค้นหาเอกสาร..."
-                                        className="flex-1 h-full py-1 text-xl font-medium bg-transparent dark:bg-transparent border-none shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/70 text-foreground selection:bg-primary/20 leading-normal"
+                                        className="flex-1 h-full py-1 text-2xl font-medium bg-transparent dark:bg-transparent border-none shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/70 text-foreground selection:bg-primary/20 leading-normal"
                                         value={query}
                                         onChange={(e) => setQuery(e.target.value)}
                                     />

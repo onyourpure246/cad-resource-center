@@ -90,7 +90,7 @@ export const RowActions = ({ item, parentId, onRefresh }: RowActionsProps) => {
                 />
 
                 <DeleteConfirmationDialog
-                    id={item.id}
+                    id={item.resourceId}
                     name={item.name}
                     type={item.type}
                     onSuccess={onRefresh}

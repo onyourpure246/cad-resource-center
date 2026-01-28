@@ -24,7 +24,7 @@ const DocumentManagementPage = () => {
     const handleItemClick = (item: Item) => {
         if (item.type === 'folder') {
             startTransition(() => {
-                router.push(`/admin/documents/${item.id}`);
+                router.push(`/admin/documents/${item.resourceId}`);
             });
         }
     };

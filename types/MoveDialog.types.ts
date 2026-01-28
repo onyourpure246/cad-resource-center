@@ -1,7 +1,7 @@
-import { Folder as FolderType } from '@/types/models';
+import { Folder as FolderType, Item } from '@/types/models';
 
 export interface MoveDialogProps {
-    item: { id: number; name: string | null; type: 'folder' | 'file' };
+    item: Item;
     currentParentId: number | null;
     trigger: React.ReactNode;
     onMoveSuccess: () => void;
@@ -18,6 +18,7 @@ export interface FolderTreeProps {
     nodes: FolderNode[];
     selectedFolderId: number | null;
     itemId: number;
+    itemType: 'folder' | 'file';
     onToggle: (folder: FolderNode, e: React.MouseEvent) => void;
     onSelect: (id: number) => void;
     level?: number;

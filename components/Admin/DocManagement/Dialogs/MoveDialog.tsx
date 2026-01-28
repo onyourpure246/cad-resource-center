@@ -37,29 +37,49 @@ export const MoveDialog = ({ item, currentParentId, trigger, onMoveSuccess }: Mo
                 <DialogHeader>
                     <DialogTitle>ย้ายไปที่...</DialogTitle>
                 </DialogHeader>
-                <div className="py-4 max-h-[400px] overflow-y-auto">
-                    {isLoadingRoot ? (
-                        <div className="text-center text-sm text-muted-foreground">กำลังโหลด...</div>
-                    ) : (
-                        <div className="space-y-1">
-                            <div
-                                className={`flex items-center p-2 rounded-md cursor-pointer hover:bg-accent ${selectedFolderId === null ? 'bg-accent' : ''}`}
-                                onClick={() => setSelectedFolderId(null)}
-                            >
-                                <div className="w-5 mr-1" /> {/* Spacer for chevron */}
-                                <Folder className="h-4 w-4 mr-2 text-muted-foreground" />
-                                <span className="flex-1 text-sm">หน้าแรก (Root)</span>
-                                {selectedFolderId === null && <Check className="h-4 w-4 text-primary" />}
+                <div className="flex flex-col h-[400px]">
+                    <div className="text-sm text-muted-foreground mb-4">
+                        เลือกโฟลเดอร์ปลายทางสำหรับ "{item.name}"
+                    </div>
+
+                    <div className="flex-1 border rounded-md overflow-hidden bg-background/50">
+                        {isLoadingRoot ? (
+                            <div className="flex h-full items-center justify-center">
+                                <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                                    <span className="text-xs">กำลังโหลด...</span>
+                                </div>
                             </div>
-                            <FolderTree
-                                nodes={folders}
-                                selectedFolderId={selectedFolderId}
-                                itemId={item.id}
-                                onToggle={handleToggle}
-                                onSelect={setSelectedFolderId}
-                            />
-                        </div>
-                    )}
+                        ) : (
+                            <div className="h-full overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-muted-foreground/20 hover:scrollbar-thumb-muted-foreground/40">
+                                <div className="space-y-0.5">
+                                    <div
+                                        className={`flex items-center p-2 rounded-md cursor-pointer transition-colors ${selectedFolderId === null
+                                            ? 'bg-primary/10 text-primary font-medium'
+                                            : 'hover:bg-muted/60 text-foreground'
+                                            }`}
+                                        onClick={() => setSelectedFolderId(null)}
+                                    >
+                                        <div className="w-6 flex-shrink-0" /> {/* Spacer for chevron alignment */}
+                                        <Folder className={`h-5 w-5 mr-3 ${selectedFolderId === null ? 'text-primary fill-primary/20' : 'text-muted-foreground'}`} />
+                                        <span className="flex-1 text-sm">หน้าแรก (Root)</span>
+                                        {selectedFolderId === null && <Check className="h-4 w-4 text-primary animate-in zoom-in spin-in-50 duration-300" />}
+                                    </div>
+
+                                    <div className="my-1 border-t border-border/50 mx-2" /> {/* Divider */}
+
+                                    <FolderTree
+                                        nodes={folders}
+                                        selectedFolderId={selectedFolderId}
+                                        itemId={item.resourceId}
+                                        itemType={item.type}
+                                        onToggle={handleToggle}
+                                        onSelect={setSelectedFolderId}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <DialogFooter>
                     <Button variant="outline" onClick={() => setOpen(false)} disabled={isMoving}>ยกเลิก</Button>
