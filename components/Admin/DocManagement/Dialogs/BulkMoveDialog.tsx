@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     Dialog,
     DialogContent,
@@ -14,111 +14,26 @@ import { Button } from "@/components/ui/button";
 import { Folder, Check } from "lucide-react";
 import { FolderTree } from './FolderTree';
 import { toast } from 'sonner';
-import { bulkMoveItems, BulkItem } from '@/actions/bulk-actions';
-import { adminGetRootFolder, adminGetFolderById } from '@/actions/folder-actions';
-import { FolderNode } from '@/types/MoveDialog.types';
-
+import { bulkMoveItems } from '@/actions/bulk-actions';
+import { BulkItem } from "@/types/documents";
 import { BulkMoveDialogProps } from '@/types/components';
+import { useFolderTree } from '@/hooks/useFolderTree';
 
 export const BulkMoveDialog = ({ items, currentParentId, trigger, onSuccess }: BulkMoveDialogProps) => {
     const [open, setOpen] = useState(false);
-    const [folders, setFolders] = useState<FolderNode[]>([]);
-    const [selectedFolderId, setSelectedFolderId] = useState<number | null>(currentParentId);
-    const [isLoadingRoot, setIsLoadingRoot] = useState(false);
     const [isMoving, setIsMoving] = useState(false);
 
-    useEffect(() => {
-        if (open) {
-            fetchRootFolders();
-            setSelectedFolderId(currentParentId);
-        }
-    }, [open, currentParentId]);
-
-    const fetchRootFolders = async () => {
-        setIsLoadingRoot(true);
-        try {
-            const data = await adminGetRootFolder();
-            // Map to FolderNode (adding missing props with defaults)
-            const rootFolders: FolderNode[] = data.folders.map(f => ({
-                ...f,
-                children: [],
-                isOpen: false,
-                hasLoaded: false,
-                isLoading: false
-            }));
-            setFolders(rootFolders);
-        } catch (error) {
-            console.error("Failed to fetch folders", error);
-            toast.error("ไม่สามารถโหลดข้อมูลโฟลเดอร์ได้");
-        } finally {
-            setIsLoadingRoot(false);
-        }
-    };
-
-    const updateNodeInTree = (nodes: FolderNode[], id: number, updates: Partial<FolderNode>): FolderNode[] => {
-        return nodes.map(node => {
-            if (node.id === id) {
-                return { ...node, ...updates };
-            }
-            if (node.children) {
-                return { ...node, children: updateNodeInTree(node.children, id, updates) };
-            }
-            return node;
-        });
-    };
-
-    const findNode = (nodes: FolderNode[], id: number): FolderNode | undefined => {
-        for (const node of nodes) {
-            if (node.id === id) return node;
-            if (node.children) {
-                const found = findNode(node.children, id);
-                if (found) return found;
-            }
-        }
-        return undefined;
-    };
-
-    const handleToggle = async (folderId: number, e: React.MouseEvent) => {
-        e.stopPropagation();
-
-        const node = findNode(folders, folderId);
-        if (!node) return;
-
-        if (node.isOpen) {
-            setFolders(prev => updateNodeInTree(prev, folderId, { isOpen: false }));
-        } else {
-            if (node.hasLoaded) {
-                setFolders(prev => updateNodeInTree(prev, folderId, { isOpen: true }));
-            } else {
-                setFolders(prev => updateNodeInTree(prev, folderId, { isOpen: true, isLoading: true }));
-                await fetchChildren(folderId);
-            }
-        }
-    };
-
-    const fetchChildren = async (folderId: number) => {
-        try {
-            const data = await adminGetFolderById(folderId);
-            const children: FolderNode[] = data.folders.map(f => ({
-                ...f,
-                children: [],
-                isOpen: false,
-                hasLoaded: false,
-                isLoading: false
-            }));
-
-            setFolders(prev => updateNodeInTree(prev, folderId, {
-                isOpen: true,
-                isLoading: false,
-                hasLoaded: true,
-                children: children
-            }));
-        } catch (error) {
-            console.error("Failed to fetch subfolders", error);
-            toast.error("ไม่สามารถโหลดโฟลเดอร์ย่อยได้");
-            setFolders(prev => updateNodeInTree(prev, folderId, { isLoading: false }));
-        }
-    };
+    // Use the custom hook for tree logic
+    const {
+        folders,
+        selectedFolderId,
+        setSelectedFolderId,
+        isLoadingRoot,
+        handleToggle
+    } = useFolderTree({
+        initialParentId: currentParentId,
+        enableAutoFetch: open
+    });
 
     const handleMove = async () => {
         if (selectedFolderId === currentParentId) {
@@ -146,11 +61,6 @@ export const BulkMoveDialog = ({ items, currentParentId, trigger, onSuccess }: B
         } finally {
             setIsMoving(false);
         }
-    };
-
-    // Helper to adapt handleToggle signature for FolderTree
-    const onToggleWrapper = (folder: any, e: React.MouseEvent) => {
-        handleToggle(folder.id, e);
     };
 
     return (
@@ -183,7 +93,8 @@ export const BulkMoveDialog = ({ items, currentParentId, trigger, onSuccess }: B
                                 nodes={folders}
                                 selectedFolderId={selectedFolderId}
                                 itemId={-1} // Valid itemId required by FolderTree to disable self-selection, passing -1 as safely different from any real ID
-                                onToggle={onToggleWrapper}
+                                itemType="file" // Dummy type to satisfy prop requirements, logic disabled by itemId=-1
+                                onToggle={handleToggle}
                                 onSelect={setSelectedFolderId}
                             />
                         </div>

@@ -13,7 +13,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import React, { useState, useTransition } from 'react';
 import { toast } from 'sonner';
-import { bulkDeleteItems, BulkItem } from '@/actions/bulk-actions'; // Ensure this path is correct
+import { bulkDeleteItems } from '@/actions/bulk-actions';
+import { BulkItem } from "@/types/documents";
 
 import { BulkDeleteDialogProps } from '@/types/components';
 

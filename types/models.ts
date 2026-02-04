@@ -12,6 +12,7 @@ export interface Folder {
     updated_by?: number;
     mui_icon?: string;
     mui_colour?: string;
+    isactive?: number;
 }
 
 export interface CurrentFolder {
@@ -57,6 +58,7 @@ export interface Item {
     mui_icon?: string;
     mui_colour?: string;
     downloadUrl?: string;
+    isactive?: number;
 }
 
 export interface DownloadItem {

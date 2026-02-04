@@ -1,7 +1,7 @@
 import type { NextAuthConfig } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import { verifyEmployeeStatus } from "./lib/backend-api-mock"
-import { getThaIDOwner } from "./lib/thaid-service"
+import { backendApi } from "@/lib/backend-api"
+import { getThaIDOwner } from "@/lib/thaid-service"
 
 export const authConfig = {
     pages: {
@@ -38,43 +38,44 @@ export const authConfig = {
     },
     providers: [
         Credentials({
-            name: "ThaID-Backend",
-            credentials: {
-                code: { label: "Code", type: "text" }
-            },
+            name: "ThaID",
+            credentials: { code: { label: "Code", type: "text" } },
             async authorize(credentials) {
                 const code = credentials.code as string;
                 if (!code) return null;
 
                 console.log("[Auth] Starting authentication flow...");
 
-                // 1. Exchange Code -> PID (via ThaID Service)
-                // This runs on Next.js Server Side
-                const thaidUser = await getThaIDOwner(code);
+                try {
+                    // 1. แลก Code เป็น PID จาก ThaID
+                    const thaidUser = await getThaIDOwner(code);
 
-                if (!thaidUser || !thaidUser.pid) {
-                    console.error("[Auth] Failed to retrieve PID from ThaID.");
+                    if (!thaidUser || !thaidUser.pid) {
+                        throw new Error("ThaID verification failed");
+                    }
+
+                    console.log(`[Auth] ThaID Verified. PID: ${thaidUser.pid}`);
+
+                    // 2. เช็คกับ Backend เรา
+                    const systemUser = await backendApi.verifyEmployee(thaidUser.pid);
+
+                    if (!systemUser) {
+                        console.error(`[Auth] PID ${thaidUser.pid} is not a valid employee.`);
+                        throw new Error("Access Denied: You are not an employee.");
+                    }
+
+                    // 3. สร้าง Session
+                    return {
+                        id: systemUser.id.toString(), // ใช้ ID ของเรา ไม่ใช่ PID
+                        name: systemUser.displayname, // ชื่อจาก DB เรา
+                        email: systemUser.username,   // หรือ PID
+                        image: null,
+                        role: systemUser.isadmin === 1 ? 'admin' : 'user' // ส่ง Role เข้า Session
+                    };
+                } catch (error) {
+                    console.error("[Auth] Authorize error:", error);
                     return null;
                 }
-
-                console.log(`[Auth] ThaID Verified. PID: ${thaidUser.pid}, Name: ${thaidUser.name}`);
-
-                // 2. Verify PID -> Employee Info (via Internal Backend)
-                // TODO: When Real API is ready, update verifyEmployeeStatus in /lib/backend-api-mock.ts to fetch from your actual endpoint.
-                const employeeInfo = await verifyEmployeeStatus(thaidUser.pid);
-
-                if (!employeeInfo) {
-                    console.error(`[Auth] PID ${thaidUser.pid} is not a valid employee.`);
-                    return null; // Reject login if not an employee
-                }
-
-                // 3. Return User Session
-                return {
-                    id: thaidUser.pid,
-                    name: thaidUser.name,
-                    email: employeeInfo.email,
-                    role: employeeInfo.role,
-                };
             }
         })
     ],

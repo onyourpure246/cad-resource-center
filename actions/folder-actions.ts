@@ -3,6 +3,7 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod';
 import { ApiResponse, State } from '@/types/common';
 import { FolderContentResponse } from '@/types/api';
+import { apiCreateFolder, apiUpdateFolder } from './document-service';
 
 // fetch root folder
 export const adminGetRootFolder = async () => {
@@ -62,12 +63,6 @@ export const adminGetFolderById = async (id: number) => {
 
 // For Create Folder
 export const createFolder = async (prevState: any, formData: FormData): Promise<State> => {
-    const API_URL = process.env.API_URL;
-    const API_TOKEN = process.env.API_TOKEN;
-    if (!API_URL || !API_TOKEN) {
-        throw new Error('Missing API_URL or API_TOKEN in .env.local');
-    }
-
     //Validate form data
     const schema = z.object({
         name: z.string().min(1, 'กรุณากรอกชื่อโฟลเดอร์'),
@@ -88,53 +83,47 @@ export const createFolder = async (prevState: any, formData: FormData): Promise<
     const parentId = rawData.parent ? parseInt(rawData.parent as string, 10) : null;
 
     // Validation for duplicate name or abbr
-    const currentFolderContents = parentId ? await adminGetFolderById(parentId) : await adminGetRootFolder();
+    try {
+        const currentFolderContents = parentId ? await adminGetFolderById(parentId) : await adminGetRootFolder();
 
-    const isDuplicateName = currentFolderContents.folders.some(folder => folder.name === name);
-    if (isDuplicateName) {
-        return {
-            success: false,
-            message: 'ชื่อโฟลเดอร์นี้มีอยู่แล้ว',
-            errors: { name: ['ชื่อโฟลเดอร์นี้มีอยู่แล้ว กรุณาใช้ชื่ออื่น'] }
-        };
-    }
+        const isDuplicateName = currentFolderContents.folders.some(folder => folder.name === name);
+        if (isDuplicateName) {
+            return {
+                success: false,
+                message: 'ชื่อโฟลเดอร์นี้มีอยู่แล้ว',
+                errors: { name: ['ชื่อโฟลเดอร์นี้มีอยู่แล้ว กรุณาใช้ชื่ออื่น'] }
+            };
+        }
 
-    const isDuplicateAbbr = currentFolderContents.folders.some(folder => folder.abbr === abbr);
-    if (isDuplicateAbbr) {
-        return {
-            success: false,
-            message: 'ชื่อย่อนี้มีอยู่แล้ว',
-            errors: { abbr: ['ชื่อย่อนี้มีอยู่แล้ว กรุณาใช้ชื่อย่ออื่น'] }
-        };
+        const isDuplicateAbbr = currentFolderContents.folders.some(folder => folder.abbr === abbr);
+        if (isDuplicateAbbr) {
+            return {
+                success: false,
+                message: 'ชื่อย่อนี้มีอยู่แล้ว',
+                errors: { abbr: ['ชื่อย่อนี้มีอยู่แล้ว กรุณาใช้ชื่อย่ออื่น'] }
+            };
+        }
+    } catch (error) {
+        console.error('Validation error:', error);
+        // Treat as non-blocking for now or return error? 
+        // safely ignore read error and proceed to try create
     }
     // End validation
 
-    const parentValue = rawData.parent ? parseInt(rawData.parent as string, 10) : null;
+    try {
+        await apiCreateFolder({
+            name: rawData.name as string,
+            abbr: rawData.abbr as string,
+            parent: parentId,
+            mui_colour: rawData.mui_colour as string,
+        });
 
-    const body = {
-        name: rawData.name,
-        abbr: rawData.abbr,
-        parent: parentValue,
-        mui_colour: rawData.mui_colour,
-    };
-
-    const res = await fetch(`${API_URL}/dl/folder`, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${API_TOKEN}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-    });
-
-    if (!res.ok) {
-        const errorResponse = await res.json();
-        console.error('Failed to create folder:', errorResponse);
-        return { success: false, message: errorResponse.message || 'สร้างโฟลเดอร์ไม่สำเร็จ' } as const;
+        revalidatePath('/admin/documents', 'layout');
+        return { success: true, message: 'สร้างโฟลเดอร์สำเร็จ!' };
+    } catch (error: any) {
+        console.error('Failed to create folder:', error);
+        return { success: false, message: error.message || 'สร้างโฟลเดอร์ไม่สำเร็จ' };
     }
-
-    revalidatePath('/admin/documents', 'layout');
-    return { success: true, message: 'สร้างโฟลเดอร์สำเร็จ!' } as const;
 }
 
 

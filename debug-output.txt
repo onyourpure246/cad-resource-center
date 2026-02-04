@@ -1,0 +1,5 @@
+﻿--- Debugging Backend Connection ---
+Target URL: http://localhost:64197/api/fy2569/employee/verify
+Auth Secret: Found
+Sending generic test request...
+Status Code: 404 Not Found

@@ -37,6 +37,11 @@
 -   **Animation**: `framer-motion` สำหรับ Interaction ที่ซับซ้อน และ `tw-animate-css` สำหรับ CSS Keyframes พื้นฐาน
 -   **Design System**: ใช้ OKLCH Color Space เพื่อความสดใสและรองรับ Dark Mode อย่างสมบูรณ์
 
+
+### 2.4 Engineering Standards
+-   **TypeScript Types**: ต้องแยกการประกาศ Type/Interface ไว้ใน Folder `types/` เสมอ ห้ามประกาศ `interface` หรือ `type` แทรกไว้ในไฟล์ Component (ยกเว้น Local Props ที่ใช้เฉพาะจุดเล็กมากๆ แต่ก็แนะนำให้แยกออกไปถ้ามีขนาดใหญ่)
+-   **Type Definition**: ควรตั้งชื่อไฟล์ใน `types/` ให้สอดคล้องกับ Domain หรือ Feature เช่น `announcement.ts`, `documents.ts`
+
 ---
 
 ## 3. เทคโนโลยีที่ใช้ (Technology Stack)

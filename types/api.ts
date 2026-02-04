@@ -1,21 +1,23 @@
-import { Folder, File, CurrentFolder, Breadcrumb } from './models';
+import { Folder, File as DLFile, CurrentFolder, Breadcrumb } from './models';
 
 // Responses
 export interface FolderContentResponse {
     folders: Folder[];
     name: string;
     description: string;
-    files: File[];
+    files: DLFile[];
     currentFolder?: CurrentFolder;
     breadcrumbs?: Breadcrumb[];
 }
 
 // Request DTOs
 export interface CreateFolderRequest {
-    abbr: string;
+    abbr?: string;
     name?: string;
     description?: string;
     parent?: number | null;
+    mui_colour?: string;
+    isactive?: number;
 }
 
 export interface UpdateFolderRequest {
@@ -24,7 +26,14 @@ export interface UpdateFolderRequest {
     description?: string;
     parent?: number | null;
     isactive?: number;
+    mui_colour?: string;
 }
+
+export interface FileEntry {
+    path: string; // "folder/subfolder/file.txt"
+    file: File;
+}
+
 
 export interface CreateFileRequest {
     parent?: number | null;
@@ -42,3 +51,12 @@ export interface UpdateFileRequest {
     filename?: string;
     isactive?: number;
 }
+
+export interface ImportStats {
+    totalFiles: number;
+    successFiles: number;
+    failedFiles: number;
+    foldersCreated: number;
+    errors: string[];
+}
+

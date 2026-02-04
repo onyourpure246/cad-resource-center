@@ -44,7 +44,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results, query }) => {
                 <div className="flex items-center gap-3 mb-2">
                     <h2 className="text-2xl font-bold">ผลการค้นหาสำหรับ: <span className="text-primary">"{query}"</span></h2>
                     <Link href="/downloads">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-muted" title="ล้างการค้นหา">
+                        <Button variant="ghost" size="icon" className="cursor-pointer h-8 w-8 rounded-full hover:bg-muted" title="ล้างการค้นหา">
                             <X className="h-5 w-5" />
                             <span className="sr-only">ล้างการค้นหา</span>
                         </Button>
@@ -57,8 +57,8 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results, query }) => {
                 <div className="grid gap-4">
                     {results.map((item, index) => (
                         <div key={`${item.id}-${index}`} className="bg-white dark:bg-card/50 p-4 rounded-lg border shadow-sm hover:shadow-md transition-shadow flex items-start gap-4">
-                            <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
-                                <File className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                            <div className="bg-primary/10 p-3 rounded-lg">
+                                <File className="w-6 h-6 text-primary" />
                             </div>
                             <div className="flex-1">
                                 <div className="flex justify-between items-start">

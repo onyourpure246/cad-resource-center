@@ -8,6 +8,7 @@ import { ArrowUpDown, File, FileText, Folder } from "lucide-react";
 import MuiIconRenderer from '@/components/ui/MuiIconRenderer';
 import { RowActions } from '@/components/Admin/DocManagement/RowActions';
 import { UseItemsTableColumnsProps } from '@/types/components';
+import { Badge } from "@/components/ui/badge";
 
 const helper = createColumnHelper<Item>();
 
@@ -72,11 +73,20 @@ export const getItemColumns = ({
             className: "truncate max-w-[1px]", // Force fluid width and truncation
             cell: (item) => (
                 <div
-                    className={`hover:underline pl-3 font-medium truncate block w-full ${item.type === 'folder' ? 'cursor-pointer hover:text-primary transition-colors' : 'text-foreground'}`}
-                    onClick={() => onItemClick(item)}
-                    title={item.type === 'file' && item.filename ? item.filename : (item.name || "")}
+                    className="flex items-center gap-2 w-full overflow-hidden"
                 >
-                    {item.type === 'file' && item.filename ? item.filename : item.name}
+                    <div
+                        className={`hover:underline pl-3 font-medium truncate block ${item.type === 'folder' ? 'cursor-pointer hover:text-primary transition-colors' : 'text-foreground'}`}
+                        onClick={() => onItemClick(item)}
+                        title={item.type === 'file' && item.filename ? item.filename : (item.name || "")}
+                    >
+                        {item.type === 'file' && item.filename ? item.filename : item.name}
+                    </div>
+                    {item.isactive === 2 && (
+                        <Badge variant="secondary" className="text-xs h-5 px-1.5 font-normal bg-yellow-100 text-yellow-700 hover:bg-yellow-200 border-yellow-200">
+                            ส่วนตัว
+                        </Badge>
+                    )}
                 </div>
             ),
         }),

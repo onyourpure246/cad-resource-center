@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import ThemeLogo from './ThemeLogo'
 import NavAuth from './NavAuth'
-import { ModeToggle } from './ModeToggle'
 import { Button } from '@/components/ui/button'
 
 import MobileNav from './MobileNav'
@@ -50,9 +49,6 @@ const Navbar = () => {
         {/* Desktop Actions */}
         <div className='hidden lg:block'>
           <ul className='flex flex-row gap-5 items-center'>
-            <li className="mx-4">
-              <ModeToggle />
-            </li>
             <li className="mx-4 cursor-pointer">
               <NavAuth />
             </li>

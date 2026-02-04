@@ -12,3 +12,7 @@
 3.  **Documentation Reference**:
     *   **Consult**: `C:\Project\cad-resource-center\DEVELOPMENT_MANUAL.md` for project context and guidelines.
     *   *Reason*: To maintain alignment with the project's development standards and avoid getting lost.
+
+4.  **Coding Standards**:
+    *   **TypeScript Types**: ALWAYS separate type definitions into the `/types` directory. Do not define interfaces or types within component files.
+    *   *Reason*: To keep components clean and types reusable across the project.

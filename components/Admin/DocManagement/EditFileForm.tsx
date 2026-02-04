@@ -1,4 +1,4 @@
-import React, { useEffect, useActionState } from 'react';
+import React, { useEffect, useActionState, useState } from 'react';
 import { updateFile } from '@/actions/file-actions';
 import FormContainer from '@/components/Form/FormContainer';
 import TextAreaInput from '@/components/Form/TextAreaInput';
@@ -8,6 +8,8 @@ import { Item } from '@/types/models';
 import { State } from '@/types/common';
 import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import TextInput from '@/components/Form/TextInput';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 import { EditFileFormProps } from '@/types/components';
 
@@ -19,6 +21,7 @@ const initialState: State = {
 
 const EditFileForm = ({ file, onSuccess, onCancel }: EditFileFormProps) => {
     const [state, formAction] = useActionState(updateFile, initialState);
+    const [isActive, setIsActive] = useState(file.isactive === 1);
 
     useEffect(() => {
         if (state.success) {
@@ -41,6 +44,7 @@ const EditFileForm = ({ file, onSuccess, onCancel }: EditFileFormProps) => {
                     <input type="hidden" name="parent" value={file.parent || ''} />
                     {/* Preserve original name if nice name is used, or maybe backend handles it. But we must send what we edit. */}
                     {/* If we edit filename, we should likely send it as 'filename'. */}
+                    <input type="hidden" name="isactive" value={isActive ? '1' : '2'} />
 
                     <div className='p-4 flex-1'>
                         <div className='grid md:grid-cols-1 gap-4 mt-4'>
@@ -73,6 +77,18 @@ const EditFileForm = ({ file, onSuccess, onCancel }: EditFileFormProps) => {
                                 placeholder='กรอกคำอธิบายรายการดาวน์โหลดหรือการการอัปเดต'
                                 defaultValue={file.description || ''}
                             />
+                        </div>
+
+                        <div className="flex items-center space-x-2 mt-6 px-1">
+                            <Switch
+                                id="isactive-mode"
+                                checked={isActive}
+                                onCheckedChange={setIsActive}
+                                className="data-[state=checked]:bg-green-600"
+                            />
+                            <Label htmlFor="isactive-mode" className="cursor-pointer font-medium">
+                                {isActive ? 'สถานะ: เผยแพร่ (Active)' : 'สถานะ: ส่วนตัว (Private)'}
+                            </Label>
                         </div>
                     </div>
 

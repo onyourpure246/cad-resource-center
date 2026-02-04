@@ -31,6 +31,7 @@ const EditAnnouncementPage = async ({ params }: EditPageProps) => {
                 searchPlaceholder=""
                 showSearch={false}
                 showBreadcrumbs={false}
+                actionButtonsAlignment="left"
                 actionButtons={
                     <Button variant="ghost" size="sm" asChild className="pl-0 hover:bg-transparent hover:text-primary transition-colors group">
                         <Link href="/admin/announcement" className="flex items-center gap-1 text-muted-foreground group-hover:text-primary">

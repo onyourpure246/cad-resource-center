@@ -82,8 +82,8 @@ export const MoveDialog = ({ item, currentParentId, trigger, onMoveSuccess }: Mo
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => setOpen(false)} disabled={isMoving}>ยกเลิก</Button>
-                    <Button onClick={handleMove} disabled={isMoving || selectedFolderId === currentParentId}>
+                    <Button className="cursor-pointer" variant="outline" onClick={() => setOpen(false)} disabled={isMoving}>ยกเลิก</Button>
+                    <Button className="cursor-pointer" onClick={handleMove} disabled={isMoving || selectedFolderId === currentParentId}>
                         {isMoving ? 'กำลังย้าย...' : 'ย้าย'}
                     </Button>
                 </DialogFooter>

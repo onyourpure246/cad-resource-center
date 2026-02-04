@@ -1,16 +1,14 @@
 'use client';
-
 import React, { useState } from 'react';
 import { DataTable } from '@/components/DataTable/DataTable';
 import { AnnouncementTableProps } from '@/types/announcement';
 import { Megaphone } from 'lucide-react';
 import { getAnnouncementColumns } from './announcementColumns';
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { ANNOUNCEMENT_TABS } from '@/utils/constants';
 
 const AnnouncementTable = ({ announcements, isLoading }: AnnouncementTableProps) => {
     const router = useRouter();
@@ -22,33 +20,19 @@ const AnnouncementTable = ({ announcements, isLoading }: AnnouncementTableProps)
     const draftAnnouncements = announcements.filter(a => a.status.toLowerCase() === 'draft');
     const archivedAnnouncements = announcements.filter(a => a.status.toLowerCase() === 'archived');
 
-    // Configuration for tabs to keep code clean and manageable
-    const tabs = [
-        {
-            value: "all",
-            label: "ทั้งหมด",
-            count: null,
-            activeColor: "bg-primary text-primary-foreground",
-        },
-        {
-            value: "published",
-            label: "เผยแพร่แล้ว",
-            count: publishedAnnouncements.length,
-            activeColor: "bg-emerald-500 text-white hover:bg-emerald-600 border-none",
-        },
-        {
-            value: "draft",
-            label: "ฉบับร่าง",
-            count: draftAnnouncements.length,
-            activeColor: "bg-amber-500/15 text-amber-700 dark:text-amber-400 hover:bg-amber-500/25 border-amber-200/50",
-        },
-        {
-            value: "archived",
-            label: "จัดเก็บแล้ว",
-            count: archivedAnnouncements.length,
-            activeColor: "bg-muted text-muted-foreground hover:bg-muted border-transparent",
-        }
-    ];
+
+    const counts = {
+        all: null,
+        published: publishedAnnouncements.length,
+        draft: draftAnnouncements.length,
+        archived: archivedAnnouncements.length
+    };
+
+
+    const tabs = ANNOUNCEMENT_TABS.map(tab => ({
+        ...tab,
+        count: counts[tab.value as keyof typeof counts]
+    }));
 
     return (
         <div className="space-y-4">
@@ -56,30 +40,24 @@ const AnnouncementTable = ({ announcements, isLoading }: AnnouncementTableProps)
                 <div className="flex items-center justify-between mb-4">
                     <TabsList className="bg-muted/50 gap-1 relative overflow-hidden">
                         {tabs.map((tab) => {
-                            // Define exact active classes for each tab based on StatusBadge values
-                            // We explicitly use data-[state=active] to override default component styles
                             let activeClass = "";
                             let bgClass = "";
 
                             switch (tab.value) {
                                 case "published":
-                                    // bg-emerald-500 text-white
                                     activeClass = "data-[state=active]:text-white";
                                     bgClass = "bg-emerald-500";
                                     break;
                                 case "draft":
-                                    // bg-amber-500/15 text-amber-700
                                     activeClass = "data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400 data-[state=active]:border-amber-200/50";
                                     bgClass = "bg-amber-500/15";
                                     break;
                                 case "archived":
-                                    // bg-muted text-muted-foreground
                                     activeClass = "data-[state=active]:text-muted-foreground";
                                     bgClass = "bg-muted";
                                     break;
                                 case "all":
                                 default:
-                                    // bg-primary text-primary-foreground
                                     activeClass = "data-[state=active]:text-primary-foreground";
                                     bgClass = "bg-primary";
                                     break;
@@ -92,7 +70,6 @@ const AnnouncementTable = ({ announcements, isLoading }: AnnouncementTableProps)
                                     className={cn(
                                         "relative z-10 transition-none data-[state=active]:shadow-none data-[state=active]:bg-transparent",
                                         activeClass,
-                                        // Default non-active state
                                         activeTab !== tab.value && "text-muted-foreground hover:text-foreground hover:bg-transparent"
                                     )}
                                 >

@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import { User } from 'lucide-react'
+import { ModeToggle } from './ModeToggle'
 
 const NavAuth = () => {
   const { data: session, status } = useSession()
@@ -47,14 +48,20 @@ const NavAuth = () => {
       </DropdownMenuLabel>
       <DropdownMenuSeparator />
 
+      <div className="flex items-center justify-between px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+        <span className='font-medium'>ธีม</span>
+        <ModeToggle />
+      </div>
+      <DropdownMenuSeparator />
+
       {/* Admin Menu Items */}
       {isSignedIn && user?.role === 'admin' && (
         <>
           <DropdownMenuLabel className='text-xs text-muted-foreground'>สำหรับผู้ดูแลระบบ</DropdownMenuLabel>
-          <DropdownMenuItem><Link href="/admin/documents" className='w-full'>จัดการรายการดาวน์โหลด</Link></DropdownMenuItem>
-          <DropdownMenuItem><Link href="/admin/usermanagement" className='w-full'>จัดการข้อมูลผู้ใช้งาน</Link></DropdownMenuItem>
-          <DropdownMenuItem><Link href="/admin/dashboard" className='w-full'>ข้อมูลการใช้งานระบบ</Link></DropdownMenuItem>
-          <DropdownMenuItem><Link href="/admin/announcement" className='w-full'>จัดการข้อมูลประชาสัมพันธ์</Link></DropdownMenuItem>
+          <DropdownMenuItem asChild><Link href="/admin/documents" className='w-full cursor-pointer'>จัดการรายการดาวน์โหลด</Link></DropdownMenuItem>
+          <DropdownMenuItem asChild><Link href="/admin/usermanagement" className='w-full cursor-pointer'>จัดการข้อมูลผู้ใช้งาน</Link></DropdownMenuItem>
+          <DropdownMenuItem asChild><Link href="/admin/dashboard" className='w-full cursor-pointer'>ข้อมูลการใช้งานระบบ</Link></DropdownMenuItem>
+          <DropdownMenuItem asChild><Link href="/admin/announcement" className='w-full cursor-pointer'>จัดการข้อมูลประชาสัมพันธ์</Link></DropdownMenuItem>
           <DropdownMenuSeparator />
         </>
       )}

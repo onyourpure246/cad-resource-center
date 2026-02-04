@@ -3,16 +3,11 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod';
 import { ApiResponse, State } from '@/types/common';
 import { adminGetFolderById, adminGetRootFolder } from './folder-actions';
+import { apiUploadFile, apiUpdateFile } from './document-service';
 
 // create ข้อมูลไฟล์ดาวน์โหลด
 // POST https://casdu-backops.witspleasure.com/api/fy2569/dl/file
 export const uploadFile = async (prevState: any, formData: FormData): Promise<State> => {
-    const API_URL = process.env.API_URL;
-    const API_TOKEN = process.env.API_TOKEN;
-    if (!API_URL || !API_TOKEN) {
-        throw new Error('Missing API_URL or API_TOKEN in .env.local');
-    }
-
     // Validate schema by zod
     const schema = z.object({
         name: z.string().min(1, 'กรุณากรอกชื่อไฟล์'),
@@ -47,7 +42,7 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
         mui_colour = '#FFCE3C';
     }
 
-    // // We need to use FormData to send file to the backend
+    // Prepare FormData for API
     const formDataForFileUpload = new FormData();
     formDataForFileUpload.append('name', name);
     if (description) {
@@ -56,6 +51,8 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
     if (parentId !== null) {
         formDataForFileUpload.append('parent', String(parentId));
     }
+    // API expects these in initial POST if possible, although logic below handles PATCH too.
+    // We stick to sending them in POST as well for safety/consistency with old code.
     if (mui_icon) {
         formDataForFileUpload.append('mui_icon', mui_icon);
     }
@@ -65,47 +62,29 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
 
     formDataForFileUpload.append('file', file, file.name);
 
-    // Request to Server
-    const res = await fetch(`${API_URL}/dl/file`, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${API_TOKEN}`
-        },
-        body: formDataForFileUpload,
-    });
+    try {
+        const newFileId = await apiUploadFile(formDataForFileUpload);
 
-    if (!res.ok) {
-        const errorResponse = await res.json().catch(() => ({ message: res.statusText }));
-        console.error('Failed to upload file:', errorResponse);
+        // Update with icon data if needed (legacy behavior preservation)
+        if (newFileId && (mui_icon || mui_colour)) {
+            try {
+                const updateBody: any = {};
+                if (mui_icon) updateBody.mui_icon = mui_icon;
+                if (mui_colour) updateBody.mui_colour = mui_colour;
+                await apiUpdateFile(newFileId, updateBody);
+            } catch (error) {
+                console.error('Failed to update file icon after upload:', error);
+                // Continue execution as the file was uploaded successfully
+            }
+        }
+
+        revalidatePath('/admin/documents', 'layout');
+        return { success: true, message: 'อัปโหลดไฟล์สำเร็จ!' };
+
+    } catch (error: any) {
+        console.error('Failed to upload file:', error);
         return { success: false, message: 'อัปโหลดไฟล์ไม่สำเร็จ' };
     }
-
-    // Parse response to get the new file ID
-    const json = await res.json();
-    if (json.success && json.data && json.data.id && (mui_icon || mui_colour)) {
-        try {
-            const newFileId = json.data.id;
-            const updateBody: any = {};
-            if (mui_icon) updateBody.mui_icon = mui_icon;
-            if (mui_colour) updateBody.mui_colour = mui_colour;
-
-            // Step 2: Update with icon data
-            await fetch(`${API_URL}/dl/file/${newFileId}`, {
-                method: 'PATCH',
-                headers: {
-                    'Authorization': `Bearer ${API_TOKEN}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updateBody),
-            });
-        } catch (error) {
-            console.error('Failed to update file icon after upload:', error);
-            // Continue execution as the file was uploaded successfully
-        }
-    }
-
-    revalidatePath('/admin/documents', 'layout');
-    return { success: true, message: 'อัปโหลดไฟล์สำเร็จ!' };
 }
 
 
@@ -124,6 +103,7 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
         description: z.string().optional(),
         filename: z.string().optional(),
         parent: z.string().optional(),
+        isactive: z.string().optional(),
     });
 
     const rawData = Object.fromEntries(formData);
@@ -134,7 +114,7 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
         return { success: false, message: 'ข้อมูลไม่ถูกต้อง', errors };
     }
 
-    const { id, name, description, filename } = parsed.data;
+    const { id, name, description, filename, isactive } = parsed.data;
     const parentId = rawData.parent ? parseInt(rawData.parent as string, 10) : null;
 
     try {
@@ -159,6 +139,7 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
     if (description !== undefined) body.description = description;
     if (filename) body.filename = filename;
     if (rawData.parent !== undefined) body.parent = parentId;
+    if (isactive) body.isactive = parseInt(isactive, 10);
 
     const res = await fetch(`${API_URL}/dl/file/${id}`, {
         method: 'PATCH',

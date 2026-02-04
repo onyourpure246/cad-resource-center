@@ -29,3 +29,26 @@ export const sidebarItems = [
         icon: Megaphone
     }
 ]
+
+export const ANNOUNCEMENT_TABS = [
+    {
+        value: "all",
+        label: "ทั้งหมด",
+        activeColor: "bg-primary text-primary-foreground",
+    },
+    {
+        value: "published",
+        label: "เผยแพร่แล้ว",
+        activeColor: "bg-emerald-500 text-white hover:bg-emerald-600 border-none",
+    },
+    {
+        value: "draft",
+        label: "ฉบับร่าง",
+        activeColor: "bg-amber-500/15 text-amber-700 dark:text-amber-400 hover:bg-amber-500/25 border-amber-200/50",
+    },
+    {
+        value: "archived",
+        label: "จัดเก็บแล้ว",
+        activeColor: "bg-muted text-muted-foreground hover:bg-muted border-transparent",
+    }
+];

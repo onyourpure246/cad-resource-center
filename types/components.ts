@@ -64,6 +64,8 @@ export interface DataManagementLayoutProps {
     showSearch?: boolean;
     onSearchChange?: (value: string) => void;
     footer?: React.ReactNode;
+    showBorder?: boolean;
+    actionButtonsAlignment?: 'left' | 'right';
 }
 
 export interface ItemsTableProps extends BaseParentProps {

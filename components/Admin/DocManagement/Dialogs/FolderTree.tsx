@@ -65,9 +65,9 @@ export const FolderTree = ({ nodes, selectedFolderId, itemId, itemType, onToggle
 
                             {/* Folder Icon */}
                             {node.isOpen ? (
-                                <FolderOpen className={`h-5 w-5 mr-3 transition-colors ${isSelected ? 'text-primary fill-primary/20' : 'text-blue-500'}`} />
+                                <FolderOpen className={`h-5 w-5 mr-3 transition-colors ${isSelected ? 'text-primary fill-primary/20' : 'text-muted-foreground'}`} />
                             ) : (
-                                <Folder className={`h-5 w-5 mr-3 transition-colors ${isSelected ? 'text-primary fill-primary/20' : 'text-blue-500'}`} />
+                                <Folder className={`h-5 w-5 mr-3 transition-colors ${isSelected ? 'text-primary fill-primary/20' : 'text-muted-foreground'}`} />
                             )}
 
                             {/* Folder Name */}

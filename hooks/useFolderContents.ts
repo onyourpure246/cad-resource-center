@@ -54,6 +54,7 @@ export const useFolderContents = (folderId: number) => {
                 mui_icon: file.mui_icon,
                 mui_colour: file.mui_colour,
                 downloadUrl: `${process.env.NEXT_PUBLIC_API_URL}/dl/file/download/${file.id}`,
+                isactive: file.isactive,
             }));
 
             // Combine folders and files for display

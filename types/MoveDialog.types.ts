@@ -23,3 +23,8 @@ export interface FolderTreeProps {
     onSelect: (id: number) => void;
     level?: number;
 }
+
+export interface UseFolderTreeProps {
+    initialParentId: number | null;
+    enableAutoFetch?: boolean;
+}

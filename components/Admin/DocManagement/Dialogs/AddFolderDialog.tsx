@@ -5,23 +5,31 @@ import { ReusableDialog } from '@/components/Common/ReusableDialog'
 import { Button } from '@/components/ui/button'
 import { FolderPlus } from 'lucide-react'
 import FolderForm from './FolderForm'
-import { AddFolderDialogProps } from '@/types/components'
+interface AddFolderDialogProps {
+    parentId: number | null;
+    onSuccess: () => void;
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+}
 
-const AddFolderDialog = ({ parentId, onSuccess }: AddFolderDialogProps) => {
-    const [open, setOpen] = useState(false);
+const AddFolderDialog = ({ parentId, onSuccess, open: constrainedOpen, onOpenChange: setConstrainedOpen }: AddFolderDialogProps) => {
+    const [internalOpen, setInternalOpen] = useState(false);
+
+    const isOpen = constrainedOpen !== undefined ? constrainedOpen : internalOpen;
+    const onOpenChange = setConstrainedOpen || setInternalOpen;
 
     const handleSuccess = () => {
-        setOpen(false);
+        onOpenChange(false);
         onSuccess();
     };
 
     return (
         <ReusableDialog
-            trigger={<Button className='cursor-pointer'><FolderPlus className="mr-2 h-4 w-4" /> สร้างโฟลเดอร์</Button>}
+            trigger={constrainedOpen === undefined ? <Button className='cursor-pointer'><FolderPlus className="mr-2 h-4 w-4" /> สร้างโฟลเดอร์</Button> : undefined}
             title="สร้างโฟลเดอร์ใหม่"
             description="สร้างโฟลเดอร์ใหม่เพื่อจัดเก็บเอกสาร"
-            open={open}
-            onOpenChange={setOpen}
+            open={isOpen}
+            onOpenChange={onOpenChange}
         >
             <FolderForm parentId={parentId} onSuccess={handleSuccess} />
         </ReusableDialog>
