@@ -22,6 +22,7 @@ const transformDataToItems = (data: Awaited<ReturnType<typeof adminGetRootFolder
         id: `file-${file.id}`,
         resourceId: file.id,
         name: file.name,
+        filename: file.filename,
         type: "file",
         created: file.created_at || '',
         modified: file.updated_at || '',

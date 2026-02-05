@@ -25,6 +25,7 @@ export const authConfig = {
             if (token.sub && session.user) {
                 session.user.id = token.sub;
                 session.user.role = token.role as string;
+                session.accessToken = token.accessToken as string; // Persist token to session
             }
             return session;
         },
@@ -32,6 +33,7 @@ export const authConfig = {
             if (user) {
                 token.sub = user.id;
                 token.role = user.role;
+                token.accessToken = user.accessToken; // Persist token to JWT
             }
             return token;
         }
@@ -57,12 +59,14 @@ export const authConfig = {
                     console.log(`[Auth] ThaID Verified. PID: ${thaidUser.pid}`);
 
                     // 2. เช็คกับ Backend เรา
-                    const systemUser = await backendApi.verifyEmployee(thaidUser.pid);
+                    const result = await backendApi.verifyEmployee(thaidUser.pid);
 
-                    if (!systemUser) {
+                    if (!result || !result.user) {
                         console.error(`[Auth] PID ${thaidUser.pid} is not a valid employee.`);
                         throw new Error("Access Denied: You are not an employee.");
                     }
+
+                    const { user: systemUser, token } = result;
 
                     // 3. สร้าง Session
                     return {
@@ -70,7 +74,8 @@ export const authConfig = {
                         name: systemUser.displayname, // ชื่อจาก DB เรา
                         email: systemUser.username,   // หรือ PID
                         image: null,
-                        role: systemUser.isadmin === 1 ? 'admin' : 'user' // ส่ง Role เข้า Session
+                        role: systemUser.isadmin === 1 ? 'admin' : 'user', // ส่ง Role เข้า Session
+                        accessToken: token // Access Token from backend
                     };
                 } catch (error) {
                     console.error("[Auth] Authorize error:", error);

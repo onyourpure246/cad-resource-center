@@ -55,6 +55,7 @@ export interface Item {
     created: string;
     modified: string;
     modifiedBy: string;
+    createdBy?: string;
     mui_icon?: string;
     mui_colour?: string;
     downloadUrl?: string;

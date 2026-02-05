@@ -99,6 +99,15 @@ const UploadFileForm = ({ parentId, onSuccess }: CreateNewFormProps) => {
                                 อัปโหลดไฟล์ใหม่ <span className="text-destructive">*</span>
                             </label>
 
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                name="file"
+                                className="hidden"
+                                onChange={handleFileChange}
+                                required
+                            />
+
                             {!selectedFile ? (
                                 <div
                                     className={`flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-8 transition-colors cursor-pointer ${isDragging
@@ -110,14 +119,6 @@ const UploadFileForm = ({ parentId, onSuccess }: CreateNewFormProps) => {
                                     onDragLeave={handleDragLeave}
                                     onDrop={handleDrop}
                                 >
-                                    <input
-                                        ref={fileInputRef}
-                                        type="file"
-                                        name="file"
-                                        className="hidden"
-                                        onChange={handleFileChange}
-                                        required
-                                    />
                                     <CloudUpload className="h-10 w-10 text-primary mb-4 opacity-80" />
                                     <div className="text-center space-y-1">
                                         <p className="text-sm font-medium text-foreground">

@@ -7,6 +7,7 @@ import { Archive, Undo, FileX, Pencil, Trash2, Eye } from 'lucide-react';
 import { ConfirmationDialog } from '@/components/Common/ConfirmationDialog';
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const helper = createColumnHelper<Announcement>();
 
@@ -39,7 +40,12 @@ const getStatusActions = (item: Announcement) => {
                     description="คุณต้องการเรียกคืนประกาศนี้สู่สถานะ 'ร่าง' ใช่หรือไม่?"
                     confirmLabel="ยืนยัน"
                     onConfirm={async () => {
-                        await updateAnnouncementStatus(Number(item.id), 'Draft');
+                        const result = await updateAnnouncementStatus(Number(item.id), 'Draft');
+                        if (result.success) {
+                            toast.success('เรียกคืนประกาศสำเร็จ');
+                        } else {
+                            toast.error(result.message);
+                        }
                     }}
                 />
             )
@@ -63,7 +69,12 @@ const getStatusActions = (item: Announcement) => {
                     description="คุณต้องการจัดเก็บประกาศนี้ใช่หรือไม่? ประกาศจะถูกซ่อนจากหน้าเว็บ"
                     confirmLabel="จัดเก็บ"
                     onConfirm={async () => {
-                        await updateAnnouncementStatus(Number(item.id), 'Archived');
+                        const result = await updateAnnouncementStatus(Number(item.id), 'Archived');
+                        if (result.success) {
+                            toast.success('จัดเก็บประกาศสำเร็จ');
+                        } else {
+                            toast.error(result.message);
+                        }
                     }}
                 />
             )
@@ -88,7 +99,12 @@ const getStatusActions = (item: Announcement) => {
                     confirmLabel="ยืนยัน"
                     variant="destructive"
                     onConfirm={async () => {
-                        await updateAnnouncementStatus(Number(item.id), 'Draft');
+                        const result = await updateAnnouncementStatus(Number(item.id), 'Draft');
+                        if (result.success) {
+                            toast.success('ยกเลิกการเผยแพร่สำเร็จ');
+                        } else {
+                            toast.error(result.message);
+                        }
                     }}
                 />
             )
@@ -99,6 +115,7 @@ const getStatusActions = (item: Announcement) => {
 };
 
 export const getAnnouncementColumns = (router: any) => [
+    // ... (rest of the file)    // ... existing columns ...
     // 1. Title
     helper.text('title', 'หัวข้อ', {
         headerClassName: "",
@@ -118,12 +135,22 @@ export const getAnnouncementColumns = (router: any) => [
     }),
 
     // 4. Created By
-    helper.text('created_by', 'สร้างโดย', {
-        headerClassName: "w-[150px] hidden lg:table-cell",
-        className: "w-[150px] text-muted-foreground text-sm hidden lg:table-cell",
+    helper.text('created_by', 'ผู้สร้าง', {
+        headerClassName: "w-[150px] hidden xl:table-cell",
+        className: "w-[150px] text-muted-foreground text-sm hidden xl:table-cell",
+    }),
+    helper.text('updated_by', 'ผู้แก้ไขล่าสุด', {
+        headerClassName: "w-[150px] hidden xl:table-cell",
+        className: "w-[150px] text-muted-foreground text-sm hidden xl:table-cell",
+        cell: (item) => item.updated_by || "-"
+    }),
+    helper.text('views', 'ยอดเข้าชม', {
+        headerClassName: "w-[100px] text-center",
+        className: "w-[100px] text-center font-medium",
+        cell: (item) => item.views?.toLocaleString() || '0'
     }),
 
-    // 5. Created At
+    // 7. Created At
     helper.date('created_at', 'สร้างเมื่อ', {
         headerClassName: "w-[180px] hidden sm:table-cell",
         className: "w-[180px] hidden sm:table-cell",
@@ -163,7 +190,12 @@ export const getAnnouncementColumns = (router: any) => [
                             confirmLabel="ลบ"
                             variant="destructive"
                             onConfirm={async () => {
-                                await deleteAnnouncement(Number(item.id));
+                                const result = await deleteAnnouncement(Number(item.id));
+                                if (result.success) {
+                                    toast.success('ลบประกาศสำเร็จ');
+                                } else {
+                                    toast.error(result.message);
+                                }
                             }}
                         />
                     )

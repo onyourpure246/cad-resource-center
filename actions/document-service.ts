@@ -5,20 +5,21 @@ import { CreateFolderRequest, UpdateFolderRequest } from '@/types/api';
 const API_URL = process.env.API_URL;
 const API_TOKEN = process.env.API_TOKEN;
 
-const getHeaders = () => {
-    if (!API_URL || !API_TOKEN) {
+const getHeaders = (token?: string) => {
+    const validToken = token || API_TOKEN;
+    if (!API_URL || !validToken) {
         throw new Error('Missing API_URL or API_TOKEN in .env.local');
     }
     return {
-        'Authorization': `Bearer ${API_TOKEN}`,
+        'Authorization': `Bearer ${validToken}`,
     };
 };
 
 // CreateFolderParams replaced by CreateFolderRequest
 
-export async function apiCreateFolder(params: CreateFolderRequest): Promise<number> {
+export async function apiCreateFolder(params: CreateFolderRequest, token?: string): Promise<number> {
     const headers = {
-        ...getHeaders(),
+        ...getHeaders(token),
         'Content-Type': 'application/json',
     };
 
@@ -53,9 +54,9 @@ export async function apiCreateFolder(params: CreateFolderRequest): Promise<numb
 
 export type UpdateFolderParams = UpdateFolderRequest & { id: number };
 
-export async function apiUpdateFolder(params: UpdateFolderParams): Promise<void> {
+export async function apiUpdateFolder(params: UpdateFolderParams, token?: string): Promise<void> {
     const headers = {
-        ...getHeaders(),
+        ...getHeaders(token),
         'Content-Type': 'application/json',
     };
 
@@ -76,8 +77,8 @@ export async function apiUpdateFolder(params: UpdateFolderParams): Promise<void>
     }
 }
 
-export async function apiUploadFile(formData: FormData): Promise<number> {
-    const headers = getHeaders();
+export async function apiUploadFile(formData: FormData, token?: string): Promise<number> {
+    const headers = getHeaders(token);
     // Content-Type is set automatically by fetch when body is FormData
 
     const res = await fetch(`${API_URL}/dl/file`, {
@@ -95,9 +96,9 @@ export async function apiUploadFile(formData: FormData): Promise<number> {
     return json.data?.id;
 }
 
-export async function apiUpdateFile(id: number, data: any): Promise<void> {
+export async function apiUpdateFile(id: number, data: any, token?: string): Promise<void> {
     const headers = {
-        ...getHeaders(),
+        ...getHeaders(token),
         'Content-Type': 'application/json',
     };
 

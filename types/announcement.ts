@@ -10,10 +10,12 @@ export interface Announcement {
     status: AnnouncementStatus; // สถานะ (Published/Draft/Archived)
     created_by: string; // ผู้สร้าง
     created_at: string; // วันที่สร้าง
+    updated_by?: string; // ผู้แก้ไขล่าสุด
     updated_at: string; // วันที่อัปเดต
     publish_date?: string; // วันที่ประกาศ
     category?: string; // หมวดหมู่
     cover_image?: string; // รูปภาพหน้าปก
+    views?: number; // ยอดเข้าชม
 }
 
 export interface AnnouncementTableProps {

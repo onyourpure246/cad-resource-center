@@ -18,6 +18,7 @@ import { format } from 'date-fns';
 import { th } from 'date-fns/locale';
 
 import { AnnouncementCardProps } from '@/types/components';
+import { getAnnouncementById } from '@/actions/announcement-actions';
 
 const stripHtml = (html: string) => {
     if (!html) return "";
@@ -25,18 +26,22 @@ const stripHtml = (html: string) => {
 };
 
 const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => {
+    const [isOpen, setIsOpen] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [modalData, setModalData] = React.useState<Announcement>(announcement);
+
     // Format date if available, otherwise use created_at
-    const displayDate = announcement.publish_date
-        ? format(new Date(announcement.publish_date), 'dd MMM yyyy', { locale: th })
-        : (announcement.created_at ? format(new Date(announcement.created_at), 'dd MMM yyyy', { locale: th }) : '');
+    const displayDate = modalData.publish_date
+        ? format(new Date(modalData.publish_date), 'dd MMM yyyy', { locale: th })
+        : (modalData.created_at ? format(new Date(modalData.created_at), 'dd MMM yyyy', { locale: th }) : '');
 
     // Default Category
-    const category = announcement.category || "ทั่วไป";
+    const category = modalData.category || "ทั่วไป";
 
     // Image URL - Use the local proxy which handles the backend authentication
-    const isAbsoluteUrl = announcement.cover_image?.startsWith('blob:') || announcement.cover_image?.startsWith('http');
-    const imageUrl = announcement.cover_image
-        ? (isAbsoluteUrl ? announcement.cover_image : `/api/images/${announcement.cover_image}`)
+    const isAbsoluteUrl = modalData.cover_image?.startsWith('blob:') || modalData.cover_image?.startsWith('http');
+    const imageUrl = modalData.cover_image
+        ? (isAbsoluteUrl ? modalData.cover_image : `/api/images/${modalData.cover_image}`)
         : null;
 
     // Category Color Mapping (consistent with Admin columns)
@@ -49,8 +54,23 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
 
     const badgeColorClass = categoryColors[category] || 'bg-secondary text-secondary-foreground hover:bg-secondary/80';
 
+    const handleReadMore = async () => {
+        setIsLoading(true);
+        try {
+            const result = await getAnnouncementById(Number(announcement.id));
+            if (result) {
+                setModalData(result);
+                setIsOpen(true);
+            }
+        } catch (error) {
+            console.error("Failed to load announcement details", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <motion.div
                 whileHover={{ y: -5 }}
                 transition={{ type: "spring", stiffness: 300 }}
@@ -63,7 +83,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                         <div className="relative w-full h-32 overflow-hidden bg-muted">
                             <img
                                 src={imageUrl}
-                                alt={announcement.title}
+                                alt={modalData.title}
                                 className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                                 onError={(e) => {
                                     // Fallback if image fails
@@ -94,8 +114,8 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                         </div>
 
                         <div className="h-[1.75rem] flex items-center">
-                            <h3 className="text-lg font-semibold text-foreground line-clamp-1 leading-normal" title={announcement.title}>
-                                {announcement.title}
+                            <h3 className="text-lg font-semibold text-foreground line-clamp-1 leading-normal" title={modalData.title}>
+                                {modalData.title}
                             </h3>
                         </div>
                     </CardHeader>
@@ -103,7 +123,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                     <CardContent className="flex-grow p-3 pt-2 pb-0">
                         <div className="h-[3.25rem]">
                             <p className="font-sarabun text-muted-foreground line-clamp-2 leading-relaxed text-base indent-0">
-                                {stripHtml(announcement.content)}
+                                {stripHtml(modalData.content)}
                             </p>
                         </div>
                     </CardContent>
@@ -112,16 +132,16 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                         <span className="text-xs text-muted-foreground font-sarabun">
                             {/* Spacer or View Count if needed */}
                         </span>
-                        <DialogTrigger asChild>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="cursor-pointer group hover:bg-primary/5 hover:text-primary rounded-lg h-7 px-2 flex items-center gap-1.5 text-sm"
-                            >
-                                <span className="mt-0.5">อ่านเพิ่มเติม</span>
-                                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-                            </Button>
-                        </DialogTrigger>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleReadMore}
+                            disabled={isLoading}
+                            className="cursor-pointer group hover:bg-primary/5 hover:text-primary rounded-lg h-7 px-2 flex items-center gap-1.5 text-sm"
+                        >
+                            <span className="mt-0.5">{isLoading ? 'กำลังโหลด...' : 'อ่านเพิ่มเติม'}</span>
+                            <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+                        </Button>
                     </CardFooter>
                 </Card>
             </motion.div>
@@ -132,7 +152,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                         <div className="w-full h-64 overflow-hidden rounded-xl mb-4 bg-muted">
                             <img
                                 src={imageUrl}
-                                alt={announcement.title}
+                                alt={modalData.title}
                                 className="w-full h-full object-cover"
                             />
                         </div>
@@ -153,23 +173,20 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                         )}
                     </div>
                     <DialogTitle className="text-2xl font-bold leading-tight font-sarabun">
-                        {announcement.title}
+                        {modalData.title}
                     </DialogTitle>
                 </DialogHeader>
 
                 <div className="mt-4">
                     {/* Safe HTML Rendering */}
-                    {/* Safe HTML Rendering */}
                     <div
                         className="font-sarabun text-foreground text-base w-full break-words leading-normal"
-                        dangerouslySetInnerHTML={{ __html: announcement.content }}
+                        dangerouslySetInnerHTML={{ __html: modalData.content }}
                     />
                 </div>
 
                 <div className="mt-6 pt-4 border-t flex justify-end">
-                    <DialogTrigger asChild>
-                        <Button variant="outline" className="cursor-pointer rounded-xl">ปิดหน้าต่าง</Button>
-                    </DialogTrigger>
+                    <Button variant="outline" onClick={() => setIsOpen(false)} className="cursor-pointer rounded-xl">ปิดหน้าต่าง</Button>
                 </div>
             </DialogContent>
         </Dialog>

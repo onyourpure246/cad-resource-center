@@ -1,17 +1,23 @@
 'use server'
 import { revalidatePath } from 'next/cache'
+import { headers } from 'next/headers';
 import { State, ApiResponse } from '@/types/common';
 import { Announcement } from '@/types/announcement';
+import { auth } from '@/auth';
 
 const API_URL = process.env.API_URL;
 const API_TOKEN = process.env.API_TOKEN;
 
-const getHeaders = () => {
-    if (!API_URL || !API_TOKEN) {
-        throw new Error('Missing API_URL or API_TOKEN in .env.local');
+const getAuthHeaders = async () => {
+    const session = await auth();
+    const token = session?.accessToken || API_TOKEN;
+
+    if (!API_URL) {
+        throw new Error('Missing API_URL in .env.local');
     }
+
     return {
-        'Authorization': `Bearer ${API_TOKEN}`
+        'Authorization': `Bearer ${token}`
     };
 };
 
@@ -20,7 +26,7 @@ const getHeaders = () => {
  */
 export const getAnnouncements = async (status: string = 'all'): Promise<Announcement[]> => {
     try {
-        const headers = getHeaders();
+        const headers = await getAuthHeaders();
         // Pass status parameter to fetch specific status (e.g. 'published') or 'all'
         const res = await fetch(`${API_URL}/news?status=${status}`, {
             method: 'GET',
@@ -46,10 +52,22 @@ export const getAnnouncements = async (status: string = 'all'): Promise<Announce
  */
 export const getAnnouncementById = async (id: number): Promise<Announcement | null> => {
     try {
-        const headers = getHeaders();
+        const headersList = await headers();
+        const clientIp = headersList.get('x-forwarded-for') || headersList.get('x-real-ip');
+        const userAgent = headersList.get('user-agent');
+
+        const requestHeaders: any = await getAuthHeaders();
+
+        if (clientIp) {
+            requestHeaders['X-Forwarded-For'] = clientIp;
+        }
+        if (userAgent) {
+            requestHeaders['User-Agent'] = userAgent;
+        }
+
         const res = await fetch(`${API_URL}/news/${id}`, {
             method: 'GET',
-            headers: headers,
+            headers: requestHeaders,
             cache: 'no-store'
         });
 
@@ -70,7 +88,7 @@ export const getAnnouncementById = async (id: number): Promise<Announcement | nu
  */
 export const createAnnouncement = async (prevState: any, formData: FormData): Promise<State> => {
     try {
-        const headers = getHeaders(); // Ensures env vars are present
+        const headers = await getAuthHeaders();
 
         // Prepare FormData for the backend
         const backendFormData = new FormData();
@@ -116,7 +134,15 @@ export const createAnnouncement = async (prevState: any, formData: FormData): Pr
         }
 
         revalidatePath('/admin/announcement');
-        return { success: true, message: "สร้างประกาศสำเร็จ!" };
+
+        let successMessage = "สร้างประกาศสำเร็จ!";
+        if (status.toLowerCase() === 'draft') {
+            successMessage = "สร้างแบบร่างประกาศสำเร็จ";
+        } else if (status.toLowerCase() === 'published') {
+            successMessage = "สร้างและเผยแพร่ประกาศสำเร็จ";
+        }
+
+        return { success: true, message: successMessage };
 
     } catch (error) {
         console.error('Create announcement error:', error);
@@ -129,7 +155,7 @@ export const createAnnouncement = async (prevState: any, formData: FormData): Pr
  */
 export const updateAnnouncement = async (id: number, formData: FormData): Promise<State> => {
     try {
-        const headers = getHeaders();
+        const headers = await getAuthHeaders();
         const backendFormData = new FormData();
 
         const title = formData.get('name') as string;
@@ -156,7 +182,25 @@ export const updateAnnouncement = async (id: number, formData: FormData): Promis
         }
 
         revalidatePath('/admin/announcement');
-        return { success: true, message: 'แก้ไขประกาศสำเร็จ' };
+
+        let successMessage = 'บันทึกการแก้ไขสำเร็จ';
+        const newStatus = formData.get('status') as string;
+
+        if (newStatus) {
+            switch (newStatus.toLowerCase()) {
+                case 'draft':
+                    successMessage = 'บันทึกแบบร่างสำเร็จ';
+                    break;
+                case 'published':
+                    successMessage = 'เผยแพร่ประกาศสำเร็จ';
+                    break;
+                case 'archived':
+                    successMessage = 'จัดเก็บประกาศสำเร็จ';
+                    break;
+            }
+        }
+
+        return { success: true, message: successMessage };
 
     } catch (error) {
         console.error('Update announcement error:', error);
@@ -172,7 +216,28 @@ export const updateAnnouncementStatus = async (id: number, status: string): Prom
     try {
         const formData = new FormData();
         formData.append('status', status);
-        return await updateAnnouncement(id, formData);
+
+        // We reuse the update logic, but we want custom messages
+        const result = await updateAnnouncement(id, formData);
+
+        if (result.success) {
+            let message = 'เปลี่ยนสถานะสำเร็จ';
+            switch (status.toLowerCase()) {
+                case 'draft':
+                    message = 'ยกเลิกการเผยแพร่/เรียกคืนประกาศสำเร็จ';
+                    break;
+                case 'published':
+                    message = 'เผยแพร่ประกาศสำเร็จ';
+                    break;
+                case 'archived':
+                    message = 'จัดเก็บประกาศสำเร็จ';
+                    break;
+            }
+            return { success: true, message };
+        }
+
+        return result;
+
     } catch (error) {
         console.error('Update status error:', error);
         return { success: false, message: 'เกิดข้อผิดพลาดในการเปลี่ยนสถานะ' };
@@ -185,7 +250,7 @@ export const updateAnnouncementStatus = async (id: number, status: string): Prom
  */
 export const deleteAnnouncement = async (id: number): Promise<State> => {
     try {
-        const headers = getHeaders();
+        const headers = await getAuthHeaders();
         const res = await fetch(`${API_URL}/news/${id}`, {
             method: 'DELETE',
             headers: headers

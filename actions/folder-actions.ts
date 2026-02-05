@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { ApiResponse, State } from '@/types/common';
 import { FolderContentResponse } from '@/types/api';
 import { apiCreateFolder, apiUpdateFolder } from './document-service';
+import { auth } from '@/auth';
 
 // fetch root folder
 export const adminGetRootFolder = async () => {
@@ -63,6 +64,9 @@ export const adminGetFolderById = async (id: number) => {
 
 // For Create Folder
 export const createFolder = async (prevState: any, formData: FormData): Promise<State> => {
+    const session = await auth();
+    const token = session?.accessToken || process.env.API_TOKEN;
+
     //Validate form data
     const schema = z.object({
         name: z.string().min(1, 'กรุณากรอกชื่อโฟลเดอร์'),
@@ -116,7 +120,7 @@ export const createFolder = async (prevState: any, formData: FormData): Promise<
             abbr: rawData.abbr as string,
             parent: parentId,
             mui_colour: rawData.mui_colour as string,
-        });
+        }, token);
 
         revalidatePath('/admin/documents', 'layout');
         return { success: true, message: 'สร้างโฟลเดอร์สำเร็จ!' };
@@ -130,8 +134,11 @@ export const createFolder = async (prevState: any, formData: FormData): Promise<
 // update folder
 // PATCH https://casdu-backops.witspleasure.com/api/fy2569/dl/folder/:id
 export const updateFolder = async (prevState: any, formData: FormData): Promise<State> => {
+    const session = await auth();
     const API_URL = process.env.API_URL;
     const API_TOKEN = process.env.API_TOKEN;
+    const token = session?.accessToken || API_TOKEN;
+
     if (!API_URL || !API_TOKEN) {
         throw new Error('Missing API_URL or API_TOKEN in .env.local');
     }
@@ -179,7 +186,7 @@ export const updateFolder = async (prevState: any, formData: FormData): Promise<
     const res = await fetch(`${API_URL}/dl/folder/${id}`, {
         method: 'PATCH',
         headers: {
-            'Authorization': `Bearer ${API_TOKEN}`,
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),

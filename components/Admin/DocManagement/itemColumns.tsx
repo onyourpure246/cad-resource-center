@@ -108,6 +108,10 @@ export const getItemColumns = ({
             headerClassName: "w-[180px] hidden xl:table-cell",
             className: "w-[180px] text-muted-foreground text-sm hidden xl:table-cell",
         }),
+        helper.text('createdBy', 'สร้างโดย', {
+            headerClassName: "w-[180px] hidden xl:table-cell",
+            className: "w-[180px] text-muted-foreground text-sm hidden xl:table-cell",
+        }),
         helper.custom({
             accessorKey: 'actions',
             header: '',
