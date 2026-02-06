@@ -144,10 +144,10 @@ export const getAnnouncementColumns = (router: any) => [
         className: "w-[150px] text-muted-foreground text-sm hidden xl:table-cell",
         cell: (item) => item.updated_by || "-"
     }),
-    helper.text('views', 'ยอดเข้าชม', {
+    helper.text('view_count', 'ยอดเข้าชม', {
         headerClassName: "w-[100px] text-center",
         className: "w-[100px] text-center font-medium",
-        cell: (item) => item.views?.toLocaleString() || '0'
+        cell: (item) => item.view_count?.toLocaleString() || '0'
     }),
 
     // 7. Created At

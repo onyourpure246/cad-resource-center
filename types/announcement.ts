@@ -15,7 +15,7 @@ export interface Announcement {
     publish_date?: string; // วันที่ประกาศ
     category?: string; // หมวดหมู่
     cover_image?: string; // รูปภาพหน้าปก
-    views?: number; // ยอดเข้าชม
+    view_count?: number; // ยอดเข้าชม
 }
 
 export interface AnnouncementTableProps {

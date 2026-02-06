@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation'
 
 const Header = ({
     title,
+    description,
     children
 }: HeaderProps) => {
     const { toggleSidebar } = useSidebar()
@@ -17,7 +18,7 @@ const Header = ({
 
     return (
         <div className='h-auto flex items-center justify-between px-2 py-2'>
-            <div className='flex gap-4'>
+            <div className='flex gap-4 items-center'>
                 {isAdmin && (
                     <Button
                         variant="ghost"
@@ -28,7 +29,12 @@ const Header = ({
                         <PanelLeft className="w-5 h-5" />
                     </Button>
                 )}
-                <h1 className='text-2xl font-semibold text-foreground'>{title}</h1>
+                <div className="flex flex-col">
+                    <h1 className='text-2xl font-semibold text-foreground'>{title}</h1>
+                    {description && (
+                        <p className="text-sm text-muted-foreground">{description}</p>
+                    )}
+                </div>
             </div>
             <div>
                 {children}
