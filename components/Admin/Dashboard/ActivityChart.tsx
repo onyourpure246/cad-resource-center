@@ -1,6 +1,6 @@
 "use client"
 
-import { FileIcon, TrendingUp } from "lucide-react";
+import { FileIcon, TrendingUp, Download } from "lucide-react";
 import { Line, LineChart, CartesianGrid, XAxis } from "recharts";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -30,18 +30,16 @@ export default function ActivityChart({ data }: ActivityChartProps) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {/* Login Trends Chart */}
             <Card className="lg:col-span-2 flex flex-col shadow-sm">
-                <CardHeader className="p-6">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <CardTitle className="leading-normal">แนวโน้มการใช้งาน</CardTitle>
-                            <CardDescription className="leading-normal">สถิติการเข้าสู่ระบบย้อนหลัง 7 วัน</CardDescription>
-                        </div>
-                        <div className="p-2 bg-primary/10 rounded-full">
-                            <TrendingUp className="w-5 h-5 text-primary" />
-                        </div>
+                <CardHeader className="flex flex-row items-center justify-between py-2 px-6 space-y-0">
+                    <div className="grid gap-0.5">
+                        <CardTitle className="leading-normal">แนวโน้มการใช้งาน</CardTitle>
+                        <CardDescription className="leading-normal">สถิติการเข้าสู่ระบบย้อนหลัง 7 วัน</CardDescription>
+                    </div>
+                    <div className="p-2 bg-primary/10 rounded-full">
+                        <TrendingUp className="w-5 h-5 text-primary" />
                     </div>
                 </CardHeader>
-                <CardContent className="px-6 pb-6">
+                <CardContent className="py-2 px-6">
                     {!chartData.length ? (
                         <div className="flex h-[300px] items-center justify-center text-muted-foreground">
                             ไม่มีข้อมูล
@@ -73,11 +71,16 @@ export default function ActivityChart({ data }: ActivityChartProps) {
 
             {/* Top Downloads */}
             <Card className="flex flex-col shadow-sm">
-                <CardHeader className="p-6">
-                    <CardTitle className="leading-normal">ดาวน์โหลดสูงสุด</CardTitle>
-                    <CardDescription className="leading-normal">เอกสารที่ได้รับความนิยม 5 อันดับแรก</CardDescription>
+                <CardHeader className="flex flex-row items-center justify-between py-2 px-6 space-y-0">
+                    <div className="grid gap-0.5">
+                        <CardTitle className="leading-normal">ดาวน์โหลดสูงสุด</CardTitle>
+                        <CardDescription className="leading-normal">ความนิยม 5 อันดับแรก</CardDescription>
+                    </div>
+                    <div className="p-2 bg-primary/10 rounded-full">
+                        <Download className="w-5 h-5 text-primary" />
+                    </div>
                 </CardHeader>
-                <CardContent className="px-6 pb-6">
+                <CardContent className="py-2 px-6">
                     <div className="flex flex-col gap-4">
                         {!data?.top_downloads?.length ? (
                             <p className="text-sm text-muted-foreground italic py-8 text-center bg-muted/20 rounded-lg">

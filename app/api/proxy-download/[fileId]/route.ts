@@ -32,7 +32,7 @@ export async function GET(
 
         const backendUrl = `${apiUrl}/dl/file/${params.fileId}?dl=true`;
 
-        console.log(`[Proxy] Downloading file from: ${backendUrl}`);
+
 
         const res = await fetch(backendUrl, {
             headers: {

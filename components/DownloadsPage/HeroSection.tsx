@@ -5,8 +5,8 @@ import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { HeroBackground } from './HeroBackground'
 import TagCloud from './TagCloud'
-import { POPULAR_TAGS } from '@/data/searchTags'
 import { useRouter } from 'next/navigation'
+import { trackSearch } from '@/actions/search-actions'
 
 const HeroSection = () => {
     const router = useRouter();
@@ -30,6 +30,8 @@ const HeroSection = () => {
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         if (query.trim()) {
+            // Track search term (fire and forget)
+            trackSearch(query.trim());
             router.push(`/downloads/search?q=${encodeURIComponent(query)}`);
         }
     };
@@ -71,7 +73,7 @@ const HeroSection = () => {
                         </form>
                     </div>
 
-                    <TagCloud tags={POPULAR_TAGS} />
+                    <TagCloud />
                 </div>
             </div>
         </LazyMotion>

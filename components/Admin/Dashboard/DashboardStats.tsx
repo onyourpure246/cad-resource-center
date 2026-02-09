@@ -51,7 +51,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {items.map((item, index) => (
                 <Card key={index} className="overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                    <CardHeader className="flex flex-row items-center justify-between p-6 pb-2">
+                    <CardHeader className="flex flex-row items-center justify-between pt-2 pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground leading-normal">
                             {item.title}
                         </CardTitle>

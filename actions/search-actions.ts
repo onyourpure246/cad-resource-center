@@ -2,6 +2,7 @@
 
 import { adminGetFolderById, adminGetRootFolder } from './folder-actions';
 import { File, Folder } from '@/types/models';
+import { auth } from '@/auth';
 
 // Define a Search Result type that flattens the structure
 export interface SearchResultItem extends File {
@@ -91,3 +92,76 @@ export const searchFiles = async (query: string): Promise<SearchResultItem[]> =>
 
     return results;
 };
+
+export async function trackSearch(keyword: string) {
+    try {
+        const apiUrl = process.env.API_URL;
+        if (!apiUrl) {
+            console.error('API_URL not configured');
+            return false;
+        }
+
+        // Get session for token
+        const session = await auth();
+        const headers: HeadersInit = {
+            'Content-Type': 'application/json',
+        };
+
+        const token = session?.accessToken || session?.user?.accessToken;
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        } else {
+            console.warn('[trackSearch] No access token found in session. Aborting.');
+            return false; // Safety: Never send request without token
+        }
+
+        // Fire and forget
+        fetch(`${apiUrl}/search/track`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ keyword }),
+            cache: 'no-store'
+        })
+            .then(async res => {
+                if (!res.ok) console.error(`[trackSearch] Failed: ${res.status} ${res.statusText}`);
+            })
+            .catch(err => console.error('[trackSearch] Network error:', err));
+
+        return true;
+    } catch (error) {
+        console.error('trackSearch action error:', error);
+        return false;
+    }
+}
+
+export async function getPopularTags(days: number = 30, limit: number = 10) {
+    try {
+        const apiUrl = process.env.API_URL;
+        if (!apiUrl) return [];
+
+        const session = await auth();
+        const headers: HeadersInit = {
+            'Content-Type': 'application/json',
+        };
+
+        const token = session?.accessToken || session?.user?.accessToken;
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const res = await fetch(`${apiUrl}/search/popular?days=${days}&limit=${limit}`, {
+            method: 'GET',
+            headers,
+            next: { revalidate: 0 }
+        });
+
+        if (!res.ok) return [];
+        const json = await res.json();
+        return json.success ? json.data : [];
+    } catch (error) {
+        console.error('getPopularTags action error:', error);
+        return [];
+    }
+}

@@ -36,7 +36,7 @@ const FolderContentPage = () => {
                 router.push(`/admin/documents/${item.resourceId}?abbr=${item.abbr || ''}`);
             });
         } else {
-            console.log(`Clicked on file: ${item.name} (ID: ${item.id})`);
+
         }
     };
 

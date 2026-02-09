@@ -15,10 +15,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import { Slider } from "@/components/ui/slider" // Check if this exists, if not use standard input ranges
-
-// We'll use a standard range input if Slider doesn't exist, but let's assume we can style a simple one or use native.
-// Since the user didn't have slider.tsx, we'll use a native input range with Tailwind.
+import { Slider } from "@/components/ui/slider"
 
 interface ImageUploadProps {
     name: string;
@@ -59,7 +56,7 @@ const ImageUpload = ({
             setOriginalImage(url);
             setIsCropping(true); // Open cropper immediately
 
-            // NOTE: We don't set preview yet, we wait for crop
+
         }
     };
 
@@ -70,7 +67,7 @@ const ImageUpload = ({
         } else {
             // Handle cancel/clear
         }
-        // We don't bubble onChange yet, we wait for crop confirmation
+
     };
 
     const handleDrop = (e: React.DragEvent) => {
@@ -92,9 +89,7 @@ const ImageUpload = ({
                     setPreview(croppedImage);
                     setIsCropping(false);
 
-                    // Convert blob URL to File object to mimic input behaviour or just signal change
-                    // Since we can't easily set file input value to a blob, we might need a hidden input or 
-                    // just rely on the parent handling the 'change' if we pass the blob url, or we hack the file input.
+                    // Convert blob URL to File object
 
                     // For now, let's try to fetch the blob and create a file
                     const response = await fetch(croppedImage);

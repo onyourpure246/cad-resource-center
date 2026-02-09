@@ -39,15 +39,13 @@ export default function RecentAlerts({ logs }: RecentAlertsProps) {
 
     return (
         <Card className="overflow-hidden shadow-sm">
-            <CardHeader className="border-b bg-muted/40 p-6">
-                <div className="flex items-center gap-3">
-                    <div className="p-2 bg-destructive/10 rounded-lg">
-                        <ShieldAlert className="w-5 h-5 text-destructive" />
-                    </div>
-                    <div>
-                        <CardTitle className="leading-normal">แจ้งเตือนความปลอดภัย</CardTitle>
-                        <CardDescription className="leading-normal">การกระทำที่สำคัญและสถานะความปลอดภัยล่าสุด</CardDescription>
-                    </div>
+            <CardHeader className="border-b bg-muted/40 flex flex-row items-center justify-between py-2 px-6 space-y-0 [.border-b]:pb-2">
+                <div className="grid gap-0.5">
+                    <CardTitle className="leading-normal">แจ้งเตือนความปลอดภัย</CardTitle>
+                    <CardDescription className="leading-normal">การกระทำที่สำคัญและสถานะความปลอดภัยล่าสุด</CardDescription>
+                </div>
+                <div className="p-2 bg-destructive/10 rounded-full">
+                    <ShieldAlert className="w-5 h-5 text-destructive" />
                 </div>
             </CardHeader>
 
