@@ -10,10 +10,11 @@ const UsersTable = ({
     items,
     isLoading,
     selectedIds,
-    onSelectionChange
+    onSelectionChange,
+    onItemClick
 }: UsersTableProps) => {
 
-    const columns = getUserColumns();
+    const columns = getUserColumns(onItemClick);
 
     return (
         <div className="space-y-4">

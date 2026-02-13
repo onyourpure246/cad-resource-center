@@ -1,6 +1,7 @@
 'use server';
 
-import { CreateFolderRequest, UpdateFolderRequest } from '@/types/api';
+import { CreateFolderRequest, UpdateFolderRequest, FolderContentResponse } from '@/types/api';
+import { ApiResponse } from '@/types/common';
 
 const API_URL = process.env.API_URL;
 const API_TOKEN = process.env.API_TOKEN;
@@ -28,6 +29,8 @@ export async function apiCreateFolder(params: CreateFolderRequest, token?: strin
         isactive: params.isactive,
         mui_colour: params.mui_colour,
         description: params.description,
+        created_by: params.created_by,
+        updated_by: params.updated_by,
     };
 
     if (params.abbr) body.abbr = params.abbr;
@@ -112,4 +115,53 @@ export async function apiUpdateFile(id: number, data: any, token?: string): Prom
         const err = await res.json().catch(() => ({}));
         throw new Error(err.message || "Update File Failed");
     }
+}
+
+
+
+export async function apiGetRootFolder(token?: string): Promise<FolderContentResponse> {
+    const headers = getHeaders(token);
+
+    // Default to API_TOKEN if no session token provided (for initial load)
+    // getHeaders already handles this fallback to process.env.API_TOKEN
+
+    const res = await fetch(`${API_URL}/dl/folder`, {
+        method: 'GET',
+        headers,
+        cache: 'no-store',
+    });
+
+    if (!res.ok) {
+        throw new Error('เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้');
+    }
+
+    const json: ApiResponse<FolderContentResponse> = await res.json();
+
+    if (!json.success || !json.data) {
+        throw new Error(json.message || 'เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้');
+    }
+
+    return json.data;
+}
+
+export async function apiGetFolderById(id: number, token?: string): Promise<FolderContentResponse> {
+    const headers = getHeaders(token);
+
+    const res = await fetch(`${API_URL}/dl/folder/${id}`, {
+        method: 'GET',
+        headers,
+        cache: 'no-store',
+    });
+
+    if (!res.ok) {
+        throw new Error('Failed to fetch folder contents');
+    }
+
+    const json: ApiResponse<FolderContentResponse> = await res.json();
+
+    if (!json.success || !json.data) {
+        throw new Error(json.message || 'Failed to get folder contents data');
+    }
+
+    return json.data;
 }

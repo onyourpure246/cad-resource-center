@@ -18,6 +18,8 @@ export interface CreateFolderRequest {
     parent?: number | null;
     mui_colour?: string;
     isactive?: number;
+    created_by?: number;
+    updated_by?: number;
 }
 
 export interface UpdateFolderRequest {
@@ -27,6 +29,8 @@ export interface UpdateFolderRequest {
     parent?: number | null;
     isactive?: number;
     mui_colour?: string;
+    updated_by?: number;
+    created_by?: number;
 }
 
 export interface FileEntry {

@@ -11,6 +11,8 @@ import { CreateNewFormProps } from '@/types/components';
 import { State } from '@/types/common';
 import { useFormSubmission } from '@/hooks/useFormSubmission';
 import { CloudUpload, File as FileIcon, X } from 'lucide-react';
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
 
 // default state
 const initialState: State = {
@@ -23,6 +25,7 @@ const UploadFileForm = ({ parentId, onSuccess }: CreateNewFormProps) => {
     const { state, formAction } = useFormSubmission(uploadFile, initialState, onSuccess);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isDragging, setIsDragging] = useState(false);
+    const [isPublished, setIsPublished] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -159,6 +162,18 @@ const UploadFileForm = ({ parentId, onSuccess }: CreateNewFormProps) => {
                                     {state.errors.file[0]}
                                 </p>
                             )}
+                        </div>
+
+                        <div className="flex items-center space-x-2 pt-2">
+                            <input type="hidden" name="isactive" value={isPublished ? "1" : "2"} />
+                            <Switch
+                                id="publish-mode"
+                                checked={isPublished}
+                                onCheckedChange={setIsPublished}
+                            />
+                            <Label htmlFor="publish-mode" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                เผยแพร่ทันที {isPublished ? '(สาธารณะ)' : '(ฉบับร่าง)'}
+                            </Label>
                         </div>
                     </div>
                 </div>

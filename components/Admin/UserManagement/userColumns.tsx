@@ -5,17 +5,27 @@ import { User } from '@/types/user';
 
 const helper = createColumnHelper<User>();
 
-export const getUserColumns = () => [
-    helper.text('username', 'ชื่อผู้ใช้ (Username)', {
+export const getUserColumns = (onEdit?: (user: User) => void) => [
+    helper.custom({
+        accessorKey: 'username',
+        header: 'ชื่อผู้ใช้ (Username)',
         headerClassName: "",
         className: "font-medium truncate max-w-[1px]",
+        cell: (item) => {
+            // Mask CID: 1-2345-67890-12-3 -> 1-XXXX-XXXXX-12-3
+            const cid = item.username || '';
+            if (cid.length === 13) {
+                return <span>{`${cid.substring(0, 1)}-XXXX-XXXXX-${cid.substring(10, 12)}-${cid.substring(12)}`}</span>;
+            }
+            return cid;
+        }
     }),
     helper.custom({
-        accessorKey: 'firstName',
+        accessorKey: 'firstname',
         header: 'ชื่อ-นามสกุล',
         headerClassName: "w-[200px] hidden md:table-cell",
         className: "w-[200px] hidden md:table-cell",
-        cell: (item) => <div className="truncate">{item.firstName} {item.lastName || ''}</div>,
+        cell: (item) => <div className="truncate">{item.firstname} {item.lastname || ''}</div>,
     }),
     helper.text('email', 'อีเมล', {
         headerClassName: "w-[200px] hidden lg:table-cell",
@@ -40,8 +50,8 @@ export const getUserColumns = () => [
         }
     }),
     helper.actions({
-        onEdit: () => {/* Add edit logic */ },
-        onDelete: () => {/* Add delete logic */ },
+        onEdit: (user) => onEdit?.(user),
+        // onDelete: () => {/* Add delete logic */ }, 
         editLabel: "แก้ไขข้อมูล",
         deleteLabel: "ลบบัญชี",
         align: "end"

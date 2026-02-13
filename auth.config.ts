@@ -72,6 +72,12 @@ export const authConfig = {
 
                     const { user: systemUser, token } = result;
 
+                    // 4. เช็คสถานะ User (Active เท่านั้นถึงจะเข้าได้)
+                    if (systemUser.status && systemUser.status !== 'active') {
+                        console.error(`[Auth] User ${systemUser.username} is ${systemUser.status}. Access Denied.`);
+                        throw new Error("Access Denied: Your account is inactive.");
+                    }
+
                     // 3. สร้าง Session
                     return {
                         id: systemUser.id.toString(), // ใช้ ID ของเรา ไม่ใช่ PID

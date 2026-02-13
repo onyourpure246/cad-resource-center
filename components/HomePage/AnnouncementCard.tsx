@@ -30,6 +30,10 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
     const [isLoading, setIsLoading] = React.useState(false);
     const [modalData, setModalData] = React.useState<Announcement>(announcement);
 
+    React.useEffect(() => {
+        setModalData(announcement);
+    }, [announcement]);
+
     // Format date if available, otherwise use created_at
     const displayDate = modalData.publish_date
         ? format(new Date(modalData.publish_date), 'dd MMM yyyy', { locale: th })
@@ -55,6 +59,12 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
     const badgeColorClass = categoryColors[category] || 'bg-secondary text-secondary-foreground hover:bg-secondary/80';
 
     const handleReadMore = async () => {
+        // If ID is invalid (e.g. Preview Mode with ID -1), just open modal with current data
+        if (!announcement.id || Number(announcement.id) <= 0) {
+            setIsOpen(true);
+            return;
+        }
+
         setIsLoading(true);
         try {
             const result = await getAnnouncementById(Number(announcement.id));
@@ -133,6 +143,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                             {/* Spacer or View Count if needed */}
                         </span>
                         <Button
+                            type="button"
                             variant="ghost"
                             size="sm"
                             onClick={handleReadMore}

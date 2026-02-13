@@ -1,65 +1,20 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod';
-import { ApiResponse, State } from '@/types/common';
-import { FolderContentResponse } from '@/types/api';
+import { State } from '@/types/common';
 import { apiCreateFolder, apiUpdateFolder } from './document-service';
 import { auth } from '@/auth';
 
+import { apiGetRootFolder, apiGetFolderById } from './document-service';
+
 // fetch root folder
 export const adminGetRootFolder = async () => {
-    const API_URL = process.env.API_URL;
-    const API_TOKEN = process.env.API_TOKEN;
-
-    if (!API_URL || !API_TOKEN) { throw new Error('Missing API_URL or API_TOKEN in .env.local') };
-
-    const res = await fetch(`${API_URL}/dl/folder`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${API_TOKEN}`,
-            'Content-Type': 'application/json',
-        },
-        cache: 'no-store',
-    });
-    if (!res.ok) {
-        throw new Error('เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้');
-    }
-
-    const json: ApiResponse<FolderContentResponse> = await res.json();
-
-    if (!json.success || !json.data) {
-        throw new Error(json.message || 'เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้');
-    }
-
-    return json.data;
+    return await apiGetRootFolder();
 }
 
 // fetch selected folder using folderId
 export const adminGetFolderById = async (id: number) => {
-    const API_URL = process.env.API_URL;
-    const API_TOKEN = process.env.API_TOKEN;
-
-    if (!API_URL || !API_TOKEN) { throw new Error('Missing API_URL or API_TOKEN in .env.local') };
-
-    const res = await fetch(`${API_URL}/dl/folder/${id}`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${API_TOKEN}`,
-            'Content-Type': 'application/json',
-        },
-        cache: 'no-store',
-    });
-    if (!res.ok) {
-        throw new Error('Failed to fetch folder contents');
-    }
-
-    const json: ApiResponse<FolderContentResponse> = await res.json();
-
-    if (!json.success || !json.data) {
-        throw new Error(json.message || 'Failed to get folder contents data');
-    }
-
-    return json.data;
+    return await apiGetFolderById(id);
 }
 
 // For Create Folder
@@ -112,15 +67,21 @@ export const createFolder = async (prevState: any, formData: FormData): Promise<
         // Treat as non-blocking for now or return error? 
         // safely ignore read error and proceed to try create
     }
-    // End validation
+    // Add Audit fields
+    const payload: any = {
+        name: rawData.name as string,
+        abbr: rawData.abbr as string,
+        parent: parentId,
+        mui_colour: rawData.mui_colour as string,
+    };
+
+    if (session?.user?.id) {
+        payload.created_by = session.user.id;
+        payload.updated_by = session.user.id;
+    }
 
     try {
-        await apiCreateFolder({
-            name: rawData.name as string,
-            abbr: rawData.abbr as string,
-            parent: parentId,
-            mui_colour: rawData.mui_colour as string,
-        }, token);
+        await apiCreateFolder(payload, token);
 
         revalidatePath('/admin/documents', 'layout');
         return { success: true, message: 'สร้างโฟลเดอร์สำเร็จ!' };
@@ -176,12 +137,19 @@ export const updateFolder = async (prevState: any, formData: FormData): Promise<
     }
     // End validation
 
-    const body = {
+    const body: any = {
         name: rawData.name,
         description: rawData.description,
         mui_colour: rawData.mui_colour,
         parent: parentId
     };
+
+    // Add Audit field
+    if (session?.user?.id) {
+        body.updated_by = session.user.id;
+    } else {
+        console.warn('UpdateFolder: No user ID found in session for audit logs');
+    }
 
     const res = await fetch(`${API_URL}/dl/folder/${id}`, {
         method: 'PATCH',

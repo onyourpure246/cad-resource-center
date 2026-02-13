@@ -35,7 +35,8 @@ export const useFolderContents = (folderId: number) => {
                 type: "folder",
                 created: folder.created_at || '',
                 modified: folder.updated_at || '',
-                modifiedBy: folder.updated_by?.toString() || "Admin",
+                modifiedBy: (folder as any).updated_by_name || folder.updated_by?.toString() || "Admin",
+                createdBy: (folder as any).created_by_name || folder.created_by?.toString() || "Admin",
                 mui_icon: folder.mui_icon,
                 mui_colour: folder.mui_colour,
             }));
@@ -50,11 +51,13 @@ export const useFolderContents = (folderId: number) => {
                 type: "file",
                 created: file.created_at || '',
                 modified: file.updated_at || '',
-                modifiedBy: file.updated_by?.toString() || "Admin",
+                modifiedBy: (file as any).updated_by_name || file.updated_by?.toString() || "Admin",
+                createdBy: (file as any).created_by_name || file.created_by?.toString() || "Admin",
                 mui_icon: file.mui_icon,
                 mui_colour: file.mui_colour,
-                downloadUrl: `${process.env.NEXT_PUBLIC_API_URL}/dl/file/download/${file.id}`,
+                downloadUrl: `/api/proxy-download/${file.id}`,
                 isactive: file.isactive,
+                downloads: (file as any).downloads
             }));
 
             // Combine folders and files for display

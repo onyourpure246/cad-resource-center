@@ -26,6 +26,13 @@ const DocumentManagementPage = () => {
             startTransition(() => {
                 router.push(`/admin/documents/${item.resourceId}`);
             });
+        } else if (item.type === 'file' && item.downloadUrl) {
+            const link = document.createElement('a');
+            link.href = item.downloadUrl;
+            link.download = item.filename || 'download';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     };
 

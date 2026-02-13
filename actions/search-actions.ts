@@ -42,6 +42,9 @@ const traverseAndSearch = async (
         for (const file of content.files) {
             if (results.length >= MAX_RESULTS) break;
 
+            // Filter out inactive files
+            if (file.isactive !== 1) continue;
+
             const matchName = file.name.toLowerCase().includes(normalizedQuery);
             const matchFilename = file.filename.toLowerCase().includes(normalizedQuery);
             const matchDesc = file.description?.toLowerCase().includes(normalizedQuery);
@@ -57,10 +60,12 @@ const traverseAndSearch = async (
         }
 
         // 2. Recurse into subfolders
-        const folderPromises = content.folders.map(folder => {
-            const newPath = currentPath ? `${currentPath} > ${folder.name}` : folder.name;
-            return traverseAndSearch(folder.id, query, newPath, results, depth + 1);
-        });
+        const folderPromises = content.folders
+            .filter(folder => folder.isactive === 1) // Filter out inactive folders from recursion
+            .map(folder => {
+                const newPath = currentPath ? `${currentPath} > ${folder.name}` : folder.name;
+                return traverseAndSearch(folder.id, query, newPath, results, depth + 1);
+            });
 
         await Promise.all(folderPromises);
 
@@ -80,9 +85,11 @@ export const searchFiles = async (query: string): Promise<SearchResultItem[]> =>
         const rootData = await adminGetRootFolder();
 
         // 2. Search in each root folder tree
-        const searchPromises = rootData.folders.map(folder =>
-            traverseAndSearch(folder.id, query, folder.name, results)
-        );
+        const searchPromises = rootData.folders
+            .filter(folder => folder.isactive === 1) // Only search in active root folders
+            .map(folder =>
+                traverseAndSearch(folder.id, query, folder.name, results)
+            );
 
         await Promise.all(searchPromises);
 

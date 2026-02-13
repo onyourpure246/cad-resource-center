@@ -8,6 +8,7 @@ export interface Folder {
     abbr: string;
     parent: number | null;
     created_at?: string;
+    created_by?: number;
     updated_at?: string;
     updated_by?: number;
     mui_icon?: string;
@@ -41,6 +42,7 @@ export interface File {
     updated_by?: number | null;
     mui_icon?: string;
     mui_colour?: string;
+    downloads?: number;
 }
 
 export interface Item {
@@ -60,6 +62,7 @@ export interface Item {
     mui_colour?: string;
     downloadUrl?: string;
     isactive?: number;
+    downloads?: number;
 }
 
 export interface DownloadItem {
@@ -80,6 +83,7 @@ export interface DownloadItem {
     downloadUrl?: string;
     mui_icon?: string;
     mui_colour?: string;
+    downloads?: number;
 }
 
 // From newcdm_types.ts (Database Types for Download System)
@@ -108,4 +112,5 @@ export interface DLFile {
     created_at: string;
     updated_by: number | null;
     updated_at: string;
+    downloads?: number;
 }

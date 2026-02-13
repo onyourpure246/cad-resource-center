@@ -6,21 +6,39 @@ import UsersTable from '@/components/Admin/UserManagement/UsersTable'
 import { User } from '@/types/user'
 import Header from '@/components/Layout/Header/Header'
 
-const MOCK_USERS: User[] = [
-  { id: '1', username: 'admin', email: 'admin@example.com', firstName: 'Admin', lastName: 'System', role: 'admin', status: 'active', createdAt: '2024-01-01' },
-  { id: '2', username: 'john_doe', email: 'john@example.com', firstName: 'John', lastName: 'Doe', role: 'editor', status: 'active', createdAt: '2024-02-15' },
-  { id: '3', username: 'jane_smith', email: 'jane@example.com', firstName: 'Jane', lastName: 'Smith', role: 'user', status: 'inactive', createdAt: '2024-03-20' },
-  { id: '4', username: 'tester', email: 'test@example.com', firstName: 'Test', lastName: 'User', role: 'user', status: 'suspended', createdAt: '2024-04-10' },
-]
+import { getUsers } from '@/actions/user-actions'
+import { EditUserDialog } from '@/components/Admin/UserManagement/Dialogs/EditUserDialog'
 
 const UserManagementPage = () => {
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [users, setUsers] = useState<User[]>(MOCK_USERS)
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isLoading, setIsLoading] = useState(false)
+  const [users, setUsers] = useState<User[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [selectedIds, setSelectedIds] = useState<(string | number)[]>([])
+  const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [isEditOpen, setIsEditOpen] = useState(false)
+
+  const fetchUsers = async () => {
+    setIsLoading(true)
+    try {
+      const data = await getUsers();
+      // Since the API returns data in a format that might need mapping depending on strictness,
+      // but assuming the backend returns exactly User[] structure for now.
+      // If 'data.data' pattern is used in actions, getUsers already extracts it.
+      setUsers(data || []);
+    } catch (error) {
+      console.error("Failed to fetch users", error);
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  React.useEffect(() => {
+    fetchUsers();
+  }, [])
+
+  const handleEditUser = (user: User) => {
+    setEditingUser(user);
+    setIsEditOpen(true);
+  }
 
   return (
     <>
@@ -32,13 +50,24 @@ const UserManagementPage = () => {
       <DataManagementLayout
         searchPlaceholder="ค้นหาผู้ใช้..."
         showBreadcrumbs={false}
-        actionButtons={<UserActionButtons selectedIds={selectedIds} />}
+        actionButtons={<UserActionButtons selectedIds={selectedIds} onRefresh={fetchUsers} />}
       >
         <UsersTable
           items={users}
           isLoading={isLoading}
           selectedIds={selectedIds}
           onSelectionChange={setSelectedIds}
+          onItemClick={handleEditUser} // Add this prop to UsersTable or handle via columns?
+        // Wait, UsersTable passes onItemClick to columns?
+        // userColumns.tsx has helper.actions but we need to pass the handler.
+        // We likely need to pass `onEdit` handler to UsersTable -> Columns.
+        />
+
+        <EditUserDialog
+          user={editingUser}
+          open={isEditOpen}
+          onOpenChange={setIsEditOpen}
+          onSuccess={fetchUsers}
         />
       </DataManagementLayout>
     </>

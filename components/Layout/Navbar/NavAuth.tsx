@@ -1,7 +1,8 @@
 'use client'
 import React from 'react'
 import Link from 'next/link'
-import { useSession, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
+import { logout } from '@/actions/auth'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import DropDownMenu from './DropDownMenu'
@@ -17,10 +18,19 @@ const NavAuth = () => {
   const { data: session, status } = useSession()
   const isSignedIn = !!session?.user
   const user = session?.user
+  const [isLoggingOut, setIsLoggingOut] = React.useState(false)
 
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: '/' })
-    toast.success('ออกจากระบบสำเร็จ')
+    setIsLoggingOut(true)
+    toast.success('กำลังออกจากระบบ...')
+    try {
+      await logout()
+    } catch (error) {
+      console.error("Logout error:", error)
+    } finally {
+      // Force hard refresh to ensure clean state as requested
+      window.location.href = '/'
+    }
   }
 
   if (status === 'loading') {
@@ -71,8 +81,15 @@ const NavAuth = () => {
           <Link href="/login" className='w-full cursor-pointer'>เข้าสู่ระบบ</Link>
         </DropdownMenuItem>
       ) : (
-        <DropdownMenuItem onClick={handleSignOut} className='cursor-pointer text-red-600 focus:text-red-600'>
-          ออกจากระบบ
+        <DropdownMenuItem
+          onClick={(e) => {
+            e.preventDefault(); // Prevent menu from closing immediately if needed, though usually desirable
+            handleSignOut();
+          }}
+          disabled={isLoggingOut}
+          className='cursor-pointer text-red-600 focus:text-red-600'
+        >
+          {isLoggingOut ? 'กำลังออกจากระบบ...' : 'ออกจากระบบ'}
         </DropdownMenuItem>
       )}
     </DropDownMenu>

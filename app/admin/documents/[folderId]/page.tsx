@@ -11,6 +11,8 @@ import { useFolderContents } from '@/hooks/useFolderContents';
 import { useTableData } from '@/hooks/useTableData';
 import PaginationFooter from '@/components/Admin/DocManagement/PaginationFooter';
 
+import { toast } from 'sonner';
+
 const FolderContentPage = () => {
     const router = useRouter();
     const [, startTransition] = useTransition();
@@ -18,6 +20,7 @@ const FolderContentPage = () => {
     const folderId = parseInt(params.folderId as string, 10);
     const [selectedIds, setSelectedIds] = React.useState<(string | number)[]>([]);
     const { items, isLoading, breadcrumbs, refresh, currentFolder } = useFolderContents(folderId);
+
     const {
         handleSearch,
         sortConfig,
@@ -35,8 +38,13 @@ const FolderContentPage = () => {
             startTransition(() => {
                 router.push(`/admin/documents/${item.resourceId}?abbr=${item.abbr || ''}`);
             });
-        } else {
-
+        } else if (item.type === 'file' && item.downloadUrl) {
+            const link = document.createElement('a');
+            link.href = item.downloadUrl;
+            link.download = item.filename || 'download';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     };
 

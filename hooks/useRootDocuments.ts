@@ -12,7 +12,8 @@ const transformDataToItems = (data: Awaited<ReturnType<typeof adminGetRootFolder
         type: "folder",
         created: folder.created_at || '',
         modified: folder.updated_at || '',
-        modifiedBy: folder.updated_by?.toString() || "Admin",
+        modifiedBy: (folder as any).updated_by_name || folder.updated_by?.toString() || "Admin",
+        createdBy: (folder as any).created_by_name || folder.created_by?.toString() || "Admin",
         mui_icon: folder.mui_icon,
         mui_colour: folder.mui_colour,
         isactive: folder.isactive !== undefined ? folder.isactive : 1
@@ -26,10 +27,13 @@ const transformDataToItems = (data: Awaited<ReturnType<typeof adminGetRootFolder
         type: "file",
         created: file.created_at || '',
         modified: file.updated_at || '',
-        modifiedBy: file.updated_by?.toString() || "Admin",
+        modifiedBy: (file as any).updated_by_name || file.updated_by?.toString() || "Admin",
+        createdBy: (file as any).created_by_name || file.created_by?.toString() || "Admin",
         mui_icon: file.mui_icon,
         mui_colour: file.mui_colour,
-        isactive: file.isactive !== undefined ? file.isactive : 1
+        downloadUrl: `/api/proxy-download/${file.id}`,
+        isactive: file.isactive !== undefined ? file.isactive : 1,
+        downloads: file.downloads
     }));
 
     return [...transformedFolders, ...transformedFiles];

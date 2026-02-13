@@ -7,7 +7,7 @@ import { adminGetRootFolder } from '@/actions/folder-actions'
 const CategorySelection = async () => {
 
     const folderContents = await adminGetRootFolder();
-    const folders = folderContents.folders;
+    const folders = folderContents.folders.filter(f => f.isactive === 1);
     return (
         <div className='flex flex-col gap-6 pb-20'>
 

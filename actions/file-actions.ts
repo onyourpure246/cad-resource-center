@@ -2,14 +2,12 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod';
 import { ApiResponse, State } from '@/types/common';
-import { adminGetFolderById, adminGetRootFolder } from './folder-actions';
+import { apiGetFolderById, apiGetRootFolder } from './document-service';
 import { apiUploadFile, apiUpdateFile } from './document-service';
 import { auth } from '@/auth';
 
 // create ข้อมูลไฟล์ดาวน์โหลด
-// POST https://casdu-backops.witspleasure.com/api/fy2569/dl/file
-// create ข้อมูลไฟล์ดาวน์โหลด
-// POST https://casdu-backops.witspleasure.com/api/fy2569/dl/file
+// POST /api/fy2569/dl/file
 export const uploadFile = async (prevState: any, formData: FormData): Promise<State> => {
     const session = await auth();
     const token = session?.accessToken || process.env.API_TOKEN;
@@ -20,6 +18,7 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
         description: z.string().optional(),
         parent: z.string().optional(),
         file: z.any().refine(file => file instanceof File && file.size > 0, 'กรุณาเลือกไฟล์'),
+        isactive: z.string().optional(), // รับค่า isactive
     });
 
     // Convert from FormData to Object
@@ -32,7 +31,7 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
         return { success: false, message: 'ข้อมูลไม่ถูกต้อง', errors };
     }
 
-    const { name, description, parent, file } = parsed.data;
+    const { name, description, parent, file, isactive } = parsed.data;
     const parentId = parent ? parseInt(parent, 10) : null;
 
     // Auto-detect icon and colour based on extension
@@ -57,6 +56,9 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
     if (parentId !== null) {
         formDataForFileUpload.append('parent', String(parentId));
     }
+    if (isactive) {
+        formDataForFileUpload.append('isactive', isactive);
+    }
     // API expects these in initial POST if possible, although logic below handles PATCH too.
     // We stick to sending them in POST as well for safety/consistency with old code.
     if (mui_icon) {
@@ -68,34 +70,45 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
 
     formDataForFileUpload.append('file', file, file.name);
 
+    // Add Audit fields
+    if (session?.user?.id) {
+        formDataForFileUpload.append('created_by', session.user.id);
+        formDataForFileUpload.append('updated_by', session.user.id);
+        console.log('UploadFile: Appending Audit IDs:', session.user.id);
+    } else {
+        console.warn('UploadFile: No user ID found in session');
+    }
+
     try {
-        // Warning: apiUploadFile might internally use API_TOKEN if it's not passed parameters properly.
-        // I need to check apiUploadFile, but here I can't easily change it if it doesn't accept headers.
-        // Wait, document-service.ts likely holds the fetch logic.
-        // IF apiUploadFile doesn't take headers, I might need to refactor it OR call fetch directly here like in announcement-actions.
-        // Let's assume apiUploadFile needs update, OR I inline the fetch here to control headers.
-        // Looking at common-actions or document-service might be needed.
-        // But for now, assuming I can't see document-service in this tool call, I will check it in next step.
-        // Actually, uploadFile uses `apiUploadFile`.
-        // I should probably verify `document-service.ts` first.
-        // But I can update `updateFile` which uses `fetch` directly!
+        const newFileId = await apiUploadFile(formDataForFileUpload, token);
 
-        const newFileId = await apiUploadFile(formDataForFileUpload, token); // Assuming I will update apiUploadFile to take token
+        if (newFileId) {
+            // Force update audit fields and icon/color
+            // This ensures created_by is set even if POST FormData ignored it
+            try {
+                const updatePayload: any = {};
+                if (mui_icon) updatePayload.mui_icon = mui_icon;
+                if (mui_colour) updatePayload.mui_colour = mui_colour;
 
-        // ... rest of upload logic ...
-        // Wait, I cannot pass token if apiUploadFile definition is not changed.
-        // I will optimistically update `updateFile` logic below which uses inline fetch.
+                if (session?.user?.id) {
+                    updatePayload.created_by = session.user.id;
+                    updatePayload.updated_by = session.user.id;
+                }
 
-        if (newFileId && (mui_icon || mui_colour)) {
-            // ... icon update logic ...
-            // apiUpdateFile also needs token
+                console.log('UploadFile: Patching file with metadata:', JSON.stringify(updatePayload));
+                await apiUpdateFile(newFileId, updatePayload, token);
+            } catch (updateError) {
+                console.error('Failed to update file metadata after upload:', updateError);
+            }
         }
 
-        // ...
+        revalidatePath('/admin/documents', 'layout');
+        return { success: true, message: 'อัปโหลดไฟล์สำเร็จ' };
+
     } catch (error: any) {
-        // ...
+        console.error('Upload error:', error);
+        return { success: false, message: error.message || 'เกิดข้อผิดพลาดในการอัปโหลด' };
     }
-    // ...
 }
 
 // update ข้อมูลไฟล์
@@ -131,8 +144,8 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
 
     try {
         const targetFolderContents = parentId
-            ? await adminGetFolderById(parentId)
-            : await adminGetRootFolder();
+            ? await apiGetFolderById(parentId)
+            : await apiGetRootFolder();
 
         const isDuplicate = targetFolderContents.files.some(
             file => file.filename === filename && file.id !== parseInt(id)
@@ -153,21 +166,19 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
     if (rawData.parent !== undefined) body.parent = parentId;
     if (isactive) body.isactive = parseInt(isactive, 10);
 
-    const res = await fetch(`${API_URL}/dl/file/${id}`, {
-        method: 'PATCH',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-    });
-
-    if (!res.ok) {
-        const errorResponse = await res.json().catch(() => ({ message: res.statusText }));
-        console.error('Failed to update file:', errorResponse);
-        return { success: false, message: errorResponse.message || 'อัปเดตไฟล์ไม่สำเร็จ' };
+    // Add Audit field
+    if (session?.user?.id) {
+        body.updated_by = session.user.id;
+    } else {
+        console.warn('UpdateFile: No user ID found in session for audit logs');
     }
 
-    revalidatePath('/admin/documents', 'layout');
-    return { success: true, message: 'อัปเดตไฟล์สำเร็จ!' };
+    try {
+        await apiUpdateFile(parseInt(id), body, token);
+        revalidatePath('/admin/documents', 'layout');
+        return { success: true, message: 'อัปเดตไฟล์สำเร็จ!' };
+    } catch (error: any) {
+        console.error('Failed to update file:', error);
+        return { success: false, message: error.message || 'อัปเดตไฟล์ไม่สำเร็จ' };
+    }
 }

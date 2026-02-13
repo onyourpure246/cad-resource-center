@@ -38,7 +38,7 @@ const HeroSection = () => {
 
     return (
         <LazyMotion features={domAnimation}>
-            <div className="relative py-4 md:py-4 overflow-hidden min-h-[290px] flex items-center justify-center" onMouseMove={handleMouseMove}>
+            <div className="relative py-4 md:py-4 overflow-hidden min-h-[260px] flex items-center justify-center" onMouseMove={handleMouseMove}>
                 <HeroBackground mouseX={springX} mouseY={springY} />
                 <div className="container font-kanit mx-auto max-w-[1920px] px-4 text-center relative z-10">
                     <p className="text-lg md:text-lg text-foreground/80 font-medium max-w-2xl mx-auto mb-6 drop-shadow-md dark:text-muted-foreground dark:drop-shadow-none">

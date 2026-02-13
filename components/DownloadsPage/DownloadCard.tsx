@@ -49,6 +49,11 @@ const DownloadCard = ({ item }: DownloadCardProps) => {
                                     <Clock className="w-3.5 h-3.5" />
                                     <span>{item.updated_at}</span>
                                 </div>
+                                <div className="w-1 h-1 rounded-full bg-border" />
+                                <div className="flex items-center gap-1.5 font-medium text-foreground/80">
+                                    <Download className="w-3.5 h-3.5" />
+                                    <span>{item.downloads || 0} ครั้ง</span>
+                                </div>
                             </div>
                         </div>
 
