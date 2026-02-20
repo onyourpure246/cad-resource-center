@@ -167,6 +167,16 @@ export const updateAnnouncement = async (id: number, formData: FormData): Promis
         const category = formData.get('category') as string;
         if (category) backendFormData.append('category', category);
 
+        // Handle Cover Image update
+        const file = formData.get('cover_image') as File;
+        const removeImage = formData.get('remove_cover_image') === 'true';
+
+        if (file && file.size > 0) {
+            backendFormData.append('cover_image', file);
+        } else if (removeImage) {
+            backendFormData.append('remove_cover_image', 'true');
+        }
+
         // Handle logic for status updates if needed
         const status = formData.get('status') as string;
         if (status) backendFormData.append('status', status);

@@ -91,8 +91,12 @@ const AnnouncementForm = ({ announcement, className }: AnnouncementFormProps) =>
         if (file) {
             const url = URL.createObjectURL(file);
             setPreviewImage(url);
+        } else {
+            setPreviewImage(null);
         }
     };
+
+    const shouldRemoveImage = !previewImage && !!announcement?.cover_image;
 
     return (
         <div className={`w-full max-w-[1320px] mx-auto ${className}`}>
@@ -134,6 +138,7 @@ const AnnouncementForm = ({ announcement, className }: AnnouncementFormProps) =>
 
                     {/* HIDDEN BUTTONS FOR ACTIONS */}
                     <div className="hidden">
+                        <input type="hidden" name="remove_cover_image" value={shouldRemoveImage ? "true" : "false"} />
                         <button type="submit" ref={archiveBtnRef} name="status" value="Archived" className="hidden" />
                         <button type="submit" ref={publishBtnRef} name="status" value="Published" className="hidden" />
                         <button type="submit" ref={unpublishBtnRef} name="status" value="Draft" className="hidden" />

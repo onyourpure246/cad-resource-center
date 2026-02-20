@@ -16,25 +16,30 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
     const items: {
         title: string;
         value: number | string;
+        unit?: string;
         icon: any;
         iconClassName: string;
         bgClassName: string;
         description: string;
         secondaryValue?: number | string;
+        secondaryUnit?: string;
         secondaryDescription?: string;
     }[] = [
             {
-                title: "เข้าใช้งานระบบ (ครั้ง)",
-                value: stats?.total_logins ?? 0,
+                title: "เข้าใช้งานระบบ",
+                value: (stats?.total_logins ?? 0).toLocaleString(),
+                unit: "ครั้ง",
                 icon: Users,
                 iconClassName: "text-chart-1", // Using chart colors for variety or primary
                 bgClassName: "bg-chart-1/10",
                 description: "ยอดการยืนยันตัวตนทั้งหมด"
             },
             {
-                title: "ผู้ใช้งาน (คน)",
-                value: stats?.active_users ?? 0,
-                secondaryValue: stats?.total_users ?? 0,
+                title: "ผู้ใช้งาน",
+                value: (stats?.active_users ?? 0).toLocaleString(),
+                unit: "คน",
+                secondaryValue: (stats?.total_users ?? 0).toLocaleString(),
+                secondaryUnit: "คน",
                 icon: Activity,
                 iconClassName: "text-chart-2",
                 bgClassName: "bg-chart-2/10",
@@ -43,7 +48,8 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
             },
             {
                 title: "เอกสารในระบบ",
-                value: stats?.total_files ?? 0,
+                value: (stats?.total_files ?? 0).toLocaleString(),
+                unit: "ไฟล์",
                 icon: FileText,
                 iconClassName: "text-chart-3",
                 bgClassName: "bg-chart-3/10",
@@ -51,7 +57,8 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
             },
             {
                 title: "สถานะระบบ",
-                value: stats?.system_crashes === 0 ? "ปกติ" : `${stats?.system_crashes} ครั้ง`,
+                value: stats?.system_crashes === 0 ? "ปกติ" : `${stats?.system_crashes}`,
+                unit: stats?.system_crashes === 0 ? undefined : "ครั้ง",
                 icon: stats?.system_crashes === 0 ? MonitorPlay : AlertTriangle,
                 iconClassName: stats?.system_crashes === 0 ? "text-primary" : "text-destructive",
                 bgClassName: stats?.system_crashes === 0 ? "bg-primary/10" : "bg-destructive/10",
@@ -74,23 +81,32 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
                     <CardContent>
                         {item.secondaryValue !== undefined ? (
                             <div className="flex justify-between items-center w-full">
-                                <div>
-                                    <div className="text-2xl font-bold">{item.value}</div>
+                                <div className="min-w-[45%]">
+                                    <div className="flex items-end gap-2">
+                                        <div className="text-2xl font-bold">{item.value}</div>
+                                        {item.unit && <div className="text-sm text-primary font-medium mb-1">{item.unit}</div>}
+                                    </div>
                                     <p className="text-xs text-muted-foreground mt-1">
                                         {item.description}
                                     </p>
                                 </div>
-                                <div className="h-8 w-px bg-border mx-4"></div>
-                                <div className="text-right">
-                                    <div className="text-2xl font-bold">{item.secondaryValue}</div>
-                                    <p className="text-xs text-muted-foreground mt-1">
+                                <div className="h-8 w-px bg-border mx-2"></div>
+                                <div className="min-w-[45%]">
+                                    <div className="flex items-end gap-2 justify-end">
+                                        <div className="text-2xl font-bold">{item.value}</div>
+                                        {item.secondaryUnit && <div className="text-sm text-primary font-medium mb-1">{item.secondaryUnit}</div>}
+                                    </div>
+                                    <p className="text-xs text-muted-foreground mt-1 text-right">
                                         {item.secondaryDescription}
                                     </p>
                                 </div>
                             </div>
                         ) : (
                             <>
-                                <div className="text-2xl font-bold">{item.value}</div>
+                                <div className="flex items-end gap-2">
+                                    <div className="text-2xl font-bold">{item.value}</div>
+                                    {item.unit && <div className="text-sm text-primary font-medium mb-1">{item.unit}</div>}
+                                </div>
                                 <p className="text-xs text-muted-foreground mt-1">
                                     {item.description}
                                 </p>

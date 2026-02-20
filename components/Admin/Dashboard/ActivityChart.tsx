@@ -33,7 +33,7 @@ export default function ActivityChart({ data }: ActivityChartProps) {
                 <CardHeader className="flex flex-row items-center justify-between py-2 px-6 space-y-0">
                     <div className="grid gap-0.5">
                         <CardTitle className="leading-normal">แนวโน้มการใช้งาน</CardTitle>
-                        <CardDescription className="leading-normal">สถิติการเข้าสู่ระบบย้อนหลัง 7 วัน</CardDescription>
+                        <CardDescription className="leading-normal">สถิติการเข้าสู่ระบบย้อนหลัง 14 วัน</CardDescription>
                     </div>
                     <div className="p-2 bg-primary/10 rounded-full">
                         <TrendingUp className="w-5 h-5 text-primary" />
