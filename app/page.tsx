@@ -3,7 +3,7 @@ import Image from "next/image";
 import Landing from "@/assets/img/landing_page_banner.png";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import AnnounceSection from "@/components/HomePage/AnnounceSection";
+import AnnounceSection from "./_components/AnnounceSection";
 import Link from "next/link";
 
 const HomePage = () => {

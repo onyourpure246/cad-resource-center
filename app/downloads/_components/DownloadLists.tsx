@@ -5,9 +5,26 @@ import { FileText } from 'lucide-react'
 import DownloadCard from './DownloadCard'
 
 const DownloadList = ({ items }: DownloadListProps) => {
+    // เรียงลำดับจากล่าสุดไปเก่าสุด
+    const sortedItems = React.useMemo(() => {
+        return [...items].sort((a, b) => {
+            const getValidDate = (dateStr?: string) => {
+                if (!dateStr) return 0;
+                // แปลงรูปแบบ "YYYY-MM-DD HH:mm" กลับเป็น ISO ให้ Date อ่านได้
+                const formattedStr = dateStr.includes(' ') && !dateStr.includes('T') ? dateStr.replace(' ', 'T') : dateStr;
+                return new Date(formattedStr).getTime();
+            };
+
+            const timeA = getValidDate(a.created_at || a.updated_at);
+            const timeB = getValidDate(b.created_at || b.updated_at);
+
+            return timeB - timeA; // เรียงจากมาก (ใหม่สุด) ไปน้อย (เก่าสุด)
+        });
+    }, [items]);
+
     return (
         <div className="w-full space-y-4">
-            {items.map((item) => (
+            {sortedItems.map((item) => (
                 <DownloadCard key={item.id} item={item} />
             ))}
 

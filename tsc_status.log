@@ -1,0 +1,2 @@
+﻿app/downloads/category/[categoryId]/page.tsx(30,43): error TS2554: Expected 1 arguments, but got 2.
+auth.config.ts(66,53): error TS2339: Property 'verifyEmployee' does not exist on type '{ getDashboardStats(token: string): Promise<any>; getDashboardChartData(token: string): Promise<any>; getDashboardAuditLogs(token: string): Promise<any>; }'.

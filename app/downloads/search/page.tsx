@@ -1,7 +1,6 @@
 import React from 'react';
-import HeroSection from '@/components/DownloadsPage/HeroSection';
 import { searchFiles } from '@/actions/search-actions';
-import SearchResults from '@/components/DownloadsPage/SearchResults';
+import SharedDownloadView from '../_components/SharedDownloadView';
 
 import { SearchPageProps } from '@/types/components';
 
@@ -12,9 +11,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     const results = await searchFiles(query);
 
     return (
-        <div className="flex flex-col min-h-screen animate-in fade-in duration-500">
-            <HeroSection />
-            <SearchResults results={results} query={query} />
-        </div>
+        <SharedDownloadView
+            title={`ผลการค้นหาสำหรับ: "${query}"`}
+            description={`พบเอกสารทั้งหมด ${results.length} รายการ`}
+            items={results}
+            backLink="/downloads"
+        />
     );
 }

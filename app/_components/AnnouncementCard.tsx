@@ -1,16 +1,16 @@
 'use client';
 
 import React from 'react'
-import { Card, CardContent, CardFooter, CardHeader } from '../ui/card'
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from '../ui/dialog'
-import { Badge } from '../ui/badge'
-import { Button } from '../ui/button'
+} from '@/components/ui/dialog'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Announcement } from '@/types/announcement';
 import { motion } from 'framer-motion';
 import { Calendar, ArrowRight, Tag } from 'lucide-react';
@@ -41,6 +41,9 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
 
     // Default Category
     const category = modalData.category || "ทั่วไป";
+
+    // Is it Urgent?
+    const isUrgent = modalData.is_urgent === 1 || modalData.is_urgent === true;
 
     // Image URL - Use the local proxy which handles the backend authentication
     const isAbsoluteUrl = modalData.cover_image?.startsWith('blob:') || modalData.cover_image?.startsWith('http');
@@ -109,12 +112,19 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
 
                     <CardHeader className="p-3 pb-0 space-y-0.5 gap-1">
                         <div className="flex justify-between items-start gap-1">
-                            <Badge
-                                variant="outline"
-                                className={`rounded-md px-2 py-0.5 text-xs font-normal flex items-center gap-1 border-transparent ${badgeColorClass}`}
-                            >
-                                {category}
-                            </Badge>
+                            <div className="flex items-center gap-2">
+                                <Badge
+                                    variant="outline"
+                                    className={`rounded-md px-2 py-0.5 text-xs font-normal flex items-center gap-1 border-transparent ${badgeColorClass}`}
+                                >
+                                    {category}
+                                </Badge>
+                                {isUrgent && (
+                                    <Badge variant="destructive" className="shrink-0 text-[10px] px-1.5 py-0 h-4 bg-red-500 hover:bg-red-600 animate-pulse">
+                                        ด่วน
+                                    </Badge>
+                                )}
+                            </div>
                             {displayDate && (
                                 <div className="flex items-center text-xs text-muted-foreground font-sarabun bg-muted/50 px-2 py-0.5 rounded-full whitespace-nowrap border">
                                     <Calendar className="w-3 h-3 mr-1" />
@@ -169,13 +179,20 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                         </div>
                     )}
                     <div className="flex items-center justify-between">
-                        <Badge
-                            variant="outline"
-                            className={`rounded-full px-3 py-1 text-sm font-normal flex items-center gap-1.5 w-fit border-transparent ${badgeColorClass}`}
-                        >
-                            <Tag className="w-3.5 h-3.5" />
-                            {category}
-                        </Badge>
+                        <div className="flex items-center gap-2">
+                            <Badge
+                                variant="outline"
+                                className={`rounded-full px-3 py-1 text-sm font-normal flex items-center gap-1.5 w-fit border-transparent ${badgeColorClass}`}
+                            >
+                                <Tag className="w-3.5 h-3.5" />
+                                {category}
+                            </Badge>
+                            {isUrgent && (
+                                <Badge variant="destructive" className="shrink-0 text-xs px-2 py-0.5 h-6 bg-red-500 hover:bg-red-600 animate-pulse">
+                                    ด่วน
+                                </Badge>
+                            )}
+                        </div>
                         {displayDate && (
                             <div className="flex items-center text-sm text-muted-foreground font-sarabun bg-muted px-2.5 py-1 rounded-full border">
                                 <Calendar className="w-3.5 h-3.5 mr-1.5" />

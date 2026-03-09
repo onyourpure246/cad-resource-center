@@ -43,6 +43,7 @@ export async function apiCreateFolder(params: CreateFolderRequest, token?: strin
     });
 
     if (!res.ok) {
+        if (res.status === 401 || res.status === 403) throw new Error("SESSION_EXPIRED");
         const err = await res.json().catch(() => ({}));
         throw new Error(err.message || res.statusText);
     }
@@ -75,6 +76,7 @@ export async function apiUpdateFolder(params: UpdateFolderParams, token?: string
     });
 
     if (!res.ok) {
+        if (res.status === 401 || res.status === 403) throw new Error("SESSION_EXPIRED");
         const err = await res.json().catch(() => ({}));
         throw new Error(err.message || "Update Folder Failed");
     }
@@ -91,6 +93,7 @@ export async function apiUploadFile(formData: FormData, token?: string): Promise
     });
 
     if (!res.ok) {
+        if (res.status === 401 || res.status === 403) throw new Error("SESSION_EXPIRED");
         const err = await res.json().catch(() => ({}));
         throw new Error(err.message || "Upload Failed");
     }
@@ -112,6 +115,7 @@ export async function apiUpdateFile(id: number, data: any, token?: string): Prom
     });
 
     if (!res.ok) {
+        if (res.status === 401 || res.status === 403) throw new Error("SESSION_EXPIRED");
         const err = await res.json().catch(() => ({}));
         throw new Error(err.message || "Update File Failed");
     }
@@ -132,6 +136,7 @@ export async function apiGetRootFolder(token?: string): Promise<FolderContentRes
     });
 
     if (!res.ok) {
+        if (res.status === 401 || res.status === 403) throw new Error("SESSION_EXPIRED");
         throw new Error('เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้');
     }
 
@@ -154,6 +159,7 @@ export async function apiGetFolderById(id: number, token?: string): Promise<Fold
     });
 
     if (!res.ok) {
+        if (res.status === 401 || res.status === 403) throw new Error("SESSION_EXPIRED");
         throw new Error('Failed to fetch folder contents');
     }
 
@@ -164,4 +170,66 @@ export async function apiGetFolderById(id: number, token?: string): Promise<Fold
     }
 
     return json.data;
+}
+
+export async function apiGetCategories(token?: string): Promise<any[]> {
+    const headers = getHeaders(token);
+    const res = await fetch(`${API_URL}/category`, {
+        method: 'GET',
+        headers,
+        cache: 'no-store',
+    });
+    if (!res.ok) {
+        if (res.status === 401 || res.status === 403) throw new Error("SESSION_EXPIRED");
+        throw new Error('Failed to fetch categories');
+    }
+    const json = await res.json();
+    return json.success ? json.data : [];
+}
+
+export async function apiCreateCategory(name: string, token?: string): Promise<void> {
+    const headers = { ...getHeaders(token), 'Content-Type': 'application/json' };
+    const res = await fetch(`${API_URL}/category`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ name }),
+    });
+    if (!res.ok) {
+        if (res.status === 401 || res.status === 403) throw new Error("SESSION_EXPIRED");
+        throw new Error('Failed to create category');
+    }
+}
+
+export async function apiUpdateCategory(id: number, name: string, token?: string): Promise<void> {
+    const headers = { ...getHeaders(token), 'Content-Type': 'application/json' };
+    const res = await fetch(`${API_URL}/category/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({ name }),
+    });
+    if (!res.ok) {
+        if (res.status === 401 || res.status === 403) throw new Error("SESSION_EXPIRED");
+        // Fallback to PUT if PATCH fails
+        const resPut = await fetch(`${API_URL}/category/${id}`, {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify({ name }),
+        });
+        if (!resPut.ok) {
+            if (resPut.status === 401 || resPut.status === 403) throw new Error("SESSION_EXPIRED");
+            throw new Error('Failed to update category');
+        }
+    }
+}
+
+export async function apiDeleteCategory(id: number, token?: string): Promise<void> {
+    const headers = getHeaders(token);
+    const res = await fetch(`${API_URL}/category/${id}`, {
+        method: 'DELETE',
+        headers,
+    });
+    if (!res.ok) {
+        if (res.status === 401 || res.status === 403) throw new Error("SESSION_EXPIRED");
+        throw new Error('Failed to delete category');
+    }
 }

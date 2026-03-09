@@ -26,6 +26,7 @@ export async function getUsers(): Promise<User[]> {
         });
 
         if (!res.ok) {
+            if (res.status === 401 || res.status === 403) throw new Error('SESSION_EXPIRED');
             console.error('Failed to fetch users:', res.statusText);
             return [];
         }
@@ -55,6 +56,7 @@ export async function updateUser(id: string | number, data: Partial<User>) {
         });
 
         if (!res.ok) {
+            if (res.status === 401 || res.status === 403) throw new Error('SESSION_EXPIRED');
             const error = await res.json().catch(() => ({}));
             throw new Error(error.message || 'Update failed');
         }
@@ -81,6 +83,7 @@ export async function deleteUser(id: string | number) {
         });
 
         if (!res.ok) {
+            if (res.status === 401 || res.status === 403) throw new Error('SESSION_EXPIRED');
             throw new Error('Delete failed');
         }
 

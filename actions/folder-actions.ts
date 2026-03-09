@@ -2,10 +2,10 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod';
 import { State } from '@/types/common';
-import { apiCreateFolder, apiUpdateFolder } from './document-service';
+import { apiCreateFolder, apiUpdateFolder } from '@/services/document-service';
 import { auth } from '@/auth';
 
-import { apiGetRootFolder, apiGetFolderById } from './document-service';
+import { apiGetRootFolder, apiGetFolderById } from '@/services/document-service';
 
 // fetch root folder
 export const adminGetRootFolder = async () => {
@@ -161,6 +161,7 @@ export const updateFolder = async (prevState: any, formData: FormData): Promise<
     });
 
     if (!res.ok) {
+        if (res.status === 401 || res.status === 403) return { success: false, message: 'SESSION_EXPIRED' };
         const errorResponse = await res.json();
         console.error('Failed to update folder:', errorResponse);
         return { success: false, message: errorResponse.message || 'อัปเดตโฟลเดอร์ไม่สำเร็จ' };

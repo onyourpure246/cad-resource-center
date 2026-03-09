@@ -24,7 +24,8 @@ const traverseAndSearch = async (
     query: string,
     currentPath: string,
     results: SearchResultItem[],
-    depth: number = 0
+    depth: number = 0,
+    categoryId?: number | null
 ) => {
     // Safety break for recursion depth (adjust as needed)
     const MAX_DEPTH = 5;
@@ -45,6 +46,9 @@ const traverseAndSearch = async (
             // Filter out inactive files
             if (file.isactive !== 1) continue;
 
+            // Apply category filter if provided
+            if (categoryId != null && file.category_id !== categoryId) continue;
+
             const matchName = file.name.toLowerCase().includes(normalizedQuery);
             const matchFilename = file.filename.toLowerCase().includes(normalizedQuery);
             const matchDesc = file.description?.toLowerCase().includes(normalizedQuery);
@@ -64,7 +68,7 @@ const traverseAndSearch = async (
             .filter(folder => folder.isactive === 1) // Filter out inactive folders from recursion
             .map(folder => {
                 const newPath = currentPath ? `${currentPath} > ${folder.name}` : folder.name;
-                return traverseAndSearch(folder.id, query, newPath, results, depth + 1);
+                return traverseAndSearch(folder.id, query, newPath, results, depth + 1, categoryId);
             });
 
         await Promise.all(folderPromises);
@@ -75,8 +79,8 @@ const traverseAndSearch = async (
     }
 };
 
-export const searchFiles = async (query: string): Promise<SearchResultItem[]> => {
-    if (!query || query.trim().length === 0) return [];
+export const searchFiles = async (query: string, categoryId?: number | null): Promise<SearchResultItem[]> => {
+    if ((!query || query.trim().length === 0) && categoryId == null) return [];
 
     const results: SearchResultItem[] = [];
 
@@ -88,7 +92,7 @@ export const searchFiles = async (query: string): Promise<SearchResultItem[]> =>
         const searchPromises = rootData.folders
             .filter(folder => folder.isactive === 1) // Only search in active root folders
             .map(folder =>
-                traverseAndSearch(folder.id, query, folder.name, results)
+                traverseAndSearch(folder.id, query, folder.name, results, 0, categoryId)
             );
 
         await Promise.all(searchPromises);

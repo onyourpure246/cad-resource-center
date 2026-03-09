@@ -1,6 +1,6 @@
 'use client';
 
-import { createColumnHelper } from '@/utils/columnHelper';
+import { createColumnHelper } from '@/components/DataTable/columnHelper';
 import { Announcement } from '@/types/announcement';
 import { deleteAnnouncement, updateAnnouncementStatus } from '@/actions/announcement-actions';
 import { Archive, Undo, FileX, Pencil, Trash2, Eye } from 'lucide-react';

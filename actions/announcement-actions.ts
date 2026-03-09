@@ -35,6 +35,7 @@ export const getAnnouncements = async (status: string = 'all'): Promise<Announce
         });
 
         if (!res.ok) {
+            if (res.status === 401 || res.status === 403) throw new Error('SESSION_EXPIRED');
             console.error('Failed to fetch announcements:', res.statusText);
             return [];
         }
@@ -72,6 +73,7 @@ export const getAnnouncementById = async (id: number): Promise<Announcement | nu
         });
 
         if (!res.ok) {
+            if (res.status === 401 || res.status === 403) throw new Error('SESSION_EXPIRED');
             return null;
         }
 
@@ -128,6 +130,7 @@ export const createAnnouncement = async (prevState: any, formData: FormData): Pr
         });
 
         if (!res.ok) {
+            if (res.status === 401 || res.status === 403) return { success: false, message: 'SESSION_EXPIRED' };
             const errorText = await res.text();
             console.error('Failed to create announcement:', errorText);
             return { success: false, message: 'สร้างประกาศไม่สำเร็จ: ' + res.statusText };
@@ -188,6 +191,7 @@ export const updateAnnouncement = async (id: number, formData: FormData): Promis
         });
 
         if (!res.ok) {
+            if (res.status === 401 || res.status === 403) return { success: false, message: 'SESSION_EXPIRED' };
             return { success: false, message: 'แก้ไขประกาศไม่สำเร็จ' };
         }
 
@@ -267,6 +271,7 @@ export const deleteAnnouncement = async (id: number): Promise<State> => {
         });
 
         if (!res.ok) {
+            if (res.status === 401 || res.status === 403) return { success: false, message: 'SESSION_EXPIRED' };
             return { success: false, message: 'ลบประกาศไม่สำเร็จ' };
         }
 

@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { backendApi } from "@/lib/backend-api";
+import { backendApi } from "@/services/backend-api";
 import DashboardStats from "@/components/Admin/Dashboard/DashboardStats";
 import ActivityChart from "@/components/Admin/Dashboard/ActivityChart";
 import RecentAlerts from "@/components/Admin/Dashboard/RecentAlerts";

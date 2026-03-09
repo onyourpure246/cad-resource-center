@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { signOut } from 'next-auth/react';
 import ErrorState from '@/components/ui/error-state';
 
 export default function Error({
@@ -11,6 +12,10 @@ export default function Error({
     reset: () => void;
 }) {
     useEffect(() => {
+        if (error.message === 'SESSION_EXPIRED') {
+            signOut({ redirectTo: '/login?expired=true' });
+            return;
+        }
         // Log the error to an error reporting service
         console.error(error);
     }, [error]);

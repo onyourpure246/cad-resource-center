@@ -16,6 +16,7 @@ export interface Announcement {
     category?: string; // หมวดหมู่
     cover_image?: string; // รูปภาพหน้าปก
     view_count?: number; // ยอดเข้าชม
+    is_urgent?: number | boolean; // ประกาศด่วน (0 = ปกติ, 1 = ด่วน)
 }
 
 export interface AnnouncementTableProps {
@@ -54,6 +55,8 @@ export interface InputSectionProps {
     setTitle: (value: string) => void;
     category: string;
     setCategory: (value: string) => void;
+    isUrgent: boolean;
+    setIsUrgent: (value: boolean) => void;
     handleImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 

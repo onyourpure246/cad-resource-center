@@ -4,7 +4,7 @@ import { SubFolderBadgesProps } from '@/types/components';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { ChevronLeft, FolderOpen, LayoutGrid } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const SubFolderBadges = ({ subFolders, parentFolderId, backLink }: SubFolderBadgesProps) => {

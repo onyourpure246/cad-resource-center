@@ -1,7 +1,9 @@
-import { LoginBackground } from "../../components/LoginPage/LoginBackground";
-import { LoginHeader } from "../../components/LoginPage/LoginHeader";
-import { ThaIDLoginButton } from "../../components/LoginPage/ThaIDLoginButton";
-import { LoginFooter } from "../../components/LoginPage/LoginFooter";
+import { Suspense } from "react";
+import { LoginBackground } from "./_components/LoginBackground";
+import { LoginHeader } from "./_components/LoginHeader";
+import { ThaIDLoginButton } from "./_components/ThaIDLoginButton";
+import { LoginFooter } from "./_components/LoginFooter";
+import { SessionExpiredToast } from "./_components/SessionExpiredToast";
 
 export default function LoginPage() {
     return (
@@ -13,6 +15,10 @@ export default function LoginPage() {
                 <ThaIDLoginButton />
                 <LoginFooter />
             </div>
+
+            <Suspense fallback={null}>
+                <SessionExpiredToast />
+            </Suspense>
         </div>
     );
 }

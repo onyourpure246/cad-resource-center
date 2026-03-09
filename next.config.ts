@@ -8,8 +8,9 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: '20mb',
+      bodySizeLimit: '300mb',
     },
+    middlewareClientMaxBodySize: 314572800,
     optimizePackageImports: [
       '@mui/material',
       '@mui/icons-material',

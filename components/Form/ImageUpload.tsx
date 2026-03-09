@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Image as ImageIcon, Upload, X, Trash2, Crop as CropIcon, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Cropper from 'react-easy-crop';
-import getCroppedImg from '@/utils/image-utils';
+import getCroppedImg from '@/lib/image-utils';
 import {
     Dialog,
     DialogContent,

@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { DownloadItem } from '@/types/models'
-import { Button } from '../ui/button'
+import { Button } from '@/components/ui/button'
 import { Download, FileText, Calendar, Clock } from 'lucide-react'
 import MuiIconRenderer from '@/components/ui/MuiIconRenderer'
 import { Card, CardContent } from '@/components/ui/card'
@@ -10,6 +10,22 @@ import { Badge } from '@/components/ui/badge'
 import { DownloadCardProps } from '@/types/components';
 
 const DownloadCard = ({ item }: DownloadCardProps) => {
+    // กำหนดเกณฑ์: ถ้าอัปโหลดไม่เกิน 14 วัน ถือว่าเป็นไฟล์ "ใหม่"
+    const isNew = React.useMemo(() => {
+        if (!item.created_at) return false;
+        // รองรับ format วันที่แบบ "YYYY-MM-DD HH:mm" หรือแบบมาตรฐาน
+        const dateStr = item.created_at.includes(' ') && !item.created_at.includes('T')
+            ? item.created_at.replace(' ', 'T')
+            : item.created_at;
+
+        const createdDate = new Date(dateStr);
+        const now = new Date();
+        const diffTime = Math.abs(now.getTime() - createdDate.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        return diffDays <= 14; // ไฟล์ใหม่ในช่วง 14 วัน
+    }, [item.created_at]);
+
     return (
         <Card
             className="group border-1 shadow-sm hover:shadow-md transition-all duration-200 bg-card overflow-hidden py-0"
@@ -31,9 +47,16 @@ const DownloadCard = ({ item }: DownloadCardProps) => {
                     <div className="flex-1 p-6 grid grid-cols-1 md:grid-cols-2 gap-4 min-w-0">
                         {/* Left Column */}
                         <div className="flex flex-col justify-center gap-2">
-                            <h3 className="font-semibold text-lg text-foreground line-clamp-1 group-hover:text-primary transition-colors">
-                                {item.name}
-                            </h3>
+                            <div className="flex items-center gap-2">
+                                <h3 className="font-semibold text-lg text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+                                    {item.name}
+                                </h3>
+                                {isNew && (
+                                    <Badge variant="destructive" className="shrink-0 text-[10px] px-1.5 py-0 h-4 bg-red-500 hover:bg-red-600 animate-pulse">
+                                        NEW
+                                    </Badge>
+                                )}
+                            </div>
 
                             <p className="text-muted-foreground text-sm line-clamp-2">
                                 {item.description}
@@ -59,6 +82,11 @@ const DownloadCard = ({ item }: DownloadCardProps) => {
 
                         {/* Right Column */}
                         <div className="flex flex-col items-start md:items-end gap-2">
+                            {item.category_name && (
+                                <Badge variant="outline" className="shrink-0 text-xs font-medium border-primary/20 text-primary">
+                                    {item.category_name}
+                                </Badge>
+                            )}
                             <Badge variant="secondary" className="shrink-0 text-xs font-normal bg-muted text-muted-foreground">
                                 {item.filename.split('.').pop()?.toUpperCase() || 'FILE'}
                             </Badge>

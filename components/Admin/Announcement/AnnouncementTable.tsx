@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { ANNOUNCEMENT_TABS } from '@/utils/constants';
+import { ANNOUNCEMENT_TABS } from '@/lib/constants';
 
 const AnnouncementTable = ({ announcements, isLoading }: AnnouncementTableProps) => {
     const router = useRouter();

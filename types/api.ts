@@ -1,4 +1,4 @@
-import { Folder, File as DLFile, CurrentFolder, Breadcrumb } from './models';
+import { Folder, File as DLFile, CurrentFolder, Breadcrumb, Category } from './models';
 
 // Responses
 export interface FolderContentResponse {
@@ -46,6 +46,7 @@ export interface CreateFileRequest {
     filename: string;
     sysname: string;
     isactive?: number; // Added based on inference, though not in original DTO, it matches DLFile sometimes. Keeping strict to original if possible. Original didn't have isactive in CreateFileRequest.
+    category_id?: number | null;
 }
 
 export interface UpdateFileRequest {
@@ -54,6 +55,7 @@ export interface UpdateFileRequest {
     description?: string;
     filename?: string;
     isactive?: number;
+    category_id?: number | null;
 }
 
 export interface ImportStats {

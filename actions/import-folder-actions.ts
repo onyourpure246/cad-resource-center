@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { adminGetFolderById, adminGetRootFolder } from './folder-actions';
-import { apiCreateFolder, apiUploadFile, apiUpdateFile } from './document-service';
+import { apiCreateFolder, apiUploadFile, apiUpdateFile } from '@/services/document-service';
 
 const API_URL = process.env.API_URL;
 const API_TOKEN = process.env.API_TOKEN;
@@ -158,5 +158,17 @@ export const importFolderTree = async (formData: FormData, parentId: number | nu
         if (mui_colour) formData.append('mui_colour', mui_colour);
 
         const newFileId = await apiUploadFile(formData);
+
+        if (newFileId) {
+            try {
+                const updatePayload: any = {};
+                if (mui_icon) updatePayload.mui_icon = mui_icon;
+                if (mui_colour) updatePayload.mui_colour = mui_colour;
+
+                await apiUpdateFile(newFileId, updatePayload);
+            } catch (err) {
+                console.error("Failed to patch icon colors:", err);
+            }
+        }
     }
 }

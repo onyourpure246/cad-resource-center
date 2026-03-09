@@ -3,7 +3,8 @@ import { Label } from '@/components/ui/label';
 import TextInput from '@/components/Form/TextInput';
 import SelectInput from '@/components/Form/SelectInput';
 import ImageUpload from '@/components/Form/ImageUpload';
-import { ANNOUNCEMENT_CATEGORIES } from '@/utils/constants';
+import { Switch } from '@/components/ui/switch';
+import { ANNOUNCEMENT_CATEGORIES } from '@/lib/constants';
 import { Announcement, AnnouncementStatus, InputSectionProps } from '@/types/announcement';
 
 export const InputSection = ({
@@ -17,6 +18,8 @@ export const InputSection = ({
     setTitle,
     category,
     setCategory,
+    isUrgent,
+    setIsUrgent,
     handleImageChange
 }: InputSectionProps) => {
     return (
@@ -61,6 +64,30 @@ export const InputSection = ({
                     onChange={(e) => setTitle(e.target.value)}
                     disabled={isReadOnly}
                 />
+            </div>
+
+            <div className='mb-4 flex flex-col gap-1'>
+                <div className={`p-4 border rounded-lg flex flex-row items-center justify-between ${isReadOnly ? "opacity-50 pointer-events-none bg-muted/50" : "bg-card"}`}>
+                    <div className="space-y-0.5">
+                        <Label className="text-base text-destructive font-bold flex items-center gap-2">
+                            <span className="relative flex h-3 w-3">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-destructive"></span>
+                            </span>
+                            ประกาศด่วน (Urgent)
+                        </Label>
+                        <p className="text-sm text-muted-foreground">
+                            เปิดใช้งานเพื่อแสดงป้าย "ด่วน" กระพริบเตะตาบนการ์ดประกาศ
+                        </p>
+                    </div>
+                    <Switch
+                        checked={isUrgent}
+                        onCheckedChange={setIsUrgent}
+                        disabled={isReadOnly}
+                        className="data-[state=checked]:bg-destructive"
+                    />
+                    <input type="hidden" name="is_urgent" value={isUrgent ? 1 : 0} />
+                </div>
             </div>
 
             <div className='mb-4 flex flex-col gap-1'>

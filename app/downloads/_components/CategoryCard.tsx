@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/card'
 import { CategoryCardProps } from '@/types/components'
 import { ArrowRight, Folder } from 'lucide-react'
-import MuiIconRenderer from '../ui/MuiIconRenderer'
+import MuiIconRenderer from '@/components/ui/MuiIconRenderer'
 
 const CategoryCard = ({ title, description, href, icon, mui_icon, mui_colour }: CategoryCardProps) => {
     return (

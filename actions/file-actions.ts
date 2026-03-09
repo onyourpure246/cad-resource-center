@@ -2,8 +2,8 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod';
 import { ApiResponse, State } from '@/types/common';
-import { apiGetFolderById, apiGetRootFolder } from './document-service';
-import { apiUploadFile, apiUpdateFile } from './document-service';
+import { apiGetFolderById, apiGetRootFolder } from '@/services/document-service';
+import { apiUploadFile, apiUpdateFile, apiGetCategories, apiCreateCategory, apiDeleteCategory, apiUpdateCategory } from '@/services/document-service';
 import { auth } from '@/auth';
 
 // create ข้อมูลไฟล์ดาวน์โหลด
@@ -182,3 +182,27 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
         return { success: false, message: error.message || 'อัปเดตไฟล์ไม่สำเร็จ' };
     }
 }
+
+export const getCategories = async () => {
+    const session = await auth();
+    const token = session?.accessToken || process.env.API_TOKEN;
+    return apiGetCategories(token);
+};
+
+export const createCategory = async (name: string) => {
+    const session = await auth();
+    const token = session?.accessToken || process.env.API_TOKEN;
+    return apiCreateCategory(name, token);
+};
+
+export const deleteCategory = async (id: number) => {
+    const session = await auth();
+    const token = session?.accessToken || process.env.API_TOKEN;
+    return apiDeleteCategory(id, token);
+};
+
+export const updateCategory = async (id: number, name: string) => {
+    const session = await auth();
+    const token = session?.accessToken || process.env.API_TOKEN;
+    return apiUpdateCategory(id, name, token);
+};

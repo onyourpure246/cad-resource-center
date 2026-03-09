@@ -9,7 +9,7 @@ import Link from 'next/link';
 import ThemeLogo from './ThemeLogo';
 import { usePathname } from 'next/navigation';
 import { ModeToggle } from './ModeToggle';
-import { sidebarItems } from '@/utils/constants';
+import { sidebarItems } from '@/lib/constants';
 
 const MobileNav = () => {
     const [open, setOpen] = useState(false);

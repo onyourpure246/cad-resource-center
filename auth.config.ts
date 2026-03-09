@@ -1,7 +1,7 @@
 import type { NextAuthConfig } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import { backendApi } from "@/lib/backend-api"
-import { getThaIDOwner } from "@/lib/thaid-service"
+import { authApi } from "@/services/auth-api"
+import { getThaIDOwner } from "@/services/thaid-service"
 
 export const authConfig = {
     pages: {
@@ -30,6 +30,11 @@ export const authConfig = {
                 session.user.id = token.sub;
                 session.user.role = token.role as string;
                 session.accessToken = token.accessToken as string; // Persist token to session
+
+                // Overwrite NextAuth session expiration with our Backend Token's expiration
+                if (token.accessTokenExpires) {
+                    session.expires = new Date(token.accessTokenExpires as number).toISOString() as Date & string;
+                }
             }
             return session;
         },
@@ -38,6 +43,20 @@ export const authConfig = {
                 token.sub = user.id;
                 token.role = user.role;
                 token.accessToken = user.accessToken; // Persist token to JWT
+
+                // ถอดรหัส JWT จากหลังบ้าน เพื่อดึงเวลาหมดอายุออกมาตรวจสอบ
+                try {
+                    if (user.accessToken) {
+                        const payloadBase64 = user.accessToken.split('.')[1];
+                        const decodedJson = Buffer.from(payloadBase64, 'base64').toString();
+                        const decoded = JSON.parse(decodedJson);
+                        if (decoded.exp) {
+                            token.accessTokenExpires = decoded.exp * 1000;
+                        }
+                    }
+                } catch (e) {
+                    console.error("[Auth] Error decoding JWT timestamp", e);
+                }
             }
             return token;
         }
@@ -63,7 +82,7 @@ export const authConfig = {
                     console.log(`[Auth] ThaID Verified. PID: ${thaidUser.pid}`);
 
                     // 2. เช็คกับ Backend เรา
-                    const result = await backendApi.verifyEmployee(thaidUser.pid);
+                    const result = await authApi.verifyEmployee(thaidUser.pid);
 
                     if (!result || !result.user) {
                         console.error(`[Auth] PID ${thaidUser.pid} is not a valid employee.`);

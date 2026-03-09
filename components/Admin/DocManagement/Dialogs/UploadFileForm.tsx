@@ -1,18 +1,21 @@
 'use client';
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import FormContainer from '@/components/Form/FormContainer'
-import { uploadFile } from '@/actions/file-actions'
+import { uploadFile, getCategories } from '@/actions/file-actions'
 import TextInput from '@/components/Form/TextInput'
 import TextAreaInput from '@/components/Form/TextAreaInput'
 import { SubmitButton } from '@/components/Form/Button'
 import { DrawerClose, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from '@/components/ui/button'
 import { CreateNewFormProps } from '@/types/components';
 import { State } from '@/types/common';
 import { useFormSubmission } from '@/hooks/useFormSubmission';
-import { CloudUpload, File as FileIcon, X } from 'lucide-react';
+import { CloudUpload, File as FileIcon, X, Settings } from 'lucide-react';
+import { Category } from '@/types/models';
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import { ManageCategoryDialog } from './ManageCategoryDialog';
 
 // default state
 const initialState: State = {
@@ -26,7 +29,20 @@ const UploadFileForm = ({ parentId, onSuccess }: CreateNewFormProps) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [isPublished, setIsPublished] = useState(false);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState<string>('unassigned');
+    const [isManageCategoryOpen, setIsManageCategoryOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const loadCategories = () => {
+        getCategories().then((data) => {
+            setCategories(data.filter(c => c.isactive === 1));
+        }).catch(console.error);
+    };
+
+    useEffect(() => {
+        loadCategories();
+    }, []);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -95,6 +111,41 @@ const UploadFileForm = ({ parentId, onSuccess }: CreateNewFormProps) => {
                             placeholder='กรอกคำอธิบายรายการดาวน์โหลดหรือการการอัปเดต'
                         />
                     </div>
+
+                    <div className='grid md:grid-cols-1 gap-4 mt-4'>
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium leading-none">
+                                หมวดหมู่เอกสาร {isPublished && <span className="text-destructive">*</span>}
+                            </label>
+                            <div className="flex gap-2">
+                                <Select name="category_id" value={selectedCategory} onValueChange={setSelectedCategory} required={isPublished}>
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="เลือกหมวดหมู่..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="unassigned">-- ไม่ระบุ --</SelectItem>
+                                        {categories.map((cat) => (
+                                            <SelectItem key={cat.id} value={cat.id.toString()}>{cat.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <Button type="button" variant="outline" size="icon" title="จัดการหมวดหมู่" onClick={() => setIsManageCategoryOpen(true)}>
+                                    <Settings className="h-4 w-4" />
+                                </Button>
+                            </div>
+                            {state.errors?.category_id && (
+                                <p className="text-sm font-medium text-destructive">
+                                    {state.errors.category_id[0]}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+
+                    <ManageCategoryDialog
+                        open={isManageCategoryOpen}
+                        onOpenChange={setIsManageCategoryOpen}
+                        onCategoryChanged={loadCategories}
+                    />
 
                     <div className='grid md:grid-cols-1 gap-4 mt-6'>
                         <div className="space-y-2">

@@ -1,6 +1,6 @@
 'use client';
 
-import { createColumnHelper } from '@/utils/columnHelper';
+import { createColumnHelper } from '@/components/DataTable/columnHelper';
 import { User } from '@/types/user';
 
 const helper = createColumnHelper<User>();

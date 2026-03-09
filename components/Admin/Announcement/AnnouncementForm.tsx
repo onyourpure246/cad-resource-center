@@ -4,7 +4,7 @@ import { createAnnouncement, updateAnnouncement } from '@/actions/announcement-a
 import FormContainer from '@/components/Form/FormContainer'
 import { useRouter } from 'next/navigation'
 import React, { useActionState, useState, useEffect } from 'react'
-import { AnnouncementFormProps, AnnouncementFormState, AnnouncementStatus } from '@/types/announcement';
+import { AnnouncementFormProps, AnnouncementFormState, AnnouncementStatus, Announcement } from '@/types/announcement';
 import { toast } from 'sonner';
 
 // Sub-components
@@ -86,6 +86,11 @@ const AnnouncementForm = ({ announcement, className }: AnnouncementFormProps) =>
     const [category, setCategory] = useState<string>(announcement?.category || 'ประชาสัมพันธ์');
     const [previewImage, setPreviewImage] = useState<string | null>(announcement?.cover_image || null);
 
+    // Normalize is_urgent to boolean. Backend might send 1/0 or true/false
+    const [isUrgent, setIsUrgent] = useState<boolean>(
+        Boolean(announcement?.is_urgent === 1 || announcement?.is_urgent === true)
+    );
+
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -105,7 +110,7 @@ const AnnouncementForm = ({ announcement, className }: AnnouncementFormProps) =>
                     <div className='grid grid-cols-1 lg:grid-cols-2 gap-12'>
                         {/* LEFT COLUMN: PREVIEW */}
                         <PreviewSection
-                            announcement={announcement}
+                            announcement={{ ...announcement, is_urgent: isUrgent ? 1 : 0 } as Announcement}
                             title={title}
                             contentHTML={contentHTML}
                             category={category}
@@ -125,6 +130,8 @@ const AnnouncementForm = ({ announcement, className }: AnnouncementFormProps) =>
                             setTitle={setTitle}
                             category={category}
                             setCategory={setCategory}
+                            isUrgent={isUrgent}
+                            setIsUrgent={setIsUrgent}
                             handleImageChange={handleImageChange}
                         />
                     </div>

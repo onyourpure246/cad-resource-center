@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { createColumnHelper } from '@/utils/columnHelper';
+import { createColumnHelper } from '@/components/DataTable/columnHelper';
 import { Item } from '@/types/models';
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, File, FileText, Folder } from "lucide-react";
@@ -9,6 +9,7 @@ import MuiIconRenderer from '@/components/ui/MuiIconRenderer';
 import { RowActions } from '@/components/Admin/DocManagement/RowActions';
 import { UseItemsTableColumnsProps } from '@/types/components';
 import { Badge } from "@/components/ui/badge";
+import { getFileIconAndColor } from '@/lib/file-icon-utils';
 
 const helper = createColumnHelper<Item>();
 
@@ -43,13 +44,9 @@ export const getItemColumns = ({
 
                 if (!iconName && item.type === 'file') {
                     const fileName = (item.filename || item.name || '').toLowerCase();
-                    if (fileName.endsWith('.pdf')) {
-                        iconName = 'PictureAsPdf';
-                        iconColor = '#ef4444'; // text-red-500
-                    } else if (fileName.endsWith('.zip')) {
-                        iconName = 'FolderZip';
-                        iconColor = '#eab308'; // text-yellow-500
-                    }
+                    const iconConfig = getFileIconAndColor(fileName);
+                    iconName = iconConfig.mui_icon as string;
+                    iconColor = iconConfig.mui_colour as string;
                 }
 
                 if (iconName) {

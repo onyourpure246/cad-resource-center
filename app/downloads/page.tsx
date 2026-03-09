@@ -1,5 +1,5 @@
-import CategorySelection from '@/components/DownloadsPage/CategorySelection'
-import HeroSection from '@/components/DownloadsPage/HeroSection'
+import CategorySelection from './_components/CategorySelection'
+import HeroSection from './_components/HeroSection'
 import React from 'react'
 
 const DownloadPage = () => {

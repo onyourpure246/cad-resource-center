@@ -1,6 +1,6 @@
 import React from 'react';
 import { Label } from '@/components/ui/label';
-import AnnouncementCard from '@/components/HomePage/AnnouncementCard';
+import AnnouncementCard from '@/app/_components/AnnouncementCard';
 import { Announcement, AnnouncementStatus, PreviewSectionProps } from '@/types/announcement';
 
 export const PreviewSection = ({
