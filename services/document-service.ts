@@ -187,12 +187,15 @@ export async function apiGetCategories(token?: string): Promise<any[]> {
     return json.success ? json.data : [];
 }
 
-export async function apiCreateCategory(name: string, token?: string): Promise<void> {
+export async function apiCreateCategory(name: string, group_name?: string, token?: string): Promise<void> {
     const headers = { ...getHeaders(token), 'Content-Type': 'application/json' };
+    const body: any = { name };
+    if (group_name) body.group_name = group_name;
+
     const res = await fetch(`${API_URL}/category`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ name }),
+        body: JSON.stringify(body),
     });
     if (!res.ok) {
         if (res.status === 401 || res.status === 403) throw new Error("SESSION_EXPIRED");
@@ -200,12 +203,15 @@ export async function apiCreateCategory(name: string, token?: string): Promise<v
     }
 }
 
-export async function apiUpdateCategory(id: number, name: string, token?: string): Promise<void> {
+export async function apiUpdateCategory(id: number, name: string, group_name?: string, token?: string): Promise<void> {
     const headers = { ...getHeaders(token), 'Content-Type': 'application/json' };
+    const body: any = { name };
+    if (group_name) body.group_name = group_name;
+
     const res = await fetch(`${API_URL}/category/${id}`, {
         method: 'PATCH',
         headers,
-        body: JSON.stringify({ name }),
+        body: JSON.stringify(body),
     });
     if (!res.ok) {
         if (res.status === 401 || res.status === 403) throw new Error("SESSION_EXPIRED");
@@ -213,7 +219,7 @@ export async function apiUpdateCategory(id: number, name: string, token?: string
         const resPut = await fetch(`${API_URL}/category/${id}`, {
             method: 'PUT',
             headers,
-            body: JSON.stringify({ name }),
+            body: JSON.stringify(body),
         });
         if (!resPut.ok) {
             if (resPut.status === 401 || resPut.status === 403) throw new Error("SESSION_EXPIRED");

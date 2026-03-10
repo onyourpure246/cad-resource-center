@@ -189,10 +189,10 @@ export const getCategories = async () => {
     return apiGetCategories(token);
 };
 
-export const createCategory = async (name: string) => {
+export const createCategory = async (name: string, group_name?: string) => {
     const session = await auth();
     const token = session?.accessToken || process.env.API_TOKEN;
-    return apiCreateCategory(name, token);
+    return apiCreateCategory(name, group_name, token);
 };
 
 export const deleteCategory = async (id: number) => {
@@ -201,8 +201,8 @@ export const deleteCategory = async (id: number) => {
     return apiDeleteCategory(id, token);
 };
 
-export const updateCategory = async (id: number, name: string) => {
+export const updateCategory = async (id: number, name: string, group_name?: string) => {
     const session = await auth();
     const token = session?.accessToken || process.env.API_TOKEN;
-    return apiUpdateCategory(id, name, token);
+    return apiUpdateCategory(id, name, group_name, token);
 };
