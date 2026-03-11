@@ -2,6 +2,7 @@
 
 import { useSession, signOut } from "next-auth/react";
 import { useEffect, useCallback, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -16,6 +17,7 @@ export function SessionWatcher() {
     const { data: session, status } = useSession();
     const isSigningOut = useRef(false);
     const [isExpiredModalOpen, setIsExpiredModalOpen] = useState(false);
+    const router = useRouter();
 
     const checkSessionActivity = useCallback(() => {
         if (status === "authenticated" && session?.expires && !isSigningOut.current) {
@@ -58,8 +60,20 @@ export function SessionWatcher() {
         };
     }, [status, checkSessionActivity]);
 
+    const handleConfirm = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsExpiredModalOpen(false); // Close modal smoothly first
+
+        // Wait for Radix UI dialog close animation (usually ~150-200ms) before doing a soft routing
+        setTimeout(async () => {
+            await signOut({ redirect: false });
+            router.push("/");
+            router.refresh();
+        }, 300);
+    };
+
     return (
-        <AlertDialog open={isExpiredModalOpen}>
+        <AlertDialog open={isExpiredModalOpen} onOpenChange={setIsExpiredModalOpen}>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>เซสชันหมดอายุ</AlertDialogTitle>
@@ -68,7 +82,7 @@ export function SessionWatcher() {
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogAction onClick={() => signOut({ redirectTo: "/" })}>
+                    <AlertDialogAction onClick={handleConfirm}>
                         ตกลง
                     </AlertDialogAction>
                 </AlertDialogFooter>
