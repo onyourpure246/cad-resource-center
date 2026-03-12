@@ -38,11 +38,11 @@ const HeroSection = () => {
 
     return (
         <LazyMotion features={domAnimation}>
-            <div className="relative py-4 md:py-4 overflow-hidden min-h-[260px] flex items-center justify-center" onMouseMove={handleMouseMove}>
+            <div className="relative py-4 md:py-4 overflow-hidden min-h-[200px] flex items-center justify-center" onMouseMove={handleMouseMove}>
                 <HeroBackground mouseX={springX} mouseY={springY} />
                 <div className="container font-kanit mx-auto max-w-[1920px] px-4 text-center relative z-10">
                     <p className="text-lg md:text-lg text-foreground/80 font-medium max-w-2xl mx-auto mb-6 drop-shadow-md dark:text-muted-foreground dark:drop-shadow-none">
-                        ค้นหาและดาวน์โหลดเอกสาร คู่มือ และข้อมูลสำคัญต่างๆ ของกรมตรวจบัญชีสหกรณ์
+                        ค้นหาเอกสารคู่มือ หรือชุดคำสั่ง งานตรวจสอบบัญชี
                     </p>
 
                     <div className="max-w-xl mx-auto relative">
@@ -59,12 +59,12 @@ const HeroSection = () => {
                                 {/* Subtle inner reflection - Hidden in dark mode to avoid background artifacts */}
                                 <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-20 dark:opacity-0 pointer-events-none"></div>
 
-                                <div className="flex items-center px-6 py-4 relative z-10">
-                                    <Search className="w-6 h-6 text-muted-foreground mr-2" />
+                                <div className="flex items-center px-5 py-3 relative z-10">
+                                    <Search className="w-5 h-5 text-muted-foreground mr-2" />
                                     <Input
                                         type="text"
                                         placeholder="ค้นหาเอกสาร..."
-                                        className="flex-1 h-full py-1 text-2xl font-medium bg-transparent dark:bg-transparent border-none shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/70 text-foreground selection:bg-primary/20 leading-normal"
+                                        className="flex-1 h-full py-1 text-lg font-medium bg-transparent dark:bg-transparent border-none shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/70 text-foreground selection:bg-primary/20 leading-normal"
                                         value={query}
                                         onChange={(e) => setQuery(e.target.value)}
                                     />

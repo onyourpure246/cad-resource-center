@@ -32,7 +32,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     return (
         <SharedDownloadView
             title={`หมวดหมู่: ${currentCategory.name}`}
-            description={`เอกสารทั้งหมดในหมวดหมู่นี้จำนวน ${results.length} รายการ`}
+            description={`เอกสารทั้งหมด ${results.length} รายการ`}
             items={results}
             backLink="/downloads"
         />

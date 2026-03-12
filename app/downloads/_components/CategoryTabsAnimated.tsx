@@ -44,7 +44,7 @@ export default function CategoryTabsAnimated({ categories }: { categories: any[]
         <div className="w-full mt-2">
             {categories && categories.length > 0 ? (
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="mb-5 w-full max-w-md mx-auto grid grid-cols-3 h-auto p-1.5 bg-muted/60 rounded-xl relative overflow-hidden">
+                    <TabsList className="mb-5 w-full max-w-sm mx-auto grid grid-cols-3 h-auto p-1 bg-muted/60 rounded-xl relative overflow-hidden">
                         {tabsList.map((tab) => {
                             const isActive = activeTab === tab.value;
                             return (
@@ -52,7 +52,7 @@ export default function CategoryTabsAnimated({ categories }: { categories: any[]
                                     key={tab.value}
                                     value={tab.value}
                                     className={cn(
-                                        "relative z-10 py-2.5 text-sm sm:text-base transition-none data-[state=active]:shadow-none data-[state=active]:bg-transparent outline-none",
+                                        "relative z-10 py-2 sm:py-2 text-xs sm:text-sm transition-none data-[state=active]:shadow-none data-[state=active]:bg-transparent outline-none",
                                         isActive ? "text-primary-foreground font-medium" : "text-muted-foreground hover:text-foreground"
                                     )}
                                 >
