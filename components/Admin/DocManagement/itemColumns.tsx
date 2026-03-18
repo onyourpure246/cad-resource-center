@@ -87,27 +87,15 @@ export const getItemColumns = ({
                 </div>
             ),
         }),
-        // Refactored to use simplified helper.text setup but with custom cell still needed for date string format in this specific table
-        // Actually, this table uses pre-formatted strings for dates ('created', 'modified'), so helper.text is appropriate, NOT helper.date (which expects Date object)
-        helper.date('created', 'สร้างเมื่อ', {
-            sortable: true,
-            onSort: onSort ? () => onSort('created') : undefined,
-            headerClassName: "w-[180px] hidden xl:table-cell px-2",
-            className: "w-[180px] text-muted-foreground text-sm hidden xl:table-cell",
-        }),
         helper.date('modified', 'แก้ไขล่าสุด', {
             sortable: true,
             onSort: onSort ? () => onSort('modified') : undefined,
-            headerClassName: "w-[180px] hidden lg:table-cell px-2",
-            className: "w-[180px] text-muted-foreground text-sm hidden lg:table-cell",
+            headerClassName: "w-[180px] hidden md:table-cell px-2",
+            className: "w-[180px] text-muted-foreground text-sm hidden md:table-cell",
         }),
         helper.text('modifiedBy', 'แก้ไขโดย', {
-            headerClassName: "w-[180px] hidden xl:table-cell",
-            className: "w-[180px] text-muted-foreground text-sm hidden xl:table-cell",
-        }),
-        helper.text('createdBy', 'สร้างโดย', {
-            headerClassName: "w-[180px] hidden xl:table-cell",
-            className: "w-[180px] text-muted-foreground text-sm hidden xl:table-cell",
+            headerClassName: "w-[180px] hidden md:table-cell",
+            className: "w-[180px] text-muted-foreground text-sm hidden md:table-cell",
         }),
 
         helper.custom({

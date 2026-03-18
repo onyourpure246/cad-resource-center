@@ -134,11 +134,7 @@ export const getAnnouncementColumns = (router: any) => [
         className: "w-[150px]",
     }),
 
-    // 4. Created By
-    helper.text('created_by', 'ผู้สร้าง', {
-        headerClassName: "w-[150px] hidden xl:table-cell",
-        className: "w-[150px] text-muted-foreground text-sm hidden xl:table-cell",
-    }),
+    // 4. Updated By
     helper.text('updated_by', 'ผู้แก้ไขล่าสุด', {
         headerClassName: "w-[150px] hidden xl:table-cell",
         className: "w-[150px] text-muted-foreground text-sm hidden xl:table-cell",
@@ -150,8 +146,8 @@ export const getAnnouncementColumns = (router: any) => [
         cell: (item) => item.view_count?.toLocaleString() || '0'
     }),
 
-    // 7. Created At
-    helper.date('created_at', 'สร้างเมื่อ', {
+    // 7. Updated At
+    helper.date('updated_at', 'แก้ไขเมื่อ', {
         headerClassName: "w-[180px] hidden sm:table-cell",
         className: "w-[180px] hidden sm:table-cell",
     }),

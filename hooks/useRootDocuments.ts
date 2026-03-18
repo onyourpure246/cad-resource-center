@@ -35,7 +35,9 @@ const transformDataToItems = (data: Awaited<ReturnType<typeof adminGetRootFolder
         isactive: file.isactive !== undefined ? file.isactive : 1,
         downloads: file.downloads
     }));
-
+    transformedFolders.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    transformedFiles.sort((a, b) => ((a.filename || a.name) || '').localeCompare((b.filename || b.name) || ''));
+    
     return [...transformedFolders, ...transformedFiles];
 };
 

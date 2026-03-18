@@ -11,7 +11,7 @@ import MobileNav from './MobileNav'
 const Navbar = () => {
   const pathname = usePathname()
 
-  if (pathname === '/login') return null
+  if (pathname === '/login' || pathname === '/auth/callback') return null
 
   return (
     <nav className='bg-primary dark:bg-sidebar text-primary-foreground dark:text-foreground shadow-md transition-colors duration-300'>

@@ -15,6 +15,7 @@ const UserManagementPage = () => {
   const [selectedIds, setSelectedIds] = useState<(string | number)[]>([])
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [isEditOpen, setIsEditOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const fetchUsers = async () => {
     setIsLoading(true)
@@ -40,6 +41,19 @@ const UserManagementPage = () => {
     setIsEditOpen(true);
   }
 
+  const filteredUsers = users.filter(user => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    const fullName = `${user.firstname || ''} ${user.lastname || ''}`.toLowerCase();
+    return (
+      (user.username && user.username.toLowerCase().includes(q)) ||
+      fullName.includes(q) ||
+      (user.email && user.email.toLowerCase().includes(q)) ||
+      (user.role && user.role.toLowerCase().includes(q)) ||
+      (user.jobtitle && user.jobtitle.toLowerCase().includes(q))
+    );
+  });
+
   return (
     <>
       <Header
@@ -50,10 +64,11 @@ const UserManagementPage = () => {
       <DataManagementLayout
         searchPlaceholder="ค้นหาผู้ใช้..."
         showBreadcrumbs={false}
+        onSearchChange={setSearchQuery}
         actionButtons={<UserActionButtons selectedIds={selectedIds} onRefresh={fetchUsers} />}
       >
         <UsersTable
-          items={users}
+          items={filteredUsers}
           isLoading={isLoading}
           selectedIds={selectedIds}
           onSelectionChange={setSelectedIds}

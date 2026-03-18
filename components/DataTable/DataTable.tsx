@@ -64,7 +64,7 @@ export function DataTable<T extends { id: string | number }>({
                     </TableRow>
                 </TableHeader>
                 {isLoading ? (
-                    <TableSkeleton showCheckbox={enableRowSelection} />
+                    <TableSkeleton showCheckbox={enableRowSelection} columns={columns as any} />
                 ) : (
                     <TableBody>
                         {data.length === 0 ? (

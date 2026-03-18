@@ -82,11 +82,7 @@ export const EditUserDialog = ({ user, open, onOpenChange, onSuccess }: EditUser
                             ชื่อ
                         </Label>
                         <div className="col-span-3 text-sm font-medium">
-                            {user?.firstname} {user?.lastname} <span className='text-muted-foreground'>
-                                ({user?.username && user.username.length === 13
-                                    ? `${user.username.substring(0, 1)}-XXXX-XXXXX-${user.username.substring(10, 12)}-${user.username.substring(12)}`
-                                    : user?.username})
-                            </span>
+                            {user?.firstname} {user?.lastname}
                         </div>
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">

@@ -22,6 +22,7 @@ export interface Announcement {
 export interface AnnouncementTableProps {
     announcements: Announcement[];
     isLoading: boolean;
+    actionButtons?: React.ReactNode;
 }
 
 export interface AnnouncementFormProps {

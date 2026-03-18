@@ -1,5 +1,4 @@
 import React from 'react';
-import DataManagementLayout from '@/components/Admin/DocManagement/DataManagementLayout';
 import Header from '@/components/Layout/Header/Header'
 import { Button } from '@/components/ui/button'
 import { CirclePlus } from 'lucide-react';
@@ -11,7 +10,7 @@ const actionButtons = (
   <>
     <Button variant="default" className="cursor-pointer" asChild>
       <Link href="/admin/announcement/create">
-        <CirclePlus className=" mr-2 h-4 w-4" /> เพิ่มประกาศใหม่
+        <CirclePlus className=" mr-2 h-4 w-4" /> สร้างประกาศใหม่
       </Link>
     </Button>
   </>
@@ -27,17 +26,11 @@ const AnnouncementPage = async () => {
         title="ข้อมูลประชาสัมพันธ์"
         description="จัดการประกาศและประชาสัมพันธ์ทั้งหมด" />
 
-      <DataManagementLayout
-        searchPlaceholder="ค้นหาประกาศ"
-        showBreadcrumbs={false}
+      <AnnouncementTable
+        announcements={announcements}
+        isLoading={isLoading}
         actionButtons={actionButtons}
-        showBorder={false}
-      >
-        <AnnouncementTable
-          announcements={announcements}
-          isLoading={isLoading}
-        />
-      </DataManagementLayout>
+      />
     </>
   )
 }
