@@ -114,6 +114,11 @@ export const createAnnouncement = async (prevState: any, formData: FormData): Pr
             backendFormData.append('category', category);
         }
 
+        const isUrgent = formData.get('is_urgent') as string;
+        if (isUrgent !== null) {
+            backendFormData.append('is_urgent', isUrgent);
+        }
+
         // Handle Cover Image
         // Frontend typically sends 'file' or 'cover_image'
         // Let's check what CreateNewAnnouncement sends. It usually doesn't have file input yet in the snippet shown provided code
@@ -169,6 +174,11 @@ export const updateAnnouncement = async (id: number, formData: FormData): Promis
 
         const category = formData.get('category') as string;
         if (category) backendFormData.append('category', category);
+
+        const isUrgent = formData.get('is_urgent') as string;
+        if (isUrgent !== null) {
+            backendFormData.append('is_urgent', isUrgent);
+        }
 
         // Handle Cover Image update
         const file = formData.get('cover_image') as File;

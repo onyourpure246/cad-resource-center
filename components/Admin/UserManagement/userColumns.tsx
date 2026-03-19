@@ -8,7 +8,7 @@ const helper = createColumnHelper<User>();
 export const getUserColumns = (onEdit?: (user: User) => void) => [
     helper.custom({
         accessorKey: 'firstname',
-        header: 'ชื่อ-นามสกุล',
+        header: <span className="font-bold uppercase tracking-wider text-muted-foreground">ชื่อ-นามสกุล</span>,
         headerClassName: "",
         className: "font-medium truncate max-w-[1px]",
         cell: (item) => <div className="truncate">{item.firstname} {item.lastname || ''}</div>,

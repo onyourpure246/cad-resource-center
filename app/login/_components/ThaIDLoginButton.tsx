@@ -2,13 +2,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export function ThaIDLoginButton() {
-    const THAID_AUTH_URL =
-        process.env.NEXT_PUBLIC_THAID_AUTH_URL ||
-        "https://imauthsbx.bora.dopa.go.th/api/v2/oauth2/auth/"; // Sandbox + Trailing Slash
-    const CLIENT_ID =
-        process.env.NEXT_PUBLIC_THAID_CLIENT_ID || "bDNWUDBJYVNJVE4xNDhPRUhsTDdZSXNRM0RLZzl6WE4"; // Sandbox Client ID
-    // Fixed: Changed from REDIRECT_URL to REDIRECT_URI and updated the query param
-    const REDIRECT_URI = "http://localhost:3000/auth/callback";
+    const THAID_AUTH_URL = process.env.NEXT_PUBLIC_THAID_AUTH_URL || "https://imauthsbx.bora.dopa.go.th/api/v2/oauth2/auth/"; // Sandbox + Trailing Slash
+    const CLIENT_ID = process.env.NEXT_PUBLIC_THAID_CLIENT_ID || "bDNWUDBJYVNJVE4xNDhPRUhsTDdZSXNRM0RLZzl6WE4"; // Sandbox Client ID
+    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const REDIRECT_URI = `${APP_URL}/auth/callback`;
 
     // Sandbox Supported Scopes: openid pid name given_name family_name
     // Removing 'offline_access' as it causes invalid_scope in Sandbox

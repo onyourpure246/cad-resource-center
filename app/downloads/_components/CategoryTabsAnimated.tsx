@@ -53,7 +53,7 @@ export default function CategoryTabsAnimated({ categories }: { categories: any[]
                                     value={tab.value}
                                     className={cn(
                                         "relative z-10 py-2 sm:py-2 text-xs sm:text-sm transition-none data-[state=active]:shadow-none data-[state=active]:bg-transparent outline-none",
-                                        isActive ? "text-primary-foreground font-medium" : "text-muted-foreground hover:text-foreground"
+                                        isActive ? "text-primary-foreground dark:text-black font-medium" : "text-muted-foreground hover:text-foreground"
                                     )}
                                 >
                                     {isActive && (
