@@ -7,7 +7,7 @@ import { FooterItem } from '@/types/footer';
 
 const Footer = () => {
     return (
-        <footer className="bg-primary dark:bg-sidebar text-primary-foreground dark:text-foreground border-t border-sidebar-border pt-4 pb-2">
+        <footer id="footer" className="bg-primary dark:bg-sidebar text-primary-foreground dark:text-foreground border-t border-sidebar-border pt-4 pb-2">
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.5fr_2fr_1fr_1fr] gap-8 lg:gap-4">
                     {/* Column 1: Logo & Branding */}

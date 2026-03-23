@@ -37,6 +37,7 @@ export async function GET(
         const res = await fetch(backendUrl, {
             headers: {
                 'Authorization': `Bearer ${token}`,
+                'X-Forwarded-User': String(session.user.id)
             },
             cache: 'no-store'
         });

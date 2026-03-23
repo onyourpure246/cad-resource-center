@@ -37,8 +37,14 @@ const traverseAndSearch = async (
     try {
         const content = await adminGetFolderById(folderId);
 
-        // 1. Search Files in current folder
-        const normalizedQuery = query.toLowerCase();
+        // 1. Extract and normalize keywords from the query
+        // By adding spaces around English characters and numbers, we can naturally tokenise
+        // mixed-language strings like "คู่มือacl" into ["คู่มือ", "acl"]
+        const keywords = query
+            .toLowerCase()
+            .replace(/([a-z0-9]+)/ig, ' $1 ')
+            .split(/\s+/)
+            .filter(k => k.trim().length > 0);
 
         for (const file of content.files) {
             if (results.length >= MAX_RESULTS) break;
@@ -49,11 +55,18 @@ const traverseAndSearch = async (
             // Apply category filter if provided
             if (categoryId != null && file.category_id !== categoryId) continue;
 
-            const matchName = file.name.toLowerCase().includes(normalizedQuery);
-            const matchFilename = file.filename.toLowerCase().includes(normalizedQuery);
-            const matchDesc = file.description?.toLowerCase().includes(normalizedQuery);
+            // Combine all searchable text into a single target string for easy cross-checking
+            const targetString = [
+                file.name?.toLowerCase() || '',
+                file.filename?.toLowerCase() || '',
+                file.description?.toLowerCase() || ''
+            ].join(' ');
 
-            if (matchName || matchFilename || matchDesc) {
+            // An AND search: Every keyword must exist somewhere in the target string
+            // If no keywords (e.g., category search only), it automatically matches
+            const isMatch = keywords.length === 0 || keywords.every(kw => targetString.includes(kw));
+
+            if (isMatch) {
                 results.push({
                     ...file,
                     folderName: content.name,

@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 
 import { DownloadCardProps } from '@/types/components';
 
-const DownloadCard = ({ item }: DownloadCardProps) => {
+const DownloadCard = ({ item, highlightQuery }: DownloadCardProps) => {
     // กำหนดเกณฑ์: ถ้าอัปโหลดไม่เกิน 14 วัน ถือว่าเป็นไฟล์ "ใหม่"
     const isNew = React.useMemo(() => {
         if (!item.created_at) return false;
@@ -25,6 +25,38 @@ const DownloadCard = ({ item }: DownloadCardProps) => {
 
         return diffDays <= 14; // ไฟล์ใหม่ในช่วง 14 วัน
     }, [item.created_at]);
+
+    const renderHighlightedText = (text: string | undefined | null, query?: string) => {
+        if (!text) return null;
+        if (!query) return text;
+
+        const keywords = query
+            .toLowerCase()
+            .replace(/([a-z0-9]+)/ig, ' $1 ')
+            .split(/\s+/)
+            .filter(k => k.trim().length > 0);
+
+        if (keywords.length === 0) return text;
+
+        const escapedKeywords = keywords.map(kw => kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+        const regex = new RegExp(`(${escapedKeywords.join('|')})`, 'gi');
+
+        const parts = text.split(regex);
+        
+        return (
+            <React.Fragment>
+                {parts.map((part, i) => {
+                    if (!part) return null;
+                    const isMatch = keywords.some(kw => part.toLowerCase() === kw.toLowerCase());
+                    return isMatch ? (
+                        <mark key={i} className="bg-primary/20 text-primary font-medium rounded px-0.5">
+                            {part}
+                        </mark>
+                    ) : part;
+                })}
+            </React.Fragment>
+        );
+    };
 
     return (
         <Card
@@ -49,7 +81,7 @@ const DownloadCard = ({ item }: DownloadCardProps) => {
                         <div className="flex flex-col justify-center gap-2">
                             <div className="flex items-center gap-2">
                                 <h3 className="font-semibold text-lg text-foreground line-clamp-1 group-hover:text-primary transition-colors">
-                                    {item.name}
+                                    {renderHighlightedText(item.name, highlightQuery)}
                                 </h3>
                                 {isNew && (
                                     <Badge variant="destructive" className="shrink-0 text-[10px] px-1.5 py-0 h-4 bg-red-500 hover:bg-red-600 animate-pulse">
@@ -59,7 +91,7 @@ const DownloadCard = ({ item }: DownloadCardProps) => {
                             </div>
 
                             <p className="text-muted-foreground text-sm line-clamp-2">
-                                {item.description}
+                                {renderHighlightedText(item.description, highlightQuery)}
                             </p>
 
                             <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">

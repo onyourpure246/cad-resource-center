@@ -14,6 +14,7 @@ interface SharedDownloadViewProps {
     backLink?: string;
     subFolders?: any[]; // Keep flexible based on Folder model, ideally DLFolder[]
     parentFolderId?: number; // Needed for SubFolderBadges
+    highlightQuery?: string;
 }
 
 const SharedDownloadView: React.FC<SharedDownloadViewProps> = ({
@@ -22,7 +23,8 @@ const SharedDownloadView: React.FC<SharedDownloadViewProps> = ({
     items,
     backLink,
     subFolders,
-    parentFolderId
+    parentFolderId,
+    highlightQuery
 }) => {
     return (
         <div className="container mx-auto px-10 py-8 max-w-[1920px] animate-in fade-in duration-500">
@@ -52,7 +54,7 @@ const SharedDownloadView: React.FC<SharedDownloadViewProps> = ({
                     )
                 )}
 
-                <DownloadList items={items} />
+                <DownloadList items={items} highlightQuery={highlightQuery} />
             </div>
         </div>
     );

@@ -56,8 +56,8 @@ const HomePage = () => {
                 ดาวน์โหลด
               </Button>
               </Link>
-              <Button size="lg" variant="link" className="mt-4 cursor-pointer text-white">
-                ติดต่อเรา
+              <Button asChild size="lg" variant="link" className="mt-4 cursor-pointer text-white">
+                <Link href="#footer">ติดต่อเรา</Link>
               </Button>
             </div>
           </div>

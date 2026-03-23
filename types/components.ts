@@ -113,6 +113,7 @@ export interface DownloadListProps {
     items: DownloadItem[];
     filterTags?: string[];
     filterMap?: Record<string, string>;
+    highlightQuery?: string;
 }
 
 export interface SearchPageProps {
@@ -147,6 +148,7 @@ export interface ErrorStateProps {
 
 export interface DownloadCardProps {
     item: DownloadItem;
+    highlightQuery?: string;
 }
 
 export interface UserActionButtonsProps {

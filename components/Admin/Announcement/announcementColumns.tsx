@@ -118,42 +118,45 @@ export const getAnnouncementColumns = (router: any) => [
     // ... (rest of the file)    // ... existing columns ...
     // 1. Title
     helper.text('title', 'หัวข้อ', {
-        headerClassName: "",
-        className: "font-medium truncate max-w-[1px]",
+        headerClassName: "text-left",
+        className: "font-medium truncate max-w-[1px] text-left",
     }),
 
     // 2. Category
     helper.status('category', 'หมวดหมู่', {
-        headerClassName: "w-[150px] hidden lg:table-cell",
-        className: "w-[150px] hidden lg:table-cell",
+        headerClassName: "w-[140px] text-left hidden lg:table-cell",
+        className: "w-[140px] text-left hidden lg:table-cell",
     }),
 
     // 3. Status
     helper.status('status', 'สถานะ', {
-        headerClassName: "w-[150px]",
-        className: "w-[150px]",
+        headerClassName: "w-[140px] text-left",
+        className: "w-[140px] text-left", // helper.status might use flex internally, ensure centered
     }),
 
     // 4. Updated By
     helper.text('updated_by', 'ผู้แก้ไขล่าสุด', {
-        headerClassName: "w-[150px] hidden xl:table-cell",
-        className: "w-[150px] text-muted-foreground text-sm hidden xl:table-cell",
+        headerClassName: "w-[140px] text-left hidden xl:table-cell",
+        className: "w-[140px] text-left text-muted-foreground text-sm hidden xl:table-cell",
         cell: (item) => item.updated_by || "-"
     }),
+
+    helper.date('updated_at', 'แก้ไขเมื่อ', {
+        headerClassName: "w-[140px] text-left hidden sm:table-cell",
+        className: "w-[140px] text-left text-muted-foreground text-sm hidden sm:table-cell",
+    }),
+
     helper.text('view_count', 'ยอดเข้าชม', {
-        headerClassName: "w-[100px] text-center",
-        className: "w-[100px] text-center font-medium",
+        headerClassName: "w-[140px] text-center",
+        className: "w-[140px] text-center font-medium",
         cell: (item) => item.view_count?.toLocaleString() || '0'
     }),
 
-    // 7. Updated At
-    helper.date('updated_at', 'แก้ไขเมื่อ', {
-        headerClassName: "w-[180px] hidden sm:table-cell",
-        className: "w-[180px] hidden sm:table-cell",
-    }),
 
     // 6. Actions
     helper.actions({
+        headerClassName: "w-[50px]",
+        className: "w-[50px] text-right",
         additionalActions: (item) => {
             const { actions, isPublished, isArchived, isDraft } = getStatusActions(item);
 

@@ -4,7 +4,7 @@ import type { DownloadListProps } from '@/types/components'
 import { FileText } from 'lucide-react'
 import DownloadCard from './DownloadCard'
 
-const DownloadList = ({ items }: DownloadListProps) => {
+const DownloadList = ({ items, highlightQuery }: DownloadListProps) => {
     // เรียงลำดับจากล่าสุดไปเก่าสุด
     const sortedItems = React.useMemo(() => {
         return [...items].sort((a, b) => {
@@ -25,7 +25,7 @@ const DownloadList = ({ items }: DownloadListProps) => {
     return (
         <div className="w-full space-y-4">
             {sortedItems.map((item) => (
-                <DownloadCard key={item.id} item={item} />
+                <DownloadCard key={item.id} item={item} highlightQuery={highlightQuery} />
             ))}
 
             {items.length === 0 && (

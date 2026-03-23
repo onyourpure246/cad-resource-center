@@ -20,7 +20,7 @@ const getHeaders = (token?: string) => {
 
 export async function apiCreateFolder(params: CreateFolderRequest, token?: string): Promise<number> {
     const headers = {
-        ...getHeaders(token),
+        ...(await getHeaders(token)),
         'Content-Type': 'application/json',
     };
 
@@ -60,7 +60,7 @@ export type UpdateFolderParams = UpdateFolderRequest & { id: number };
 
 export async function apiUpdateFolder(params: UpdateFolderParams, token?: string): Promise<void> {
     const headers = {
-        ...getHeaders(token),
+        ...(await getHeaders(token)),
         'Content-Type': 'application/json',
     };
 
@@ -83,7 +83,7 @@ export async function apiUpdateFolder(params: UpdateFolderParams, token?: string
 }
 
 export async function apiUploadFile(formData: FormData, token?: string): Promise<number> {
-    const headers = getHeaders(token);
+    const headers = await getHeaders(token);
     // Content-Type is set automatically by fetch when body is FormData
 
     const res = await fetch(`${API_URL}/dl/file`, {
@@ -104,7 +104,7 @@ export async function apiUploadFile(formData: FormData, token?: string): Promise
 
 export async function apiUpdateFile(id: number, data: any, token?: string): Promise<void> {
     const headers = {
-        ...getHeaders(token),
+        ...(await getHeaders(token)),
         'Content-Type': 'application/json',
     };
 
@@ -124,7 +124,7 @@ export async function apiUpdateFile(id: number, data: any, token?: string): Prom
 
 
 export async function apiGetRootFolder(token?: string): Promise<FolderContentResponse> {
-    const headers = getHeaders(token);
+    const headers = await getHeaders(token);
 
     // Default to API_TOKEN if no session token provided (for initial load)
     // getHeaders already handles this fallback to process.env.API_TOKEN
@@ -150,7 +150,7 @@ export async function apiGetRootFolder(token?: string): Promise<FolderContentRes
 }
 
 export async function apiGetFolderById(id: number, token?: string): Promise<FolderContentResponse> {
-    const headers = getHeaders(token);
+    const headers = await getHeaders(token);
 
     const res = await fetch(`${API_URL}/dl/folder/${id}`, {
         method: 'GET',
@@ -173,7 +173,7 @@ export async function apiGetFolderById(id: number, token?: string): Promise<Fold
 }
 
 export async function apiGetCategories(token?: string): Promise<any[]> {
-    const headers = getHeaders(token);
+    const headers = await getHeaders(token);
     const res = await fetch(`${API_URL}/category`, {
         method: 'GET',
         headers,
@@ -188,7 +188,7 @@ export async function apiGetCategories(token?: string): Promise<any[]> {
 }
 
 export async function apiCreateCategory(name: string, group_name?: string, token?: string): Promise<void> {
-    const headers = { ...getHeaders(token), 'Content-Type': 'application/json' };
+    const headers = { ...(await getHeaders(token)), 'Content-Type': 'application/json' };
     const body: any = { name };
     if (group_name) body.group_name = group_name;
 
@@ -204,7 +204,7 @@ export async function apiCreateCategory(name: string, group_name?: string, token
 }
 
 export async function apiUpdateCategory(id: number, name: string, group_name?: string, token?: string): Promise<void> {
-    const headers = { ...getHeaders(token), 'Content-Type': 'application/json' };
+    const headers = { ...(await getHeaders(token)), 'Content-Type': 'application/json' };
     const body: any = { name };
     if (group_name) body.group_name = group_name;
 
@@ -229,7 +229,7 @@ export async function apiUpdateCategory(id: number, name: string, group_name?: s
 }
 
 export async function apiDeleteCategory(id: number, token?: string): Promise<void> {
-    const headers = getHeaders(token);
+    const headers = await getHeaders(token);
     const res = await fetch(`${API_URL}/category/${id}`, {
         method: 'DELETE',
         headers,

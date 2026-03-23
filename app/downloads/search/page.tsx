@@ -16,6 +16,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             description={`พบเอกสารทั้งหมด ${results.length} รายการ`}
             items={results}
             backLink="/downloads"
+            highlightQuery={query}
         />
     );
 }
