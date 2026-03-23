@@ -35,6 +35,11 @@ const EditFileForm = ({ file, onSuccess, onCancel }: EditFileFormProps) => {
         }
     }, [state, onSuccess]);
 
+    useEffect(() => {
+        setSelectedCategory(file.category_id ? file.category_id.toString() : 'unassigned');
+        setIsActive(file.isactive === 1);
+    }, [file]);
+
     const loadCategories = () => {
         getCategories().then((data) => {
             // Include active categories OR the currently selected one (in case it became inactive)

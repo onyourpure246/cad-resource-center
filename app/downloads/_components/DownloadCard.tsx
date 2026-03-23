@@ -2,7 +2,7 @@
 import React from 'react'
 import { DownloadItem } from '@/types/models'
 import { Button } from '@/components/ui/button'
-import { Download, FileText, Calendar, Clock } from 'lucide-react'
+import { Download, FileText, Calendar } from 'lucide-react'
 import MuiIconRenderer from '@/components/ui/MuiIconRenderer'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -67,16 +67,6 @@ const DownloadCard = ({ item }: DownloadCardProps) => {
                                     <Calendar className="w-3.5 h-3.5" />
                                     <span>{item.created_at}</span>
                                 </div>
-                                <div className="w-1 h-1 rounded-full bg-border" />
-                                <div className="flex items-center gap-1.5">
-                                    <Clock className="w-3.5 h-3.5" />
-                                    <span>{item.updated_at}</span>
-                                </div>
-                                <div className="w-1 h-1 rounded-full bg-border" />
-                                <div className="flex items-center gap-1.5 font-medium text-foreground/80">
-                                    <Download className="w-3.5 h-3.5" />
-                                    <span>{item.downloads || 0} ครั้ง</span>
-                                </div>
                             </div>
                         </div>
 
@@ -97,16 +87,20 @@ const DownloadCard = ({ item }: DownloadCardProps) => {
                     </div>
 
                     {/* Action Section */}
-                    <div className="flex items-center justify-center p-4 md:p-6 bg-muted/30 md:bg-transparent md:border-l border-border/50">
+                    <div className="flex flex-col items-center justify-center p-4 md:p-6 bg-muted/30 md:bg-transparent md:border-l border-border/50 gap-2 shrink-0">
                         <Button
                             asChild
-                            className="w-full md:w-auto rounded-full shadow-sm hover:shadow-md transition-all bg-primary hover:bg-primary/90"
+                            className="w-full md:w-auto px-6 rounded-full shadow-sm hover:shadow-md transition-all bg-primary hover:bg-primary/90"
                         >
                             <a href={`/api/proxy-download/${item.id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
                                 <Download className="w-4 h-4" />
                                 <span>ดาวน์โหลด</span>
                             </a>
                         </Button>
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
+                            <Download className="w-3 h-3" />
+                            <span>{item.downloads || 0} ครั้ง</span>
+                        </div>
                     </div>
                 </div>
             </CardContent>

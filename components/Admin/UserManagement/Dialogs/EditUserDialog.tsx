@@ -95,7 +95,6 @@ export const EditUserDialog = ({ user, open, onOpenChange, onSuccess }: EditUser
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="user">User (ผู้ใช้ทั่วไป)</SelectItem>
-                                <SelectItem value="editor">Editor (ผู้แก้ไข)</SelectItem>
                                 <SelectItem value="admin">Admin (ผู้ดูแลระบบ)</SelectItem>
                             </SelectContent>
                         </Select>

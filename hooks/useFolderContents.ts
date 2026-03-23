@@ -57,7 +57,9 @@ export const useFolderContents = (folderId: number) => {
                 mui_colour: file.mui_colour,
                 downloadUrl: `/api/proxy-download/${file.id}`,
                 isactive: file.isactive,
-                downloads: (file as any).downloads
+                downloads: (file as any).downloads,
+                category_id: file.category_id,
+                category_name: file.category_name
             }));
 
             // Combine folders and files for display

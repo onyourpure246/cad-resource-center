@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { adminGetFolderById, adminGetRootFolder } from './folder-actions';
 import { apiCreateFolder, apiUploadFile, apiUpdateFile } from '@/services/document-service';
+import { auth } from '@/auth';
 
 const API_URL = process.env.API_URL;
 const API_TOKEN = process.env.API_TOKEN;
@@ -122,12 +123,23 @@ export const importFolderTree = async (formData: FormData, parentId: number | nu
             // Ignore fetch error, try create
         }
 
-        return await apiCreateFolder({
+        const session = await auth();
+        const token = session?.accessToken || process.env.API_TOKEN;
+
+        const payload: any = {
             name,
             parent: parentId,
             isactive: 1, // Active mode
             mui_colour: '#FFCE3C' // Default yellow color
-        });
+        };
+
+        if (session?.user?.id) {
+            payload.created_by = session.user.id;
+            payload.updated_by = session.user.id;
+        }
+
+        // Wait! We can't pass token to apiCreateFolder in createFolder here because it expects token as 2nd param... wait, yes `apiCreateFolder` takes (params, token).
+        return await apiCreateFolder(payload, token);
     }
 
 
@@ -137,6 +149,14 @@ export const importFolderTree = async (formData: FormData, parentId: number | nu
         formData.append('name', file.name);
         formData.append('isactive', '2'); // Draft mode
         if (parentId) formData.append('parent', String(parentId));
+
+        const session = await auth();
+        const token = session?.accessToken || process.env.API_TOKEN;
+
+        if (session?.user?.id) {
+            formData.append('created_by', session.user.id);
+            formData.append('updated_by', session.user.id);
+        }
 
         // Auto icons
         const nameLower = file.name.toLowerCase();
@@ -157,15 +177,20 @@ export const importFolderTree = async (formData: FormData, parentId: number | nu
         if (mui_icon) formData.append('mui_icon', mui_icon);
         if (mui_colour) formData.append('mui_colour', mui_colour);
 
-        const newFileId = await apiUploadFile(formData);
+        const newFileId = await apiUploadFile(formData, token);
 
         if (newFileId) {
             try {
                 const updatePayload: any = {};
                 if (mui_icon) updatePayload.mui_icon = mui_icon;
                 if (mui_colour) updatePayload.mui_colour = mui_colour;
+                
+                if (session?.user?.id) {
+                    updatePayload.created_by = session.user.id;
+                    updatePayload.updated_by = session.user.id;
+                }
 
-                await apiUpdateFile(newFileId, updatePayload);
+                await apiUpdateFile(newFileId, updatePayload, token);
             } catch (err) {
                 console.error("Failed to patch icon colors:", err);
             }

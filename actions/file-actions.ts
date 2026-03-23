@@ -19,6 +19,7 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
         parent: z.string().optional(),
         file: z.any().refine(file => file instanceof File && file.size > 0, 'กรุณาเลือกไฟล์'),
         isactive: z.string().optional(), // รับค่า isactive
+        category_id: z.string().optional(),
     });
 
     // Convert from FormData to Object
@@ -31,7 +32,7 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
         return { success: false, message: 'ข้อมูลไม่ถูกต้อง', errors };
     }
 
-    const { name, description, parent, file, isactive } = parsed.data;
+    const { name, description, parent, file, isactive, category_id } = parsed.data;
     const parentId = parent ? parseInt(parent, 10) : null;
 
     // Auto-detect icon and colour based on extension
@@ -58,6 +59,9 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
     }
     if (isactive) {
         formDataForFileUpload.append('isactive', isactive);
+    }
+    if (category_id) {
+        formDataForFileUpload.append('category_id', category_id);
     }
     // API expects these in initial POST if possible, although logic below handles PATCH too.
     // We stick to sending them in POST as well for safety/consistency with old code.
@@ -129,6 +133,7 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
         filename: z.string().optional(),
         parent: z.string().optional(),
         isactive: z.string().optional(),
+        category_id: z.string().optional(),
     });
 
     const rawData = Object.fromEntries(formData);
@@ -139,7 +144,7 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
         return { success: false, message: 'ข้อมูลไม่ถูกต้อง', errors };
     }
 
-    const { id, name, description, filename, isactive } = parsed.data;
+    const { id, name, description, filename, isactive, category_id } = parsed.data;
     const parentId = rawData.parent ? parseInt(rawData.parent as string, 10) : null;
 
     try {
@@ -165,6 +170,7 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
     if (filename) body.filename = filename;
     if (rawData.parent !== undefined) body.parent = parentId;
     if (isactive) body.isactive = parseInt(isactive, 10);
+    if (category_id) body.category_id = parseInt(category_id, 10);
 
     // Add Audit field
     if (session?.user?.id) {
