@@ -1,7 +1,7 @@
 'use server'
 
 import { adminGetFolderById, adminGetRootFolder } from './folder-actions';
-import { File, Folder } from '@/types/models';
+import { File } from '@/types/models';
 import { auth } from '@/auth';
 
 // Define a Search Result type that flattens the structure

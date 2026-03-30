@@ -1,14 +1,14 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod';
-import { ApiResponse, State } from '@/types/common';
+import { State } from '@/types/common';
 import { apiGetFolderById, apiGetRootFolder } from '@/services/document-service';
 import { apiUploadFile, apiUpdateFile, apiGetCategories, apiCreateCategory, apiDeleteCategory, apiUpdateCategory } from '@/services/document-service';
 import { auth } from '@/auth';
 
 // create ข้อมูลไฟล์ดาวน์โหลด
 // POST /api/fy2569/dl/file
-export const uploadFile = async (prevState: any, formData: FormData): Promise<State> => {
+export const uploadFile = async (prevState: State | null, formData: FormData): Promise<State> => {
     const session = await auth();
     const token = session?.accessToken || process.env.API_TOKEN;
 
@@ -90,7 +90,7 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
             // Force update audit fields and icon/color
             // This ensures created_by is set even if POST FormData ignored it
             try {
-                const updatePayload: any = {};
+                const updatePayload: Record<string, string | number> = {};
                 if (mui_icon) updatePayload.mui_icon = mui_icon;
                 if (mui_colour) updatePayload.mui_colour = mui_colour;
 
@@ -109,6 +109,7 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
         revalidatePath('/admin/documents', 'layout');
         return { success: true, message: 'อัปโหลดไฟล์สำเร็จ' };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         console.error('Upload error:', error);
         return { success: false, message: error.message || 'เกิดข้อผิดพลาดในการอัปโหลด' };
@@ -117,7 +118,7 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
 
 // update ข้อมูลไฟล์
 // PATCH /api/dl/file/:id
-export const updateFile = async (prevState: any, formData: FormData): Promise<State> => {
+export const updateFile = async (prevState: State | null, formData: FormData): Promise<State> => {
     const session = await auth();
     const API_URL = process.env.API_URL;
     const token = session?.accessToken || process.env.API_TOKEN;
@@ -164,7 +165,7 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
         return { success: false, message: 'เกิดข้อผิดพลาดในการตรวจสอบชื่อไฟล์ซ้ำ' };
     }
 
-    const body: any = {};
+    const body: Record<string, string | number | null> = {};
     if (name) body.name = name;
     if (description !== undefined) body.description = description;
     if (filename) body.filename = filename;
@@ -183,6 +184,7 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
         await apiUpdateFile(parseInt(id), body, token);
         revalidatePath('/admin/documents', 'layout');
         return { success: true, message: 'อัปเดตไฟล์สำเร็จ!' };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         console.error('Failed to update file:', error);
         return { success: false, message: error.message || 'อัปเดตไฟล์ไม่สำเร็จ' };

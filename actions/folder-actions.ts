@@ -2,7 +2,7 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod';
 import { State } from '@/types/common';
-import { apiCreateFolder, apiUpdateFolder } from '@/services/document-service';
+import { apiCreateFolder } from '@/services/document-service';
 import { auth } from '@/auth';
 
 import { apiGetRootFolder, apiGetFolderById } from '@/services/document-service';
@@ -18,7 +18,7 @@ export const adminGetFolderById = async (id: number) => {
 }
 
 // For Create Folder
-export const createFolder = async (prevState: any, formData: FormData): Promise<State> => {
+export const createFolder = async (prevState: State | null, formData: FormData): Promise<State> => {
     const session = await auth();
     const token = session?.accessToken || process.env.API_TOKEN;
 
@@ -68,7 +68,7 @@ export const createFolder = async (prevState: any, formData: FormData): Promise<
         // safely ignore read error and proceed to try create
     }
     // Add Audit fields
-    const payload: any = {
+    const payload: Record<string, string | number | null> = {
         name: rawData.name as string,
         abbr: rawData.abbr as string,
         parent: parentId,
@@ -85,6 +85,7 @@ export const createFolder = async (prevState: any, formData: FormData): Promise<
 
         revalidatePath('/admin/documents', 'layout');
         return { success: true, message: 'สร้างโฟลเดอร์สำเร็จ!' };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         console.error('Failed to create folder:', error);
         return { success: false, message: error.message || 'สร้างโฟลเดอร์ไม่สำเร็จ' };
@@ -94,7 +95,7 @@ export const createFolder = async (prevState: any, formData: FormData): Promise<
 
 // update folder
 // PATCH https://casdu-backops.witspleasure.com/api/fy2569/dl/folder/:id
-export const updateFolder = async (prevState: any, formData: FormData): Promise<State> => {
+export const updateFolder = async (prevState: State | null, formData: FormData): Promise<State> => {
     const session = await auth();
     const API_URL = process.env.API_URL;
     const API_TOKEN = process.env.API_TOKEN;
@@ -137,10 +138,10 @@ export const updateFolder = async (prevState: any, formData: FormData): Promise<
     }
     // End validation
 
-    const body: any = {
-        name: rawData.name,
-        description: rawData.description,
-        mui_colour: rawData.mui_colour,
+    const body: Record<string, string | number | null | undefined> = {
+        name: parsed.data.name,
+        description: parsed.data.description,
+        mui_colour: parsed.data.mui_colour,
         parent: parentId
     };
 
@@ -186,7 +187,7 @@ export const getFolderPath = async (targetId: number): Promise<{ id: number; nam
 
         // 2. BFS Search
         // We start with root folders
-        let queue = rootFolders.map(f => ({
+        const queue = rootFolders.map(f => ({
             id: f.id,
             path: [{ id: f.id, name: f.name }]
         }));

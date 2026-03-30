@@ -46,6 +46,7 @@ const NavAuth = () => {
       trigger={
         <Button variant="ghost" size="icon" className='rounded-full cursor-pointer border-1 hover:bg-primary-foreground/10 text-primary-foreground hover:text-primary-foreground dark:text-foreground dark:hover:bg-accent dark:hover:text-accent-foreground dark:border-border'>
           {user?.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
             <img src={user.image} alt={user.name || "User"} className="h-5 w-5 rounded-full" />
           ) : (
             <User className="h-5 w-5" />

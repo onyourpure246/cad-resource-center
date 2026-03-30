@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 const DocumentManagementPage = () => {
     const { items, isLoading, error, refreshItems } = useRootDocuments();
     const router = useRouter();
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
     const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
 
     React.useEffect(() => {
@@ -39,7 +39,7 @@ const DocumentManagementPage = () => {
     const selectedItems = items.filter(item => selectedIds.includes(item.id));
 
     return (
-        <>
+        <div className="animate-in fade-in slide-in-from-bottom-5 duration-500">
             <Header
                 title="เอกสารทั้งหมด"
                 description="จัดการเอกสารและไฟล์ทั้งหมดในระบบ" />
@@ -58,7 +58,7 @@ const DocumentManagementPage = () => {
                     onSelectionChange={setSelectedIds}
                 />
             </DataManagementLayout>
-        </>
+        </div>
     );
 };
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { adminGetFolderById, getFolderPath } from '@/actions/folder-actions';
-import { Item as FolderItem, File as FileType } from '@/types/models';
+import { Item as FolderItem } from '@/types/models';
 
 export const useFolderContents = (folderId: number) => {
     const [items, setItems] = useState<FolderItem[]>([]);
@@ -26,6 +26,7 @@ export const useFolderContents = (folderId: number) => {
                 console.error("Failed to fetch breadcrumbs", err);
             }
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const transformedFolders: FolderItem[] = data.folders.map((folder: any) => ({
                 id: `folder-${folder.id}`,
                 resourceId: folder.id,
@@ -35,12 +36,13 @@ export const useFolderContents = (folderId: number) => {
                 type: "folder",
                 created: folder.created_at || '',
                 modified: folder.updated_at || '',
-                modifiedBy: (folder as any).updated_by_name || folder.updated_by?.toString() || "Admin",
-                createdBy: (folder as any).created_by_name || folder.created_by?.toString() || "Admin",
+                modifiedBy: folder.updated_by_name || folder.updated_by?.toString() || "Admin",
+                createdBy: folder.created_by_name || folder.created_by?.toString() || "Admin",
                 mui_icon: folder.mui_icon,
                 mui_colour: folder.mui_colour,
             }));
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const transformedFiles: FolderItem[] = data.files.map((file: any) => ({
                 id: `file-${file.id}`,
                 resourceId: file.id,
@@ -51,13 +53,13 @@ export const useFolderContents = (folderId: number) => {
                 type: "file",
                 created: file.created_at || '',
                 modified: file.updated_at || '',
-                modifiedBy: (file as any).updated_by_name || file.updated_by?.toString() || "Admin",
-                createdBy: (file as any).created_by_name || file.created_by?.toString() || "Admin",
+                modifiedBy: file.updated_by_name || file.updated_by?.toString() || "Admin",
+                createdBy: file.created_by_name || file.created_by?.toString() || "Admin",
                 mui_icon: file.mui_icon,
                 mui_colour: file.mui_colour,
                 downloadUrl: `/api/proxy-download/${file.id}`,
                 isactive: file.isactive,
-                downloads: (file as any).downloads,
+                downloads: file.downloads,
                 category_id: file.category_id,
                 category_name: file.category_name
             }));

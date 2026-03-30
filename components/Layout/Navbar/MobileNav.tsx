@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { useSession, signOut } from 'next-auth/react';
-import { Menu, LogIn, LogOut, LayoutDashboard, FileText, Users, Megaphone } from 'lucide-react';
+import { Menu, LogIn, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import ThemeLogo from './ThemeLogo';
 import { usePathname } from 'next/navigation';

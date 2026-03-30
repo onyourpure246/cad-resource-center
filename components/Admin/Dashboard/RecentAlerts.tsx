@@ -6,7 +6,7 @@ interface RecentAlertsProps {
     logs: Array<{
         id: number;
         action: string;
-        details: any;
+        details: Record<string, unknown> | string;
         user_id: number | null;
         created_at: string;
     }> | null;
@@ -64,9 +64,11 @@ export default function RecentAlerts({ logs }: RecentAlertsProps) {
                             const colors = getColors(log.action);
 
                             // Parse details if string
-                            let detailsObj = log.details;
+                            let detailsObj: { filename?: string; sysname?: string } | null = null;
                             if (typeof log.details === 'string') {
-                                try { detailsObj = JSON.parse(log.details); } catch (e) { }
+                                try { detailsObj = JSON.parse(log.details) as { filename?: string; sysname?: string }; } catch { }
+                            } else if (typeof log.details === 'object' && log.details !== null) {
+                                detailsObj = log.details as { filename?: string; sysname?: string };
                             }
 
                             return (
@@ -87,7 +89,7 @@ export default function RecentAlerts({ logs }: RecentAlertsProps) {
                                             {/* Display logic for details */}
                                             {detailsObj?.filename ? `File: ${detailsObj.filename}` :
                                                 detailsObj?.sysname ? `ID: ${detailsObj.sysname}` :
-                                                    JSON.stringify(detailsObj)}
+                                                    JSON.stringify(detailsObj || log.details)}
                                         </p>
                                         <div className="mt-2 flex items-center gap-2">
                                             <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-secondary text-secondary-foreground border border-transparent group-hover:border-border transition-colors">

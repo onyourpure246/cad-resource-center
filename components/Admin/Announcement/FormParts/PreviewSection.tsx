@@ -1,7 +1,7 @@
 import React from 'react';
 import { Label } from '@/components/ui/label';
 import AnnouncementCard from '@/app/_components/AnnouncementCard';
-import { Announcement, AnnouncementStatus, PreviewSectionProps } from '@/types/announcement';
+import { PreviewSectionProps } from '@/types/announcement';
 
 export const PreviewSection = ({
     announcement,
@@ -30,6 +30,8 @@ export const PreviewSection = ({
                             category: category,
                             cover_image: previewImage || undefined,
                             status: currentStatus,
+                            is_urgent: announcement?.is_urgent || 0
+                            ,
                             publish_date: announcement?.publish_date || new Date().toISOString(),
                             created_at: announcement?.created_at || new Date().toISOString(),
                             updated_at: new Date().toISOString(),

@@ -1,4 +1,4 @@
-import { Users, FileText, Activity, AlertTriangle, MonitorPlay } from "lucide-react";
+import { Users, FileText, Activity, AlertTriangle, MonitorPlay, LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -17,7 +17,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
         title: string;
         value: number | string;
         unit?: string;
-        icon: any;
+        icon: LucideIcon;
         iconClassName: string;
         bgClassName: string;
         description: string;

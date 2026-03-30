@@ -1,4 +1,4 @@
-import { adminGetFolderById, adminGetRootFolder, getFolderPath } from "@/actions/folder-actions";
+import { adminGetFolderById, getFolderPath } from "@/actions/folder-actions";
 import { DownloadItem } from '@/types/models';
 import { notFound } from 'next/navigation';
 

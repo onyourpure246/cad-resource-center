@@ -1,4 +1,4 @@
-import { Folder, File as DLFile, CurrentFolder, Breadcrumb, Category } from './models';
+import { Folder, File as DLFile, CurrentFolder, Breadcrumb } from './models';
 
 // Responses
 export interface FolderContentResponse {

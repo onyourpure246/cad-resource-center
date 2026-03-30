@@ -1,5 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import thaidLogo from "@/assets/img/thaid.png";
 
 export function ThaIDLoginButton() {
     const THAID_AUTH_URL = process.env.NEXT_PUBLIC_THAID_AUTH_URL || "https://imauthsbx.bora.dopa.go.th/api/v2/oauth2/auth/"; // Sandbox + Trailing Slash
@@ -20,26 +22,13 @@ export function ThaIDLoginButton() {
             >
                 <Link href={thaidUrl}>
                     <div className="flex items-center gap-3">
-                        <span className="font-bold">ThaID</span>
+                        <Image src={thaidLogo} alt="ThaID Logo" width={28} height={28} className="rounded-md" />
                         <span className="opacity-90 font-normal">
                             | ลงชื่อเข้าใช้ด้วย ThaID
                         </span>
                     </div>
                 </Link>
             </Button>
-
-            {/* Development Only Bypass Button */}
-            {process.env.NODE_ENV === "development" && (
-                <Button
-                    asChild
-                    variant="destructive"
-                    className="w-full h-10 opacity-70 hover:opacity-100 mt-2"
-                >
-                    <Link href="/auth/callback?code=TEST_ADMIN">
-                        [DEV] Bypass Login (Simulate Admin)
-                    </Link>
-                </Button>
-            )}
 
             <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">

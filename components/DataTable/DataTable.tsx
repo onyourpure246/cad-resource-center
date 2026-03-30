@@ -21,7 +21,8 @@ export function DataTable<T extends { id: string | number }>({
     noResultsContent,
     enableRowSelection = false,
     selectedIds = [],
-    onSelectionChange
+    onSelectionChange,
+    tableMinWidth
 }: DataTableProps<T>) {
 
     const handleSelectAll = (checked: boolean) => {
@@ -46,7 +47,7 @@ export function DataTable<T extends { id: string | number }>({
 
     return (
         <div className="rounded-md border overflow-hidden">
-            <Table className="table-fixed">
+            <Table className={`table-fixed ${tableMinWidth || ''}`}>
                 <TableHeader>
                     <TableRow>
                         {enableRowSelection && (
@@ -64,7 +65,7 @@ export function DataTable<T extends { id: string | number }>({
                     </TableRow>
                 </TableHeader>
                 {isLoading ? (
-                    <TableSkeleton showCheckbox={enableRowSelection} columns={columns as any} />
+                    <TableSkeleton showCheckbox={enableRowSelection} columns={columns as { headerClassName?: string; className?: string }[]} />
                 ) : (
                     <TableBody>
                         {data.length === 0 ? (

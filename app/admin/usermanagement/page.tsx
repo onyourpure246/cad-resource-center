@@ -55,7 +55,7 @@ const UserManagementPage = () => {
   });
 
   return (
-    <>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-5 duration-500">
       <Header
         title="จัดการบัญชีผู้ใช้"
         description="จัดการรายชื่อผู้ใช้งานและกำหนดสิทธิ์การเข้าถึง"
@@ -85,7 +85,7 @@ const UserManagementPage = () => {
           onSuccess={fetchUsers}
         />
       </DataManagementLayout>
-    </>
+    </div>
   )
 }
 

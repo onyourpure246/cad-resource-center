@@ -24,7 +24,7 @@ export function ManageCategoryDialog({ open, onOpenChange, onCategoryChanged }: 
         setIsLoading(true);
         try {
             const data = await getCategories();
-            setCategories(data.filter((c: any) => c.isactive === 1));
+            setCategories(data.filter((c: Category & { isactive?: number }) => c.isactive === 1));
         } catch (error) {
             console.error("Failed to load categories", error);
         } finally {

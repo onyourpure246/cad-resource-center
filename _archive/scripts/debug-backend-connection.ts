@@ -19,7 +19,7 @@ function loadEnv() {
                 // Match KEY="VALUE" or KEY=VALUE
                 const match = trimmed.match(/^([^=]+)=(.*)$/);
                 if (match) {
-                    let key = match[1].trim();
+                    const key = match[1].trim();
                     let value = match[2].trim();
 
                     // Remove quotes if present
@@ -77,6 +77,7 @@ async function testBackend() {
             console.error('Hint: If 404, the endpoint might not exist. If 500, check Backend logs.');
         }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         console.error('❌ Network Error (Backend might be down or unreachable):');
         if (error.cause) console.error('Cause:', error.cause);

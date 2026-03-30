@@ -32,6 +32,7 @@ const ItemsTable = ({
                 columns={columns}
                 data={items}
                 isLoading={isLoading}
+                tableMinWidth="min-w-[700px]"
                 noResultsMessage="ไม่พบไฟล์หรือโฟลเดอร์"
                 enableRowSelection={true}
                 selectedIds={selectedIds}

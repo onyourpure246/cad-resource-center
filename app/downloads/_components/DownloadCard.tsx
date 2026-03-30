@@ -1,6 +1,5 @@
 'use client'
 import React from 'react'
-import { DownloadItem } from '@/types/models'
 import { Button } from '@/components/ui/button'
 import { Download, FileText, Calendar } from 'lucide-react'
 import MuiIconRenderer from '@/components/ui/MuiIconRenderer'

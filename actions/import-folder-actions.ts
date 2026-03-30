@@ -47,7 +47,7 @@ export const importFolderTree = async (formData: FormData, parentId: number | nu
 
         for (const entry of fileEntries) {
             const parts = entry.path.split('/');
-            const fileName = parts.pop(); // Remove file name
+            parts.pop(); // Remove file name
             // Now parts is just folders: ["SelectedFolder", "Sub"]
 
             let currentParentId = parentId;
@@ -65,6 +65,7 @@ export const importFolderTree = async (formData: FormData, parentId: number | nu
                         folderIdMap.set(currentPath, newFolderId);
                         currentParentId = newFolderId;
                         stats.foldersCreated++;
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     } catch (err: any) {
                         stats.errors.push(`ไม่ได้สร้างโฟลเดอร์ '${currentPath}': ${err.message}`);
                         break;
@@ -76,7 +77,7 @@ export const importFolderTree = async (formData: FormData, parentId: number | nu
         // 3. Upload Files
         for (const entry of fileEntries) {
             const parts = entry.path.split('/');
-            const fileName = parts.pop();
+            parts.pop();
             const folderPath = parts.join('/');
 
             // Get the parent ID for this file
@@ -93,6 +94,7 @@ export const importFolderTree = async (formData: FormData, parentId: number | nu
             try {
                 await uploadFile(entry.file, targetParentId);
                 stats.successFiles++;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (err: any) {
                 stats.failedFiles++;
                 stats.errors.push(`อัปโหลดไฟล์ไม่สำเร็จ ${entry.path}: ${err.message}`);
@@ -106,6 +108,7 @@ export const importFolderTree = async (formData: FormData, parentId: number | nu
             stats
         };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         console.error("Import Error:", error);
         return { success: false, message: `เกิดข้อผิดพลาดในระบบ: ${error.message}` };
@@ -117,16 +120,16 @@ export const importFolderTree = async (formData: FormData, parentId: number | nu
     async function createFolder(name: string, parentId: number | null): Promise<number> {
         try {
             const contents = parentId ? await adminGetFolderById(parentId) : await adminGetRootFolder();
-            const existing = contents.folders.find((f: any) => f.name === name);
+            const existing = contents.folders.find((f: { name: string; id: number }) => f.name === name);
             if (existing) return existing.id;
-        } catch (e) {
+        } catch {
             // Ignore fetch error, try create
         }
 
         const session = await auth();
         const token = session?.accessToken || process.env.API_TOKEN;
 
-        const payload: any = {
+        const payload: Record<string, string | number | null> = {
             name,
             parent: parentId,
             isactive: 1, // Active mode
@@ -181,7 +184,7 @@ export const importFolderTree = async (formData: FormData, parentId: number | nu
 
         if (newFileId) {
             try {
-                const updatePayload: any = {};
+                const updatePayload: Record<string, string | number> = {};
                 if (mui_icon) updatePayload.mui_icon = mui_icon;
                 if (mui_colour) updatePayload.mui_colour = mui_colour;
                 

@@ -14,7 +14,7 @@ const TagCloud = ({ tags: initialTags = [] }: { tags?: string[] }) => {
             try {
                 const popularTags = await getPopularTags(30, 8); // Last 30 days, top 8 tags
                 if (popularTags && popularTags.length > 0) {
-                    setTags(popularTags.map((t: any) => t.keyword));
+                    setTags(popularTags.map((t: { keyword: string }) => t.keyword));
                 }
             } catch (error) {
                 console.error('Failed to fetch popular tags:', error);

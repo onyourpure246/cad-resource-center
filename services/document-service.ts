@@ -2,6 +2,7 @@
 
 import { CreateFolderRequest, UpdateFolderRequest, FolderContentResponse } from '@/types/api';
 import { ApiResponse } from '@/types/common';
+import { Category } from '@/types/models';
 
 const API_URL = process.env.API_URL;
 const API_TOKEN = process.env.API_TOKEN;
@@ -24,7 +25,7 @@ export async function apiCreateFolder(params: CreateFolderRequest, token?: strin
         'Content-Type': 'application/json',
     };
 
-    const body: any = {
+    const body: Record<string, unknown> = {
         name: params.name,
         isactive: params.isactive,
         mui_colour: params.mui_colour,
@@ -64,7 +65,7 @@ export async function apiUpdateFolder(params: UpdateFolderParams, token?: string
         'Content-Type': 'application/json',
     };
 
-    const body: any = {
+    const body: Record<string, unknown> = {
         ...params
     };
     delete body.id; // Don't send ID in body if it's in URL
@@ -102,7 +103,7 @@ export async function apiUploadFile(formData: FormData, token?: string): Promise
     return json.data?.id;
 }
 
-export async function apiUpdateFile(id: number, data: any, token?: string): Promise<void> {
+export async function apiUpdateFile(id: number, data: Record<string, unknown>, token?: string): Promise<void> {
     const headers = {
         ...(await getHeaders(token)),
         'Content-Type': 'application/json',
@@ -172,7 +173,7 @@ export async function apiGetFolderById(id: number, token?: string): Promise<Fold
     return json.data;
 }
 
-export async function apiGetCategories(token?: string): Promise<any[]> {
+export async function apiGetCategories(token?: string): Promise<Category[]> {
     const headers = await getHeaders(token);
     const res = await fetch(`${API_URL}/category`, {
         method: 'GET',
@@ -189,7 +190,7 @@ export async function apiGetCategories(token?: string): Promise<any[]> {
 
 export async function apiCreateCategory(name: string, group_name?: string, token?: string): Promise<void> {
     const headers = { ...(await getHeaders(token)), 'Content-Type': 'application/json' };
-    const body: any = { name };
+    const body: Record<string, unknown> = { name };
     if (group_name) body.group_name = group_name;
 
     const res = await fetch(`${API_URL}/category`, {
@@ -205,7 +206,7 @@ export async function apiCreateCategory(name: string, group_name?: string, token
 
 export async function apiUpdateCategory(id: number, name: string, group_name?: string, token?: string): Promise<void> {
     const headers = { ...(await getHeaders(token)), 'Content-Type': 'application/json' };
-    const body: any = { name };
+    const body: Record<string, unknown> = { name };
     if (group_name) body.group_name = group_name;
 
     const res = await fetch(`${API_URL}/category/${id}`, {

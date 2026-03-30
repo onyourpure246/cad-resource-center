@@ -25,13 +25,13 @@ export function CategoryListItem({
     onDelete
 }: CategoryListItemProps) {
     const [editingCategoryName, setEditingCategoryName] = useState(category.name);
-    const [editingCategoryGroup, setEditingCategoryGroup] = useState((category as any).group_name || 'เอกสารต่างๆ');
+    const [editingCategoryGroup, setEditingCategoryGroup] = useState((category as Category & { group_name?: string }).group_name || 'เอกสารต่างๆ');
 
     // Sync state when entering edit mode, just in case
     React.useEffect(() => {
         if (isEditing) {
             setEditingCategoryName(category.name);
-            setEditingCategoryGroup((category as any).group_name || 'เอกสารต่างๆ');
+            setEditingCategoryGroup((category as Category & { group_name?: string }).group_name || 'เอกสารต่างๆ');
         }
     }, [isEditing, category]);
 
@@ -95,8 +95,8 @@ export function CategoryListItem({
                 <div className="flex items-center justify-between w-full">
                     <div className="flex flex-col">
                         <span className="text-sm font-medium">{category.name}</span>
-                        {(category as any).group_name && (
-                            <span className="text-xs text-muted-foreground">{(category as any).group_name}</span>
+                        {(category as Category & { group_name?: string }).group_name && (
+                            <span className="text-xs text-muted-foreground">{(category as Category & { group_name?: string }).group_name}</span>
                         )}
                     </div>
                     <div className="flex items-center">

@@ -1,5 +1,4 @@
 import React from 'react'
-import AnnouncementCard from './AnnouncementCard'
 import AnnouncementList from './AnnouncementList';
 import { getAnnouncements } from '@/actions/announcement-actions';
 

@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { UserPlus, FolderSync, Trash2 } from "lucide-react";
+import { FolderSync, Trash2 } from "lucide-react";
 
 import { UserActionButtonsProps } from '@/types/components';
 

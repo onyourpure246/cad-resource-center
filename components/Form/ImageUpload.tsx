@@ -3,7 +3,7 @@
 import React, { useState, useRef, ChangeEvent, useCallback } from 'react';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Image as ImageIcon, Upload, X, Trash2, Crop as CropIcon, Check } from 'lucide-react';
+import { Image as ImageIcon, Upload, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from '@/lib/image-utils';
@@ -41,12 +41,12 @@ const ImageUpload = ({
     const [isCropping, setIsCropping] = useState(false);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
-    const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState<{ width: number, height: number, x: number, y: number } | null>(null);
     const [originalImage, setOriginalImage] = useState<string | null>(null);
 
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const onCropComplete = useCallback((croppedArea: any, croppedAreaPixels: any) => {
+    const onCropComplete = useCallback((croppedArea: { width: number, height: number, x: number, y: number }, croppedAreaPixels: { width: number, height: number, x: number, y: number }) => {
         setCroppedAreaPixels(croppedAreaPixels);
     }, []);
 
@@ -161,6 +161,7 @@ const ImageUpload = ({
                     <div className="relative w-full h-full">
                         {/* Preview Image - Centered and Contained to prevent layout shift */}
                         <div className="flex items-center justify-center w-full h-full bg-muted/20">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                                 src={preview}
                                 alt="Preview"

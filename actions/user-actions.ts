@@ -63,6 +63,7 @@ export async function updateUser(id: string | number, data: Partial<User>) {
 
         // revalidatePath('/admin/usermanagement');
         return { success: true };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         console.error('updateUser error:', error);
         return { success: false, message: error.message };
@@ -89,6 +90,7 @@ export async function deleteUser(id: string | number) {
 
         // revalidatePath('/admin/usermanagement');
         return { success: true };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         console.error('deleteUser error:', error);
         return { success: false, message: error.message };

@@ -7,20 +7,29 @@ import { Folder } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
-export default function CategoryTabsAnimated({ categories }: { categories: any[] }) {
+interface TabCategory {
+    id: number;
+    name: string;
+    description?: string;
+    group_name?: string;
+    mui_icon?: string;
+    mui_colour?: string;
+}
+
+export default function CategoryTabsAnimated({ categories }: { categories: TabCategory[] }) {
     const [activeTab, setActiveTab] = useState("all");
 
-    const docCategories = categories?.filter((c: any) => c.group_name === 'เอกสารต่างๆ' || !c.group_name) || [];
-    const scriptCategories = categories?.filter((c: any) => c.group_name === 'ชุดคำสั่ง') || [];
-    const otherCategories = categories?.filter((c: any) => c.group_name && c.group_name !== 'เอกสารต่างๆ' && c.group_name !== 'ชุดคำสั่ง') || [];
+    const docCategories = categories?.filter((c: TabCategory) => c.group_name === 'เอกสารต่างๆ' || !c.group_name) || [];
+    const scriptCategories = categories?.filter((c: TabCategory) => c.group_name === 'ชุดคำสั่ง') || [];
+    const otherCategories = categories?.filter((c: TabCategory) => c.group_name && c.group_name !== 'เอกสารต่างๆ' && c.group_name !== 'ชุดคำสั่ง') || [];
 
     const SectionHeader = ({ title }: { title: string }) => (
         <h3 className="text-lg font-semibold border-b pb-2 text-primary">{title}</h3>
     );
 
-    const CategoryGrid = ({ data, defaultDesc = 'ดาวน์โหลดเอกสารในหมวดหมู่นี้' }: { data: any[], defaultDesc?: string }) => (
+    const CategoryGrid = ({ data, defaultDesc = 'ดาวน์โหลดเอกสารในหมวดหมู่นี้' }: { data: TabCategory[], defaultDesc?: string }) => (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-            {data.map((category: any) => (
+            {data.map((category: TabCategory) => (
                 <CategoryCard
                     key={category.id}
                     title={category.name}

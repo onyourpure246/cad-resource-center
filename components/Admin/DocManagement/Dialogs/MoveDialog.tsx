@@ -39,7 +39,7 @@ export const MoveDialog = ({ item, currentParentId, trigger, onMoveSuccess }: Mo
                 </DialogHeader>
                 <div className="flex flex-col h-[400px]">
                     <div className="text-sm text-muted-foreground mb-4">
-                        เลือกโฟลเดอร์ปลายทางสำหรับ "{item.name}"
+                        เลือกโฟลเดอร์ปลายทางสำหรับ &quot;{item.name}&quot;
                     </div>
 
                     <div className="flex-1 border rounded-md overflow-hidden bg-background/50">

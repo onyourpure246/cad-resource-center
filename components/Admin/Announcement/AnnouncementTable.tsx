@@ -129,6 +129,7 @@ const AnnouncementTable = ({ announcements, isLoading, actionButtons }: Announce
                             columns={columns}
                             data={filteredAnnouncements}
                             isLoading={isLoading}
+                            tableMinWidth="min-w-[800px]"
                             noResultsContent={renderEmptyState("ไม่พบประกาศ", "ยังไม่มีประกาศในระบบ คุณสามารถเพิ่มประกาศใหม่ได้ที่ปุ่ม สร้างประกาศใหม่")}
                         />
                     </TabsContent>
@@ -138,6 +139,7 @@ const AnnouncementTable = ({ announcements, isLoading, actionButtons }: Announce
                             columns={columns}
                             data={publishedAnnouncements}
                             isLoading={isLoading}
+                            tableMinWidth="min-w-[800px]"
                             noResultsContent={renderEmptyState("ไม่พบประกาศที่เผยแพร่", "ยังไม่มีประกาศที่ถูกเผยแพร่")}
                         />
                     </TabsContent>
@@ -147,6 +149,7 @@ const AnnouncementTable = ({ announcements, isLoading, actionButtons }: Announce
                             columns={columns}
                             data={draftAnnouncements}
                             isLoading={isLoading}
+                            tableMinWidth="min-w-[800px]"
                             noResultsContent={renderEmptyState("ไม่พบประกาศฉบับร่าง", "ยังไม่มีประกาศฉบับร่าง")}
                         />
                     </TabsContent>
@@ -156,6 +159,7 @@ const AnnouncementTable = ({ announcements, isLoading, actionButtons }: Announce
                             columns={columns}
                             data={archivedAnnouncements}
                             isLoading={isLoading}
+                            tableMinWidth="min-w-[800px]"
                             noResultsContent={renderEmptyState("ไม่พบประกาศที่ถูกจัดเก็บ", "ยังไม่มีประกาศที่ถูกจัดเก็บ")}
                         />
                     </TabsContent>

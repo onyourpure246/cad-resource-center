@@ -56,46 +56,7 @@ export const useFolderTree = ({ initialParentId, enableAutoFetch = true }: UseFo
         });
     }, []);
 
-    const handleToggle = useCallback(async (folderId: number, e: React.MouseEvent) => {
-        e.stopPropagation();
 
-        // We need to find the node to check its state, or just act based on current known state?
-        // Since we state update is functional, getting current state is tricky inside callback without dependency.
-        // But `updateFolderNode` handles the update. We need to know IF we should fetch.
-        // We can pass the folder object itself like useMoveDialog does, or find it.
-        // Let's assume we find it or pass it. Passing ID is safer for finding, but we need the node to check `hasLoaded`.
-        // Let's modify handleToggle to find the node in the current state or accept the node.
-
-        // Actually, to keep it simple and consistent with useMoveDialog's logic which passed the folder:
-        // But passing the folder object from the UI is easier.
-        // However, `BulkMoveDialog` was finding it.
-
-        // Let's implement `findNode` helper here to be robust.
-        setFolders(currentFolders => {
-            const findNode = (nodes: FolderNode[]): FolderNode | undefined => {
-                for (const node of nodes) {
-                    if (node.id === folderId) return node;
-                    if (node.children) {
-                        const found = findNode(node.children);
-                        if (found) return found;
-                    }
-                }
-                return undefined;
-            };
-
-            const node = findNode(currentFolders);
-
-            // We can't do async inside this synchronous state update.
-            // So we just return currentFolders effectively, but trigger side effects? No, that's bad.
-            // We should read state, then update.
-            return currentFolders;
-        });
-
-        // Better approach: Functional updates for the state change, but we need to know "do we fetch?".
-        // We can do this by using a ref for folders or just trusting the caller to pass the node?
-        // Let's accept the node object in handleToggle, like useMoveDialog does.
-        return; // See implementation below
-    }, []);
 
     // Re-implementing handleToggle to be cleaner:
     // It's easier if we pass the whole node, as the UI has it. 

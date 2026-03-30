@@ -8,6 +8,7 @@ import { ContentEditable } from "@/components/Editor/editor-ui/content-editable"
 import { ToolbarPlugin } from "./toolbar-plugin"
 
 export function Plugins() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null)
 

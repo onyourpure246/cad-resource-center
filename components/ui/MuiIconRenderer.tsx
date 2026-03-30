@@ -2,11 +2,11 @@
 'use client';
 
 import React from 'react';
-import { SvgIconProps } from '@mui/material';
+// Removed unused SvgIconProps import
 import dynamic from 'next/dynamic';
 import { BrokenImage } from '@mui/icons-material';
 
-// Dynamic imports for icons to avoid massive initial bundle size
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ICON_MAP: Record<string, React.ComponentType<any>> = {
     FolderZip: dynamic(() => import('@mui/icons-material/FolderZip')),
     Folder: dynamic(() => import('@mui/icons-material/Folder')),

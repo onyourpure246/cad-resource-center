@@ -21,7 +21,7 @@ const AnnouncementPage = async () => {
   const isLoading = false; // Server component doesn't need loading state for initial render in this way, or we use Suspense
 
   return (
-    <>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-5 duration-500">
       <Header
         title="ข้อมูลประชาสัมพันธ์"
         description="จัดการประกาศและประชาสัมพันธ์ทั้งหมด" />
@@ -31,7 +31,7 @@ const AnnouncementPage = async () => {
         isLoading={isLoading}
         actionButtons={actionButtons}
       />
-    </>
+    </div>
   )
 }
 

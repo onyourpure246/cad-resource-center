@@ -48,7 +48,7 @@ export const EditUserDialog = ({ user, open, onOpenChange, onSuccess }: EditUser
         if (!user) return;
         setIsLoading(true);
         try {
-            const res = await updateUser(user.id, { role: role as any, status: status as any });
+            const res = await updateUser(user.id, { role: role as 'admin' | 'user', status: status as 'active' | 'inactive' | 'suspended' });
             if (res.success) {
                 toast.success("อัปเดตผู้ใช้สำเร็จ", {
                     description: `เปลี่ยนสถานะเป็น ${status} และสิทธิ์เป็น ${role}`,

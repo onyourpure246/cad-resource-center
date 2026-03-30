@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '@/components/Layout/Header/Header';
 import DownloadList from './DownloadLists';
 import SubFolderBadges from './SubFolderBadges';
-import { DownloadItem } from '@/types/models';
+import { DownloadItem, Folder } from '@/types/models';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
@@ -12,7 +12,7 @@ interface SharedDownloadViewProps {
     description: string;
     items: DownloadItem[];
     backLink?: string;
-    subFolders?: any[]; // Keep flexible based on Folder model, ideally DLFolder[]
+    subFolders?: Folder[]; // Keep flexible based on Folder model
     parentFolderId?: number; // Needed for SubFolderBadges
     highlightQuery?: string;
 }

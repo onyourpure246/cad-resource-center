@@ -39,6 +39,7 @@ export const ImportFolderDialog = ({ parentId, onSuccess, trigger, open: constra
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [treePreview, setTreePreview] = useState<TreeNode[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [importStats, setImportStats] = useState<any>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -168,6 +169,7 @@ export const ImportFolderDialog = ({ parentId, onSuccess, trigger, open: constra
                                 <input
                                     ref={fileInputRef}
                                     type="file"
+                                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                                     // @ts-ignore - directory attributes are non-standard but supported
                                     webkitdirectory=""
                                     directory=""

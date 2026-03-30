@@ -11,7 +11,6 @@ import { useFolderContents } from '@/hooks/useFolderContents';
 import { useTableData } from '@/hooks/useTableData';
 import PaginationFooter from '@/components/Admin/DocManagement/PaginationFooter';
 
-import { toast } from 'sonner';
 
 const FolderContentPage = () => {
     const router = useRouter();
@@ -19,7 +18,7 @@ const FolderContentPage = () => {
     const params = useParams();
     const folderId = parseInt(params.folderId as string, 10);
     const [selectedIds, setSelectedIds] = React.useState<(string | number)[]>([]);
-    const { items, isLoading, breadcrumbs, refresh, currentFolder } = useFolderContents(folderId);
+    const { items, isLoading, breadcrumbs, refresh } = useFolderContents(folderId);
 
     const {
         handleSearch,

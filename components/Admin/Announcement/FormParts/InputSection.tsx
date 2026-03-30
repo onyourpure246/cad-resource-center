@@ -5,7 +5,7 @@ import SelectInput from '@/components/Form/SelectInput';
 import ImageUpload from '@/components/Form/ImageUpload';
 import { Switch } from '@/components/ui/switch';
 import { ANNOUNCEMENT_CATEGORIES } from '@/lib/constants';
-import { Announcement, AnnouncementStatus, InputSectionProps } from '@/types/announcement';
+import { InputSectionProps } from '@/types/announcement';
 
 export const InputSection = ({
     isCreateMode,
@@ -77,7 +77,7 @@ export const InputSection = ({
                             ประกาศด่วน (Urgent)
                         </Label>
                         <p className="text-sm text-muted-foreground">
-                            เปิดใช้งานเพื่อแสดงป้าย "ด่วน" กระพริบเตะตาบนการ์ดประกาศ
+                            เปิดใช้งานเพื่อแสดงป้าย &quot;ด่วน&quot; กระพริบเตะตาบนการ์ดประกาศ
                         </p>
                     </div>
                     <Switch

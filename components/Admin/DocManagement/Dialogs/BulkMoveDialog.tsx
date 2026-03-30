@@ -15,7 +15,7 @@ import { Folder, Check } from "lucide-react";
 import { FolderTree } from './FolderTree';
 import { toast } from 'sonner';
 import { bulkMoveItems } from '@/actions/bulk-actions';
-import { BulkItem } from "@/types/documents";
+
 import { BulkMoveDialogProps } from '@/types/components';
 import { useFolderTree } from '@/hooks/useFolderTree';
 

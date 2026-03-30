@@ -14,7 +14,7 @@ import {
 import React, { useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import { bulkDeleteItems } from '@/actions/bulk-actions';
-import { BulkItem } from "@/types/documents";
+
 
 import { BulkDeleteDialogProps } from '@/types/components';
 

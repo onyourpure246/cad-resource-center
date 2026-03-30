@@ -57,7 +57,7 @@ export const getAnnouncementById = async (id: number): Promise<Announcement | nu
         const clientIp = headersList.get('x-forwarded-for') || headersList.get('x-real-ip');
         const userAgent = headersList.get('user-agent');
 
-        const requestHeaders: any = await getAuthHeaders();
+        const requestHeaders: Record<string, string> = await getAuthHeaders();
 
         if (clientIp) {
             requestHeaders['X-Forwarded-For'] = clientIp;
@@ -88,7 +88,7 @@ export const getAnnouncementById = async (id: number): Promise<Announcement | nu
 /**
  * Create a new announcement (POST /news)
  */
-export const createAnnouncement = async (prevState: any, formData: FormData): Promise<State> => {
+export const createAnnouncement = async (prevState: State | null, formData: FormData): Promise<State> => {
     try {
         const headers = await getAuthHeaders();
 

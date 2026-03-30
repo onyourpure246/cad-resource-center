@@ -13,19 +13,27 @@ const helper = createColumnHelper<Announcement>();
 
 // --- Actions Generators ---
 
+interface ActionItem {
+    label: string;
+    icon: React.ReactNode;
+    render?: (props: { className?: string; icon?: React.ReactNode; label?: string }) => React.ReactNode;
+    className?: string;
+    onClick?: () => void;
+}
+
 const getStatusActions = (item: Announcement) => {
     const status = item.status.toLowerCase();
     const isPublished = status === 'published';
     const isArchived = status === 'archived';
     const isDraft = !isPublished && !isArchived;
 
-    const actions: any[] = [];
+    const actions: ActionItem[] = [];
 
     if (isArchived) {
         actions.push({
             label: 'เรียกคืน',
             icon: <Undo className="h-4 w-4" />,
-            render: (props: any) => (
+            render: (props: { className?: string; icon?: React.ReactNode; label?: string }) => (
                 <ConfirmationDialog
                     trigger={
                         <DropdownMenuItem
@@ -54,7 +62,7 @@ const getStatusActions = (item: Announcement) => {
         actions.push({
             label: 'จัดเก็บ (Archive)',
             icon: <Archive className="h-4 w-4" />,
-            render: (props: any) => (
+            render: (props: { className?: string; icon?: React.ReactNode; label?: string }) => (
                 <ConfirmationDialog
                     trigger={
                         <DropdownMenuItem
@@ -83,7 +91,7 @@ const getStatusActions = (item: Announcement) => {
         actions.push({
             label: "ยกเลิกการเผยแพร่",
             icon: <FileX className="h-4 w-4" />,
-            render: (props: any) => (
+            render: (props: { className?: string; icon?: React.ReactNode; label?: string }) => (
                 <ConfirmationDialog
                     trigger={
                         <DropdownMenuItem
@@ -114,7 +122,8 @@ const getStatusActions = (item: Announcement) => {
     return { actions, isPublished, isArchived, isDraft };
 };
 
-export const getAnnouncementColumns = (router: any) => [
+
+export const getAnnouncementColumns = (router: ReturnType<typeof import('next/navigation').useRouter>) => [
     // ... (rest of the file)    // ... existing columns ...
     // 1. Title
     helper.text('title', 'หัวข้อ', {
@@ -173,7 +182,7 @@ export const getAnnouncementColumns = (router: any) => [
                     label: "ลบ",
                     icon: <Trash2 className="h-4 w-4" />,
                     className: "text-destructive focus:text-destructive",
-                    render: (props: any) => (
+                    render: (props: { className?: string; icon?: React.ReactNode; label?: string }) => (
                         <ConfirmationDialog
                             trigger={
                                 <DropdownMenuItem

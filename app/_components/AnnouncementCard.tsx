@@ -7,7 +7,6 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -94,6 +93,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                     {/* Cover Image - Reduced height */}
                     {imageUrl ? (
                         <div className="relative w-full h-32 overflow-hidden bg-muted">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                                 src={imageUrl}
                                 alt={modalData.title}
@@ -171,6 +171,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                 <DialogHeader className="space-y-4">
                     {imageUrl && (
                         <div className="w-full h-64 overflow-hidden rounded-xl mb-4 bg-muted">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                                 src={imageUrl}
                                 alt={modalData.title}

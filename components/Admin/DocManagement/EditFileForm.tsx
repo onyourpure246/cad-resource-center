@@ -4,7 +4,7 @@ import FormContainer from '@/components/Form/FormContainer';
 import TextAreaInput from '@/components/Form/TextAreaInput';
 import { SubmitButton } from '@/components/Form/Button';
 import { Button } from '@/components/ui/button';
-import { Item, Category } from '@/types/models';
+import { Category } from '@/types/models';
 import { State } from '@/types/common';
 import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import TextInput from '@/components/Form/TextInput';
@@ -40,14 +40,13 @@ const EditFileForm = ({ file, onSuccess, onCancel }: EditFileFormProps) => {
         setIsActive(file.isactive === 1);
     }, [file]);
 
-    const loadCategories = () => {
-        getCategories().then((data) => {
-            // Include active categories OR the currently selected one (in case it became inactive)
-            setCategories(data.filter(c => c.isactive === 1 || c.id === file.category_id));
-        }).catch(console.error);
-    };
-
     useEffect(() => {
+        const loadCategories = () => {
+            getCategories().then((data) => {
+                // Include active categories OR the currently selected one (in case it became inactive)
+                setCategories(data.filter(c => c.isactive === 1 || c.id === file.category_id));
+            }).catch(console.error);
+        };
         loadCategories();
     }, [file.category_id]);
 
@@ -133,7 +132,11 @@ const EditFileForm = ({ file, onSuccess, onCancel }: EditFileFormProps) => {
                         <ManageCategoryDialog
                             open={isManageCategoryOpen}
                             onOpenChange={setIsManageCategoryOpen}
-                            onCategoryChanged={loadCategories}
+                            onCategoryChanged={() => {
+                                getCategories().then((data) => {
+                                    setCategories(data.filter(c => c.isactive === 1 || c.id === file.category_id));
+                                }).catch(console.error);
+                            }}
                         />
 
                         <div className="flex items-center space-x-2 mt-6 px-1">

@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { contactData } from "@/data/contactData";
+import { contactData } from "@/_archive/data/contactData";
 import { Card, CardContent } from "@/components/ui/card";
 
 const ContactSection = () => {

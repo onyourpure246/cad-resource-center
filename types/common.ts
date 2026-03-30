@@ -9,7 +9,7 @@ export interface ApiResponse<T> {
 }
 
 export type ActionFunction = (
-    prevState: any,
+    prevState: unknown,
     formData: FormData
 ) => Promise<{ success: boolean; message: string }>
 
@@ -37,6 +37,7 @@ export interface DataTableProps<T> {
     enableRowSelection?: boolean;
     selectedIds?: (string | number)[];
     onSelectionChange?: (selectedIds: (string | number)[]) => void;
+    tableMinWidth?: string;
 }
 
 // UI Components

@@ -5,7 +5,7 @@ import { SerializedEditorState } from "lexical"
 import { Editor } from "@/components/Editor/editor"
 
 
-export const initialValue = {
+const initialValue = {
   root: {
     children: [
       {

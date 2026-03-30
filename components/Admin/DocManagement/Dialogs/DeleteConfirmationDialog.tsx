@@ -47,7 +47,7 @@ export const DeleteConfirmationDialog = ({
                 <AlertDialogHeader>
                     <AlertDialogTitle>ยืนยันการลบ</AlertDialogTitle>
                     <AlertDialogDescription>
-                        คุณแน่ใจหรือไม่ว่าต้องการลบ "{name}" ? <br />
+                        คุณแน่ใจหรือไม่ว่าต้องการลบ &quot;{name}&quot; ? <br />
                         การกระทำนี้ไม่สามารถย้อนกลับได้
                     </AlertDialogDescription>
                 </AlertDialogHeader>
