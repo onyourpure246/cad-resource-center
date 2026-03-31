@@ -4,6 +4,7 @@ import { authApi } from "@/services/auth-api"
 import { getThaIDOwner } from "@/services/thaid-service"
 
 export const authConfig = {
+    basePath: '/casdu_cdm/api/auth',   // 👈 เพิ่มบรรทัดนี้เข้าไป
     pages: {
         signIn: '/login',
     },

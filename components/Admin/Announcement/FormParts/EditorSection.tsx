@@ -1,6 +1,6 @@
 import React from 'react';
 import { Label } from '@/components/ui/label';
-import { Editor } from '@/components/Editor/editor';
+import { Editor } from '@/components/editor/editor';
 import { EditorSectionProps } from '@/types/announcement';
 
 export const EditorSection = ({ isReadOnly, contentHTML, setContentHTML }: EditorSectionProps) => {

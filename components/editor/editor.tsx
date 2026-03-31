@@ -11,7 +11,7 @@ import * as React from "react"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { $getRoot } from "lexical"
 
-import { editorTheme } from "@/components/Editor/themes/editor-theme"
+import { editorTheme } from "@/components/editor/themes/editor-theme"
 import { TooltipProvider } from "@/components/ui/tooltip"
 
 import { nodes } from "./nodes"

@@ -6,7 +6,7 @@ import thaidLogo from "@/assets/img/thaid.png";
 export function ThaIDLoginButton() {
     const THAID_AUTH_URL = process.env.NEXT_PUBLIC_THAID_AUTH_URL || "https://imauthsbx.bora.dopa.go.th/api/v2/oauth2/auth/"; // Sandbox + Trailing Slash
     const CLIENT_ID = process.env.NEXT_PUBLIC_THAID_CLIENT_ID || "bDNWUDBJYVNJVE4xNDhPRUhsTDdZSXNRM0RLZzl6WE4"; // Sandbox Client ID
-    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:24990";
+    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://auditdocs.cad.go.th/casdu_cdm";
     const REDIRECT_URI = `${APP_URL}/auth/callback`;
 
     // Sandbox Supported Scopes: openid pid name given_name family_name
