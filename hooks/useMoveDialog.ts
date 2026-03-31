@@ -89,7 +89,7 @@ export const useMoveDialog = ({ item, currentParentId, onMoveSuccess }: UseMoveD
 
         setIsMoving(true);
         const formData = new FormData();
-        formData.append('id', item.id.toString());
+        formData.append('id', item.resourceId.toString());
 
         if (selectedFolderId !== null) {
             formData.append('parent', selectedFolderId.toString());

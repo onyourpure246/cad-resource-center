@@ -19,19 +19,28 @@ export const useTableData = (items: FolderItem[], itemsPerPage: number = 10) => 
             );
         }
 
-        if (sortConfig !== null) {
-            sortableItems.sort((a, b) => {
+        sortableItems.sort((a, b) => {
+            // 1. Always prioritize folders over files
+            if (a.type === 'folder' && b.type !== 'folder') return -1;
+            if (a.type !== 'folder' && b.type === 'folder') return 1;
+
+            // 2. Use sortConfig if provided
+            if (sortConfig !== null) {
                 const aValue = a[sortConfig.key] ?? '';
                 const bValue = b[sortConfig.key] ?? '';
-                if (aValue < bValue) {
-                    return sortConfig.direction === 'asc' ? -1 : 1;
-                }
-                if (aValue > bValue) {
-                    return sortConfig.direction === 'asc' ? 1 : -1;
-                }
-                return 0;
-            });
-        }
+                if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+                if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+                // If tie, fall through to default alphabetical sort
+            }
+
+            // 3. Default alphabetical sort by name
+            const aName = (a.name || '').toLowerCase();
+            const bName = (b.name || '').toLowerCase();
+            if (aName < bName) return -1;
+            if (aName > bName) return 1;
+            return 0;
+        });
+
         return sortableItems;
     }, [items, searchTerm, sortConfig]);
 

@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { Input } from "@/components/ui/input";
 import { DataManagementLayoutProps } from '@/types/components';
@@ -13,50 +14,65 @@ const DataManagementLayout = ({
     showBreadcrumbs = true,
     showSearch = true,
     onSearchChange,
-    footer
+    footer,
+    showBorder = true, // Default to true to maintain existing behavior
+
+    actionButtonsAlignment = 'right' // Default to right
 }: DataManagementLayoutProps) => {
     return (
-        <div className="py-2 px-4 sm:py-4 sm:px-6 lg:py-4 lg:px-4">
-            <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-                <div className="flex gap-2">
-                    {actionButtons}
+        <div className="py-0 px-4 sm:py-2 sm:px-6 lg:py-2 lg:px-4">
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4 min-h-[40px]">
+                {/* Left Side: Breadcrumbs & Search */}
+                <div className="flex flex-1 items-center gap-4 overflow-hidden w-full">
+                    {actionButtonsAlignment === 'left' && (
+                        <div className="flex gap-2 shrink-0">
+                            {actionButtons}
+                        </div>
+                    )}
+                    {showBreadcrumbs && (
+                        <div className="flex items-center text-sm text-muted-foreground overflow-x-auto whitespace-nowrap no-scrollbar">
+                            <Link href="/admin/documents" className="flex items-center hover:text-foreground transition-colors shrink-0">
+                                <Home className="h-4 w-4 mr-1" />
+                                <span className={breadcrumbs.length > 0 ? "hidden sm:inline" : ""}>เอกสารทั้งหมด</span>
+                            </Link>
+                            {breadcrumbs.map((crumb, index) => (
+                                <div key={crumb.id} className="flex items-center">
+                                    <ChevronRight className="h-4 w-4 mx-1 flex-shrink-0" />
+                                    {index === breadcrumbs.length - 1 ? (
+                                        <span className="font-medium text-foreground truncate max-w-[150px]">{crumb.name}</span>
+                                    ) : (
+                                        <Link href={`/admin/documents/${crumb.id}`} className="hover:text-foreground transition-colors truncate max-w-[120px]">
+                                            {crumb.name}
+                                        </Link>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {showSearch && (
+                        <div className="w-full sm:w-auto relative hidden sm:block">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                                type="search"
+                                placeholder={searchPlaceholder}
+                                className="w-full sm:w-[200px] lg:w-[300px] pl-10 h-9 bg-background border-muted-foreground/40 focus-visible:ring-primary/50 transition-all hover:border-primary/60"
+                                onChange={(e) => onSearchChange?.(e.target.value)}
+                            />
+                        </div>
+                    )}
                 </div>
-                {showSearch && (
-                    <div className="w-full sm:w-auto relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            type="search"
-                            placeholder={searchPlaceholder}
-                            className="w-full sm:w-[300px] pl-10 h-10 bg-background border-muted-foreground/40 focus-visible:ring-primary/50 transition-all hover:border-primary/60"
-                            onChange={(e) => onSearchChange?.(e.target.value)}
-                        />
+
+                {/* Right Side: Actions */}
+                {actionButtonsAlignment !== 'left' && (
+                    <div className="flex gap-2 ml-auto shrink-0">
+                        {actionButtons}
                     </div>
                 )}
             </div>
-            {/* Breadcrumbs */}
-            {showBreadcrumbs && (
-                <div className="flex items-center text-sm text-muted-foreground mb-4 overflow-x-auto whitespace-nowrap">
-                    <Link href="/admin/documents" className="flex items-center hover:text-foreground transition-colors">
-                        <Home className="h-4 w-4 mr-1" />
-                        เอกสารทั้งหมด
-                    </Link>
-                    {breadcrumbs.map((crumb, index) => (
-                        <div key={crumb.id} className="flex items-center">
-                            <ChevronRight className="h-4 w-4 mx-1" />
-                            {index === breadcrumbs.length - 1 ? (
-                                <span className="font-medium text-foreground">{crumb.name}</span>
-                            ) : (
-                                <Link href={`/admin/documents/${crumb.id}`} className="hover:text-foreground transition-colors">
-                                    {crumb.name}
-                                </Link>
-                            )}
-                        </div>
-                    ))}
-                </div>
-            )}
 
 
-            <div className="border rounded-lg">
+            <div className={showBorder ? "border rounded-lg" : ""}>
                 {children}
             </div>
             {footer && <div className="mt-1">{footer}</div>}

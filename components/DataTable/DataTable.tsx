@@ -21,7 +21,8 @@ export function DataTable<T extends { id: string | number }>({
     noResultsContent,
     enableRowSelection = false,
     selectedIds = [],
-    onSelectionChange
+    onSelectionChange,
+    tableMinWidth
 }: DataTableProps<T>) {
 
     const handleSelectAll = (checked: boolean) => {
@@ -45,54 +46,56 @@ export function DataTable<T extends { id: string | number }>({
     const isSomeSelected = selectedIds.length > 0 && selectedIds.length < data.length;
 
     return (
-        <Table className="table-fixed">
-            <TableHeader>
-                <TableRow>
-                    {enableRowSelection && (
-                        <TableHead className="w-[40px] px-4 py-2">
-                            <Checkbox
-                                checked={isAllSelected || (isSomeSelected ? "indeterminate" : false)}
-                                onCheckedChange={(checked) => handleSelectAll(!!checked)}
-                                aria-label="Select all"
-                            />
-                        </TableHead>
-                    )}
-                    {columns.map((column, index) => (
-                        <TableHead key={index} className={`py-2 ${column.headerClassName ?? ''}`}>{column.header}</TableHead>
-                    ))}
-                </TableRow>
-            </TableHeader>
-            {isLoading ? (
-                <TableSkeleton showCheckbox={enableRowSelection} />
-            ) : (
-                <TableBody>
-                    {data.length === 0 ? (
-                        <TableRow>
-                            <TableCell colSpan={columns.length + (enableRowSelection ? 1 : 0)} className="h-24 text-center">
-                                {noResultsContent || noResultsMessage}
-                            </TableCell>
-                        </TableRow>
-                    ) : (
-                        data.map((item) => (
-                            <TableRow key={item.id} data-state={selectedIds.includes(item.id) && "selected"}>
-                                {enableRowSelection && (
-                                    <TableCell className="w-[40px] px-4 py-2">
-                                        <Checkbox
-                                            checked={selectedIds.includes(item.id)}
-                                            onCheckedChange={(checked) => handleSelectOne(item.id, !!checked)}
-                                            aria-label={`Select row ${item.id}`}
-                                            onClick={(e) => e.stopPropagation()}
-                                        />
-                                    </TableCell>
-                                )}
-                                {columns.map((column, index) => (
-                                    <TableCell key={index} className={`px-3 py-2 ${column.className ?? ''}`}>{column.cell(item)}</TableCell>
-                                ))}
+        <div className="rounded-md border overflow-hidden">
+            <Table className={`table-fixed ${tableMinWidth || ''}`}>
+                <TableHeader>
+                    <TableRow>
+                        {enableRowSelection && (
+                            <TableHead className="w-[40px] px-4 py-2">
+                                <Checkbox
+                                    checked={isAllSelected || (isSomeSelected ? "indeterminate" : false)}
+                                    onCheckedChange={(checked) => handleSelectAll(!!checked)}
+                                    aria-label="Select all"
+                                />
+                            </TableHead>
+                        )}
+                        {columns.map((column, index) => (
+                            <TableHead key={index} className={`py-2 ${column.headerClassName ?? ''}`}>{column.header}</TableHead>
+                        ))}
+                    </TableRow>
+                </TableHeader>
+                {isLoading ? (
+                    <TableSkeleton showCheckbox={enableRowSelection} columns={columns as { headerClassName?: string; className?: string }[]} />
+                ) : (
+                    <TableBody>
+                        {data.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={columns.length + (enableRowSelection ? 1 : 0)} className="h-24 text-center">
+                                    {noResultsContent || noResultsMessage}
+                                </TableCell>
                             </TableRow>
-                        ))
-                    )}
-                </TableBody>
-            )}
-        </Table>
+                        ) : (
+                            data.map((item) => (
+                                <TableRow key={item.id} data-state={selectedIds.includes(item.id) && "selected"}>
+                                    {enableRowSelection && (
+                                        <TableCell className="w-[40px] px-4 py-2">
+                                            <Checkbox
+                                                checked={selectedIds.includes(item.id)}
+                                                onCheckedChange={(checked) => handleSelectOne(item.id, !!checked)}
+                                                aria-label={`Select row ${item.id}`}
+                                                onClick={(e) => e.stopPropagation()}
+                                            />
+                                        </TableCell>
+                                    )}
+                                    {columns.map((column, index) => (
+                                        <TableCell key={index} className={`px-2 py-2 ${column.className ?? ''}`}>{column.cell(item)}</TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        )}
+                    </TableBody>
+                )}
+            </Table>
+        </div>
     );
 }

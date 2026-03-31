@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { adminGetFolderById, getFolderPath } from '@/actions/folder-actions';
-import { Item as FolderItem, File as FileType } from '@/types/models';
+import { Item as FolderItem } from '@/types/models';
 
 export const useFolderContents = (folderId: number) => {
     const [items, setItems] = useState<FolderItem[]>([]);
@@ -26,32 +26,42 @@ export const useFolderContents = (folderId: number) => {
                 console.error("Failed to fetch breadcrumbs", err);
             }
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const transformedFolders: FolderItem[] = data.folders.map((folder: any) => ({
-                id: folder.id,
+                id: `folder-${folder.id}`,
+                resourceId: folder.id,
                 name: folder.name,
                 description: folder.description,
                 abbr: folder.abbr,
                 type: "folder",
-                created: folder.created_at?.split('T')[0] || '',
-                modified: folder.updated_at?.split('T')[0] || '',
-                modifiedBy: folder.updated_by?.toString() || "Admin",
+                created: folder.created_at || '',
+                modified: folder.updated_at || '',
+                modifiedBy: folder.updated_by_name || folder.updated_by?.toString() || "Admin",
+                createdBy: folder.created_by_name || folder.created_by?.toString() || "Admin",
                 mui_icon: folder.mui_icon,
                 mui_colour: folder.mui_colour,
             }));
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const transformedFiles: FolderItem[] = data.files.map((file: any) => ({
-                id: file.id,
+                id: `file-${file.id}`,
+                resourceId: file.id,
                 name: file.name,
                 description: file.description,
                 filename: file.filename,
                 parent: file.parent,
                 type: "file",
-                created: file.created_at?.split('T')[0] || '',
-                modified: file.updated_at?.split('T')[0] || '',
-                modifiedBy: file.updated_by?.toString() || "Admin",
+                created: file.created_at || '',
+                modified: file.updated_at || '',
+                modifiedBy: file.updated_by_name || file.updated_by?.toString() || "Admin",
+                createdBy: file.created_by_name || file.created_by?.toString() || "Admin",
                 mui_icon: file.mui_icon,
                 mui_colour: file.mui_colour,
-                downloadUrl: `${process.env.NEXT_PUBLIC_API_URL}/dl/file/download/${file.id}`,
+                downloadUrl: `/api/proxy-download/${file.id}`,
+                isactive: file.isactive,
+                downloads: file.downloads,
+                category_id: file.category_id,
+                category_name: file.category_name
             }));
 
             // Combine folders and files for display

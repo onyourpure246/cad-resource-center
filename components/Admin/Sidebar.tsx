@@ -4,36 +4,8 @@ import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import {
-    LayoutDashboard,
-    FileText,
-    Users,
-    Megaphone
-} from 'lucide-react'
 import { useSidebar } from './SidebarContext'
-
-const sidebarItems = [
-    {
-        title: 'จัดการรายการดาวน์โหลด',
-        href: '/admin/documents',
-        icon: FileText
-    },
-    {
-        title: 'จัดการข้อมูลผู้ใช้งาน',
-        href: '/admin/usermanagement',
-        icon: Users
-    },
-    {
-        title: 'ข้อมูลการใช้งานระบบ',
-        href: '/admin/dashboard',
-        icon: LayoutDashboard
-    },
-    {
-        title: 'จัดการข้อมูลประชาสัมพันธ์',
-        href: '/admin/announcement',
-        icon: Megaphone
-    }
-]
+import { sidebarItems } from '@/lib/constants'
 
 const Sidebar = () => {
     const pathname = usePathname()

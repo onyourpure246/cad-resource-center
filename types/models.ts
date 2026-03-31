@@ -1,6 +1,15 @@
 
 // Core Database/Domain Entities
 
+export interface Category {
+    id: number;
+    name: string;
+    isactive: number;
+    created_at?: string;
+    updated_at?: string;
+}
+
+
 export interface Folder {
     id: number;
     name: string;
@@ -8,10 +17,12 @@ export interface Folder {
     abbr: string;
     parent: number | null;
     created_at?: string;
+    created_by?: number;
     updated_at?: string;
     updated_by?: number;
     mui_icon?: string;
     mui_colour?: string;
+    isactive?: number;
 }
 
 export interface CurrentFolder {
@@ -40,10 +51,14 @@ export interface File {
     updated_by?: number | null;
     mui_icon?: string;
     mui_colour?: string;
+    downloads?: number;
+    category_id?: number | null;
+    category_name?: string | null;
 }
 
 export interface Item {
-    id: number;
+    id: string;
+    resourceId: number;
     name: string | null;
     description?: string | null;
     abbr?: string | null;
@@ -53,9 +68,14 @@ export interface Item {
     created: string;
     modified: string;
     modifiedBy: string;
+    createdBy?: string;
     mui_icon?: string;
     mui_colour?: string;
     downloadUrl?: string;
+    isactive?: number;
+    downloads?: number;
+    category_id?: number | null;
+    category_name?: string | null;
 }
 
 export interface DownloadItem {
@@ -76,6 +96,9 @@ export interface DownloadItem {
     downloadUrl?: string;
     mui_icon?: string;
     mui_colour?: string;
+    downloads?: number;
+    category_id?: number | null;
+    category_name?: string | null;
 }
 
 // From newcdm_types.ts (Database Types for Download System)
@@ -104,4 +127,6 @@ export interface DLFile {
     created_at: string;
     updated_by: number | null;
     updated_at: string;
+    downloads?: number;
+    category_id?: number | null;
 }

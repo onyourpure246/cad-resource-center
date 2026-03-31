@@ -5,11 +5,8 @@ import { deleteItemById } from './common-actions'
 import { updateFolder } from './folder-actions'
 import { updateFile } from './file-actions'
 
-export type BulkItem = {
-    id: number;
-    type: 'folder' | 'file';
-    name: string;
-}
+import { BulkItem } from '@/types/documents';
+// Type moved to @/types/documents
 
 export const bulkDeleteItems = async (items: BulkItem[]) => {
     let successCount = 0;

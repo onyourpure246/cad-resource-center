@@ -2,11 +2,11 @@
 'use client';
 
 import React from 'react';
-import { SvgIconProps } from '@mui/material';
+// Removed unused SvgIconProps import
 import dynamic from 'next/dynamic';
 import { BrokenImage } from '@mui/icons-material';
 
-// Dynamic imports for icons to avoid massive initial bundle size
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ICON_MAP: Record<string, React.ComponentType<any>> = {
     FolderZip: dynamic(() => import('@mui/icons-material/FolderZip')),
     Folder: dynamic(() => import('@mui/icons-material/Folder')),
@@ -15,13 +15,14 @@ const ICON_MAP: Record<string, React.ComponentType<any>> = {
     Image: dynamic(() => import('@mui/icons-material/Image')),
     Description: dynamic(() => import('@mui/icons-material/Description')),
     Article: dynamic(() => import('@mui/icons-material/Article')),
+    Archive: dynamic(() => import('@mui/icons-material/Archive')),
+    Extension: dynamic(() => import('@mui/icons-material/Extension')),
     // TableChart: dynamic(() => import('@mui/icons-material/TableChart')),
     // Slideshow: dynamic(() => import('@mui/icons-material/Slideshow')),
     // VideoLibrary: dynamic(() => import('@mui/icons-material/VideoLibrary')),
     // AudioFile: dynamic(() => import('@mui/icons-material/AudioFile')),
     // Code: dynamic(() => import('@mui/icons-material/Code')),
     // TextSnippet: dynamic(() => import('@mui/icons-material/TextSnippet')),
-    // Archive: dynamic(() => import('@mui/icons-material/Archive')),
     // HelpOutline: dynamic(() => import('@mui/icons-material/HelpOutline')),
     // Work: dynamic(() => import('@mui/icons-material/Work')),
     // Person: dynamic(() => import('@mui/icons-material/Person')),

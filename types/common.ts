@@ -9,7 +9,7 @@ export interface ApiResponse<T> {
 }
 
 export type ActionFunction = (
-    prevState: any,
+    prevState: unknown,
     formData: FormData
 ) => Promise<{ success: boolean; message: string }>
 
@@ -37,6 +37,7 @@ export interface DataTableProps<T> {
     enableRowSelection?: boolean;
     selectedIds?: (string | number)[];
     onSelectionChange?: (selectedIds: (string | number)[]) => void;
+    tableMinWidth?: string;
 }
 
 // UI Components
@@ -63,10 +64,12 @@ export interface ReusableDrawerProps {
 export type btnSize = 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg'
 
 export type SubmitButtonProps = {
-    className: string,
+    className?: string,
     size?: btnSize,
     text?: string,
-    disabled?: boolean
+    disabled?: boolean,
+    variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link",
+    onClick?: () => void
 }
 
 export type CategoryItem = {
@@ -116,6 +119,7 @@ export type FormInputProps = {
     title?: string;
     errorMessage?: string;
     disabled?: boolean;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface HeaderProps {

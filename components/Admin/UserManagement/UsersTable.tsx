@@ -3,17 +3,18 @@
 import React from 'react';
 import { UsersTableProps } from '@/types/user';
 import { DataTable } from '@/components/DataTable/DataTable';
-import { getUserColumns } from './Columns';
+import { getUserColumns } from './userColumns';
 import { Box } from 'lucide-react';
 
 const UsersTable = ({
     items,
     isLoading,
     selectedIds,
-    onSelectionChange
+    onSelectionChange,
+    onItemClick
 }: UsersTableProps) => {
 
-    const columns = getUserColumns();
+    const columns = getUserColumns(onItemClick);
 
     return (
         <div className="space-y-4">

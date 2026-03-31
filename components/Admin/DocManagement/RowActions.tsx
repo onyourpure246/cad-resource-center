@@ -14,16 +14,16 @@ import { RowActionsProps } from '@/types/components';
 
 // Dynamically import dialogs to reduce initial bundle size
 const DeleteConfirmationDialog = dynamic(() =>
-    import('@/components/Admin/Dialog/DeleteConfirmationDialog').then(mod => mod.DeleteConfirmationDialog)
+    import('@/components/Admin/DocManagement/Dialogs/DeleteConfirmationDialog').then(mod => mod.DeleteConfirmationDialog)
 );
 const EditFolderDialog = dynamic(() =>
-    import('@/components/Admin/Dialog/EditFolderDialog').then(mod => mod.EditFolderDialog)
+    import('@/components/Admin/DocManagement/Dialogs/EditFolderDialog').then(mod => mod.EditFolderDialog)
 );
 const EditFileDrawer = dynamic(() =>
     import('@/components/Admin/DocManagement/EditFileDrawer').then(mod => mod.EditFileDrawer)
 );
 const MoveDialog = dynamic(() =>
-    import('@/components/Admin/Dialog/MoveDialog').then(mod => mod.MoveDialog)
+    import('@/components/Admin/DocManagement/Dialogs/MoveDialog').then(mod => mod.MoveDialog)
 );
 
 export const RowActions = ({ item, parentId, onRefresh }: RowActionsProps) => {
@@ -47,7 +47,7 @@ export const RowActions = ({ item, parentId, onRefresh }: RowActionsProps) => {
                              It purely does nothing? Or maybe wrapped individually?
                              I'll reproduce it exactly.
                          */}
-                        <a href={item.downloadUrl || '#'} target="_blank" rel="noopener noreferrer" className="flex items-center w-full">
+                        <a href={item.downloadUrl || '#'} download={item.filename} className="flex items-center w-full">
                             <Download className="mr-1 h-2 w-2" />ดาวน์โหลด
                         </a>
                     </DropdownMenuItem>
@@ -90,7 +90,7 @@ export const RowActions = ({ item, parentId, onRefresh }: RowActionsProps) => {
                 />
 
                 <DeleteConfirmationDialog
-                    id={item.id}
+                    id={item.resourceId}
                     name={item.name}
                     type={item.type}
                     onSuccess={onRefresh}

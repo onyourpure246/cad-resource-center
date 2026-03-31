@@ -1,0 +1,7 @@
+﻿app/_components/AnnouncementCard.tsx(4,59): error TS2307: Cannot find module '../ui/card' or its corresponding type declarations.
+app/_components/AnnouncementCard.tsx(11,8): error TS2307: Cannot find module '../ui/dialog' or its corresponding type declarations.
+app/_components/AnnouncementCard.tsx(12,23): error TS2307: Cannot find module '../ui/badge' or its corresponding type declarations.
+app/_components/AnnouncementCard.tsx(13,24): error TS2307: Cannot find module '../ui/button' or its corresponding type declarations.
+app/downloads/_components/CategoryCard.tsx(11,29): error TS2307: Cannot find module '../ui/MuiIconRenderer' or its corresponding type declarations.
+app/downloads/_components/DownloadCard.tsx(4,24): error TS2307: Cannot find module '../ui/button' or its corresponding type declarations.
+app/downloads/_components/SubFolderBadges.tsx(7,24): error TS2307: Cannot find module '../ui/button' or its corresponding type declarations.

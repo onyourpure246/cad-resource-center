@@ -4,7 +4,7 @@ import React from 'react';
 import { Folder } from "lucide-react";
 import { ItemsTableProps } from '@/types/components';
 import { DataTable } from '@/components/DataTable/DataTable';
-import { useItemsTableColumns } from '@/hooks/useItemsTableColumns';
+import { getItemColumns } from './itemColumns';
 
 const ItemsTable = ({
     items,
@@ -18,7 +18,7 @@ const ItemsTable = ({
     onSelectionChange
 }: ItemsTableProps) => {
 
-    const columns = useItemsTableColumns({
+    const columns = getItemColumns({
         parentId,
         onItemClick,
         onRefresh,
@@ -32,6 +32,7 @@ const ItemsTable = ({
                 columns={columns}
                 data={items}
                 isLoading={isLoading}
+                tableMinWidth="min-w-[700px]"
                 noResultsMessage="ไม่พบไฟล์หรือโฟลเดอร์"
                 enableRowSelection={true}
                 selectedIds={selectedIds}
@@ -43,7 +44,7 @@ const ItemsTable = ({
                         </div>
                         <h3 className="text-lg font-semibold">ไม่พบไฟล์หรือโฟลเดอร์</h3>
                         <p className="text-muted-foreground text-sm mt-2 max-w-sm">
-                            โฟลเดอร์นี้ยังไม่มีข้อมูล คุณสามารถสร้างโฟลเดอร์ใหม่หรืออัปโหลดไฟล์ได้ที่ปุ่มด้านบน
+                            โฟลเดอร์นี้ยังไม่มีข้อมูล คุณสามารถสร้างโฟลเดอร์ใหม่หรืออัปโหลดไฟล์
                         </p>
                     </div>
                 }

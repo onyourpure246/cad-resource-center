@@ -12,7 +12,7 @@ const FormContainer = ({ action, state, children }: FormContainerProps) => {
         toast.error(state.message);
       }
     }
-  }, [state?.message, state?.success])
+  }, [state])
   return (
     <form action={action}>
       {children}

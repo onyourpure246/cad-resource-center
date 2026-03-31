@@ -1,0 +1,50 @@
+﻿actions/announcement-actions.ts(7,26): error TS2307: Cannot find module '@/lib/fetch-api' or its corresponding type declarations.
+actions/common-actions.ts(3,26): error TS2307: Cannot find module '@/lib/fetch-api' or its corresponding type declarations.
+actions/file-actions.ts(5,52): error TS2307: Cannot find module './document-service' or its corresponding type declarations.
+actions/file-actions.ts(6,121): error TS2307: Cannot find module './document-service' or its corresponding type declarations.
+actions/file-actions.ts(167,13): error TS7006: Parameter 'file' implicitly has an 'any' type.
+actions/folder-actions.ts(3,26): error TS2307: Cannot find module '@/lib/fetch-api' or its corresponding type declarations.
+actions/folder-actions.ts(7,50): error TS2307: Cannot find module './document-service' or its corresponding type declarations.
+actions/folder-actions.ts(10,52): error TS2307: Cannot find module './document-service' or its corresponding type declarations.
+actions/folder-actions.ts(50,68): error TS7006: Parameter 'folder' implicitly has an 'any' type.
+actions/folder-actions.ts(59,68): error TS7006: Parameter 'folder' implicitly has an 'any' type.
+actions/folder-actions.ts(132,64): error TS7006: Parameter 'folder' implicitly has an 'any' type.
+actions/folder-actions.ts(183,46): error TS7006: Parameter 'f' implicitly has an 'any' type.
+actions/folder-actions.ts(190,37): error TS7006: Parameter 'f' implicitly has an 'any' type.
+actions/folder-actions.ts(209,58): error TS7006: Parameter 'f' implicitly has an 'any' type.
+actions/import-folder-actions.ts(5,63): error TS2307: Cannot find module './document-service' or its corresponding type declarations.
+actions/search-actions.ts(4,34): error TS2307: Cannot find module './document-service' or its corresponding type declarations.
+actions/search-actions.ts(7,26): error TS2307: Cannot find module '@/lib/fetch-api' or its corresponding type declarations.
+actions/search-actions.ts(83,21): error TS7006: Parameter 'folder' implicitly has an 'any' type.
+actions/search-actions.ts(84,18): error TS7006: Parameter 'folder' implicitly has an 'any' type.
+actions/search-actions.ts(111,48): error TS7006: Parameter 'acc' implicitly has an 'any' type.
+actions/search-actions.ts(111,53): error TS7006: Parameter 'cat' implicitly has an 'any' type.
+actions/search-actions.ts(118,21): error TS7006: Parameter 'folder' implicitly has an 'any' type.
+actions/search-actions.ts(119,18): error TS7006: Parameter 'folder' implicitly has an 'any' type.
+actions/search-actions.ts(171,25): error TS7006: Parameter 'res' implicitly has an 'any' type.
+actions/search-actions.ts(174,20): error TS7006: Parameter 'err' implicitly has an 'any' type.
+actions/user-actions.ts(5,26): error TS2307: Cannot find module '@/lib/fetch-api' or its corresponding type declarations.
+app/admin/dashboard/page.tsx(2,28): error TS2307: Cannot find module '@/lib/backend-api' or its corresponding type declarations.
+app/downloads/_components/CategorySelection.tsx(5,34): error TS2307: Cannot find module '@/actions/document-service' or its corresponding type declarations.
+app/downloads/_components/CategorySelection.tsx(10,46): error TS7006: Parameter 'c' implicitly has an 'any' type.
+app/downloads/_components/CategorySelection.tsx(26,38): error TS7006: Parameter 'category' implicitly has an 'any' type.
+app/downloads/category/[categoryId]/page.tsx(3,34): error TS2307: Cannot find module '@/actions/document-service' or its corresponding type declarations.
+app/downloads/category/[categoryId]/page.tsx(23,45): error TS7006: Parameter 'c' implicitly has an 'any' type.
+auth.config.ts(3,25): error TS2307: Cannot find module '@/lib/auth-api' or its corresponding type declarations.
+auth.config.ts(4,31): error TS2307: Cannot find module '@/lib/thaid-service' or its corresponding type declarations.
+components/Admin/DocManagement/Dialogs/ManageCategoryDialog.tsx(29,39): error TS7006: Parameter 'c' implicitly has an 'any' type.
+components/Admin/DocManagement/Dialogs/UploadFileForm.tsx(39,39): error TS7006: Parameter 'c' implicitly has an 'any' type.
+components/Admin/DocManagement/EditFileForm.tsx(41,39): error TS7006: Parameter 'c' implicitly has an 'any' type.
+hooks/useFolderTree.ts(15,64): error TS7006: Parameter 'f' implicitly has an 'any' type.
+hooks/useFolderTree.ts(116,69): error TS7006: Parameter 'f' implicitly has an 'any' type.
+hooks/useMoveDialog.ts(26,68): error TS7006: Parameter 'f' implicitly has an 'any' type.
+hooks/useMoveDialog.ts(51,69): error TS7006: Parameter 'f' implicitly has an 'any' type.
+hooks/useRootDocuments.ts(8,57): error TS7006: Parameter 'folder' implicitly has an 'any' type.
+hooks/useRootDocuments.ts(22,53): error TS7006: Parameter 'file' implicitly has an 'any' type.
+lib/download-page-utils.ts(2,34): error TS2307: Cannot find module '@/actions/document-service' or its corresponding type declarations.
+lib/download-page-utils.ts(18,44): error TS7006: Parameter 'acc' implicitly has an 'any' type.
+lib/download-page-utils.ts(18,49): error TS7006: Parameter 'cat' implicitly has an 'any' type.
+lib/download-page-utils.ts(26,62): error TS7006: Parameter 'f' implicitly has an 'any' type.
+lib/download-page-utils.ts(29,17): error TS7006: Parameter 'file' implicitly has an 'any' type.
+lib/download-page-utils.ts(30,14): error TS7006: Parameter 'file' implicitly has an 'any' type.
+services/document-service.ts(3,26): error TS2307: Cannot find module '@/lib/fetch-api' or its corresponding type declarations.

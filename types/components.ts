@@ -1,5 +1,6 @@
 import { SvgIconProps } from '@mui/material';
 import { Item, DownloadItem, Folder } from './models';
+import { BulkItem } from './documents';
 import { Announcement } from './announcement'; // Assuming types/announcement exists since AnnouncementCard used it.
 // If it doesn't exist, I might need to find where Announcement is defined. 
 // AnnouncementCard.tsx imported it from '@/types/announcement'.
@@ -64,6 +65,8 @@ export interface DataManagementLayoutProps {
     showSearch?: boolean;
     onSearchChange?: (value: string) => void;
     footer?: React.ReactNode;
+    showBorder?: boolean;
+    actionButtonsAlignment?: 'left' | 'right';
 }
 
 export interface ItemsTableProps extends BaseParentProps {
@@ -111,6 +114,7 @@ export interface DownloadListProps {
     items: DownloadItem[];
     filterTags?: string[];
     filterMap?: Record<string, string>;
+    highlightQuery?: string;
 }
 
 export interface SearchPageProps {
@@ -127,9 +131,7 @@ export interface SubFolderBadgesProps {
     backLink?: string;
 }
 
-export interface ListItem {
-
-}
+export type ListItem = Record<string, unknown>;
 
 export interface MuiIconRendererProps extends SvgIconProps {
     iconName?: string;
@@ -145,6 +147,7 @@ export interface ErrorStateProps {
 
 export interface DownloadCardProps {
     item: DownloadItem;
+    highlightQuery?: string;
 }
 
 export interface UserActionButtonsProps {
@@ -156,13 +159,13 @@ export interface UserActionButtonsProps {
 }
 
 export interface BulkDeleteDialogProps {
-    items: any[];
+    items: BulkItem[];
     trigger: React.ReactNode;
     onSuccess: () => void;
 }
 
 export interface BulkMoveDialogProps {
-    items: any[];
+    items: BulkItem[];
     currentParentId: number | null;
     trigger: React.ReactNode;
     onSuccess: () => void;

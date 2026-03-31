@@ -1,0 +1,111 @@
+'use client';
+
+import React from 'react';
+import { createColumnHelper } from '@/components/DataTable/columnHelper';
+import { Item } from '@/types/models';
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown, File, FileText, Folder } from "lucide-react";
+import MuiIconRenderer from '@/components/ui/MuiIconRenderer';
+import { RowActions } from '@/components/Admin/DocManagement/RowActions';
+import { UseItemsTableColumnsProps } from '@/types/components';
+import { Badge } from "@/components/ui/badge";
+import { getFileIconAndColor } from '@/lib/file-icon-utils';
+
+const helper = createColumnHelper<Item>();
+
+export const getItemColumns = ({
+    parentId,
+    onItemClick,
+    onRefresh,
+    sortConfig,
+    onSort
+}: UseItemsTableColumnsProps) => {
+
+    const getSortIcon = (key: keyof Item) => {
+        if (!sortConfig || sortConfig.key !== key) {
+            return <ArrowUpDown className="ml-2 h-4 w-4" />;
+        }
+        return sortConfig.direction === 'asc' ? (
+            <ArrowUpDown className="ml-2 h-4 w-4 rotate-180" />
+        ) : (
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+        );
+    };
+
+    return [
+        helper.custom({
+            accessorKey: 'icon',
+            header: <div className="flex justify-center"><File className='h-5 w-5' strokeWidth={1} /></div>,
+            headerClassName: "w-[50px]",
+            className: "w-[50px]",
+            cell: (item) => {
+                let iconName = item.mui_icon;
+                let iconColor = item.mui_colour;
+
+                if (!iconName && item.type === 'file') {
+                    const fileName = (item.filename || item.name || '').toLowerCase();
+                    const iconConfig = getFileIconAndColor(fileName);
+                    iconName = iconConfig.mui_icon as string;
+                    iconColor = iconConfig.mui_colour as string;
+                }
+
+                if (iconName) {
+                    return <div className="flex justify-center"><MuiIconRenderer iconName={iconName} iconColor={iconColor} className="h-4 w-4" /></div>;
+                }
+
+                return item.type === "folder"
+                    ? <div className="flex justify-center"><Folder className="h-4 w-4 text-yellow-500 fill-yellow-500/20" /></div>
+                    : <div className="flex justify-center"><FileText className="h-4 w-4 text-primary/80" /></div>;
+            },
+        }),
+        helper.custom({
+            accessorKey: 'name',
+            header: (
+                <Button variant="ghost" onClick={() => onSort?.('name')} className="hover:bg-transparent font-bold uppercase tracking-wider text-muted-foreground justify-start w-1/2 pl-0">
+                    ชื่อ
+                    {getSortIcon('name')}
+                </Button>
+            ),
+            headerClassName: "",
+            className: "truncate max-w-[1px]", // Force fluid width and truncation
+            cell: (item) => (
+                <div
+                    className="flex items-center gap-2 w-full overflow-hidden"
+                >
+                    <div
+                        className={`hover:underline pl-3 font-medium truncate block ${item.type === 'folder' ? 'cursor-pointer hover:text-primary transition-colors' : 'text-foreground'}`}
+                        onClick={() => onItemClick(item)}
+                        title={item.type === 'file' && item.filename ? item.filename : (item.name || "")}
+                    >
+                        {item.type === 'file' && item.filename ? item.filename : item.name}
+                    </div>
+                    {item.isactive === 2 && (
+                        <Badge variant="secondary" className="text-xs h-5 px-1.5 font-normal bg-yellow-100 text-yellow-700 hover:bg-yellow-200 border-yellow-200">
+                            ส่วนตัว
+                        </Badge>
+                    )}
+                </div>
+            ),
+        }),
+        helper.date('modified', 'แก้ไขล่าสุด', {
+            sortable: true,
+            onSort: onSort ? () => onSort('modified') : undefined,
+            headerClassName: "w-[180px] hidden md:table-cell px-2",
+            className: "w-[180px] text-muted-foreground text-sm hidden md:table-cell",
+        }),
+        helper.text('modifiedBy', 'แก้ไขโดย', {
+            headerClassName: "w-[180px] hidden md:table-cell",
+            className: "w-[180px] text-muted-foreground text-sm hidden md:table-cell",
+        }),
+
+        helper.custom({
+            accessorKey: 'actions',
+            header: '',
+            headerClassName: "text-right w-[50px]",
+            className: "text-right w-[50px]",
+            cell: (item) => (
+                <RowActions item={item} parentId={parentId} onRefresh={onRefresh} />
+            ),
+        })
+    ];
+};

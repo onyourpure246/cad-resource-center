@@ -19,6 +19,10 @@ export default auth((req) => {
 
   if (isLoginRoute) {
     if (isLoggedIn) {
+      // If the session expired on the backend, let them hit the login page to clear NextAuth cookies
+      if (nextUrl.searchParams.get('expired') === 'true') {
+        return;
+      }
       return NextResponse.redirect(new URL('/admin/documents', nextUrl));
     }
     return;

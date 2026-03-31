@@ -22,6 +22,7 @@ export const deleteItemById = async (id: number, type: 'folder' | 'file') => {
     });
 
     if (!res.ok) {
+        if (res.status === 401 || res.status === 403) return { success: false, message: "SESSION_EXPIRED" };
         const errorResponse = await res.json().catch(() => ({ message: 'An unexpected error occurred' }));
         console.error(`Failed to delete ${type}:`, errorResponse);
         return { success: false, message: errorResponse.message || errorMessage };

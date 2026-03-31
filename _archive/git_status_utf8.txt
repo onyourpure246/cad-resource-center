@@ -1,0 +1,86 @@
+﻿On branch devway1
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   actions/announcement-actions.ts
+	modified:   actions/common-actions.ts
+	deleted:    actions/document-service.ts
+	modified:   actions/file-actions.ts
+	modified:   actions/folder-actions.ts
+	modified:   actions/import-folder-actions.ts
+	modified:   actions/search-actions.ts
+	modified:   actions/user-actions.ts
+	modified:   app/admin/dashboard/page.tsx
+	modified:   app/downloads/[folderId]/page.tsx
+	modified:   app/downloads/page.tsx
+	modified:   app/downloads/search/page.tsx
+	modified:   app/login/page.tsx
+	modified:   app/page.tsx
+	modified:   app/provider.tsx
+	modified:   auth.config.ts
+	modified:   components/Admin/Announcement/AnnouncementForm.tsx
+	modified:   components/Admin/Announcement/AnnouncementTable.tsx
+	modified:   components/Admin/Announcement/FormParts/InputSection.tsx
+	modified:   components/Admin/Announcement/FormParts/PreviewSection.tsx
+	modified:   components/Admin/Announcement/announcementColumns.tsx
+	modified:   components/Admin/DocManagement/Dialogs/UploadFileForm.tsx
+	modified:   components/Admin/DocManagement/EditFileForm.tsx
+	modified:   components/Admin/DocManagement/itemColumns.tsx
+	modified:   components/Admin/Sidebar.tsx
+	modified:   components/Admin/UserManagement/userColumns.tsx
+	deleted:    components/DownloadsPage/CategoryCard.tsx
+	deleted:    components/DownloadsPage/CategorySelection.tsx
+	deleted:    components/DownloadsPage/DownloadCard.tsx
+	deleted:    components/DownloadsPage/DownloadLists.tsx
+	deleted:    components/DownloadsPage/HeroBackground.tsx
+	deleted:    components/DownloadsPage/HeroSection.tsx
+	deleted:    components/DownloadsPage/SearchResults.tsx
+	deleted:    components/DownloadsPage/SubFolderBadges.tsx
+	deleted:    components/DownloadsPage/TagCloud.tsx
+	modified:   components/Form/ImageUpload.tsx
+	deleted:    components/HomePage/AnnounceSection.tsx
+	deleted:    components/HomePage/AnnouncementCard.tsx
+	deleted:    components/HomePage/AnnouncementList.tsx
+	deleted:    components/HomePage/ContactSection.tsx
+	modified:   components/Layout/Navbar/MobileNav.tsx
+	deleted:    components/LoginPage/LoginBackground.tsx
+	deleted:    components/LoginPage/LoginFooter.tsx
+	deleted:    components/LoginPage/LoginHeader.tsx
+	deleted:    components/LoginPage/ThaIDLoginButton.tsx
+	modified:   components/ui/MuiIconRenderer.tsx
+	deleted:    lib/backend-api.ts
+	deleted:    lib/thaid-service.ts
+	modified:   next.config.ts
+	modified:   types/announcement.ts
+	modified:   types/api.ts
+	modified:   types/models.ts
+	deleted:    utils/columnHelper.tsx
+	deleted:    utils/constants.ts
+	deleted:    utils/download-page-utils.ts
+	deleted:    utils/image-utils.ts
+	deleted:    utils/newcdm_types.ts
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	app/_components/
+	app/downloads/_components/
+	app/downloads/category/
+	app/login/_components/
+	components/Admin/DocManagement/Dialogs/ManageCategoryDialog.tsx
+	components/Auth/SessionWatcher.tsx
+	components/DataTable/columnHelper.tsx
+	docs/authentication-flow.md
+	docs/portfolio-report.md
+	git_status.txt
+	git_status_utf8.txt
+	lib/constants.ts
+	lib/download-page-utils.ts
+	lib/file-icon-utils.ts
+	lib/image-utils.ts
+	services/
+	tsc_errors.log
+	tsc_errors_utf8.log
+	tsc_services_errors.log
+	types/newcdm_types.ts
+
+no changes added to commit (use "git add" and/or "git commit -a")

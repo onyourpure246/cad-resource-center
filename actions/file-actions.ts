@@ -1,17 +1,16 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod';
-import { ApiResponse, State } from '@/types/common';
-import { adminGetFolderById, adminGetRootFolder } from './folder-actions';
+import { State } from '@/types/common';
+import { apiGetFolderById, apiGetRootFolder } from '@/services/document-service';
+import { apiUploadFile, apiUpdateFile, apiGetCategories, apiCreateCategory, apiDeleteCategory, apiUpdateCategory } from '@/services/document-service';
+import { auth } from '@/auth';
 
 // create ข้อมูลไฟล์ดาวน์โหลด
-// POST https://casdu-backops.witspleasure.com/api/fy2569/dl/file
-export const uploadFile = async (prevState: any, formData: FormData): Promise<State> => {
-    const API_URL = process.env.API_URL;
-    const API_TOKEN = process.env.API_TOKEN;
-    if (!API_URL || !API_TOKEN) {
-        throw new Error('Missing API_URL or API_TOKEN in .env.local');
-    }
+// POST /api/fy2569/dl/file
+export const uploadFile = async (prevState: State | null, formData: FormData): Promise<State> => {
+    const session = await auth();
+    const token = session?.accessToken || process.env.API_TOKEN;
 
     // Validate schema by zod
     const schema = z.object({
@@ -19,6 +18,8 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
         description: z.string().optional(),
         parent: z.string().optional(),
         file: z.any().refine(file => file instanceof File && file.size > 0, 'กรุณาเลือกไฟล์'),
+        isactive: z.string().optional(), // รับค่า isactive
+        category_id: z.string().optional(),
     });
 
     // Convert from FormData to Object
@@ -31,7 +32,7 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
         return { success: false, message: 'ข้อมูลไม่ถูกต้อง', errors };
     }
 
-    const { name, description, parent, file } = parsed.data;
+    const { name, description, parent, file, isactive, category_id } = parsed.data;
     const parentId = parent ? parseInt(parent, 10) : null;
 
     // Auto-detect icon and colour based on extension
@@ -47,7 +48,7 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
         mui_colour = '#FFCE3C';
     }
 
-    // // We need to use FormData to send file to the backend
+    // Prepare FormData for API
     const formDataForFileUpload = new FormData();
     formDataForFileUpload.append('name', name);
     if (description) {
@@ -56,6 +57,14 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
     if (parentId !== null) {
         formDataForFileUpload.append('parent', String(parentId));
     }
+    if (isactive) {
+        formDataForFileUpload.append('isactive', isactive);
+    }
+    if (category_id) {
+        formDataForFileUpload.append('category_id', category_id);
+    }
+    // API expects these in initial POST if possible, although logic below handles PATCH too.
+    // We stick to sending them in POST as well for safety/consistency with old code.
     if (mui_icon) {
         formDataForFileUpload.append('mui_icon', mui_icon);
     }
@@ -65,57 +74,57 @@ export const uploadFile = async (prevState: any, formData: FormData): Promise<St
 
     formDataForFileUpload.append('file', file, file.name);
 
-    // Request to Server
-    const res = await fetch(`${API_URL}/dl/file`, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${API_TOKEN}`
-        },
-        body: formDataForFileUpload,
-    });
-
-    if (!res.ok) {
-        const errorResponse = await res.json().catch(() => ({ message: res.statusText }));
-        console.error('Failed to upload file:', errorResponse);
-        return { success: false, message: 'อัปโหลดไฟล์ไม่สำเร็จ' };
+    // Add Audit fields
+    if (session?.user?.id) {
+        formDataForFileUpload.append('created_by', session.user.id);
+        formDataForFileUpload.append('updated_by', session.user.id);
+        console.log('UploadFile: Appending Audit IDs:', session.user.id);
+    } else {
+        console.warn('UploadFile: No user ID found in session');
     }
 
-    // Parse response to get the new file ID
-    const json = await res.json();
-    if (json.success && json.data && json.data.id && (mui_icon || mui_colour)) {
-        try {
-            const newFileId = json.data.id;
-            const updateBody: any = {};
-            if (mui_icon) updateBody.mui_icon = mui_icon;
-            if (mui_colour) updateBody.mui_colour = mui_colour;
+    try {
+        const newFileId = await apiUploadFile(formDataForFileUpload, token);
 
-            // Step 2: Update with icon data
-            await fetch(`${API_URL}/dl/file/${newFileId}`, {
-                method: 'PATCH',
-                headers: {
-                    'Authorization': `Bearer ${API_TOKEN}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updateBody),
-            });
-        } catch (error) {
-            console.error('Failed to update file icon after upload:', error);
-            // Continue execution as the file was uploaded successfully
+        if (newFileId) {
+            // Force update audit fields and icon/color
+            // This ensures created_by is set even if POST FormData ignored it
+            try {
+                const updatePayload: Record<string, string | number> = {};
+                if (mui_icon) updatePayload.mui_icon = mui_icon;
+                if (mui_colour) updatePayload.mui_colour = mui_colour;
+
+                if (session?.user?.id) {
+                    updatePayload.created_by = session.user.id;
+                    updatePayload.updated_by = session.user.id;
+                }
+
+                console.log('UploadFile: Patching file with metadata:', JSON.stringify(updatePayload));
+                await apiUpdateFile(newFileId, updatePayload, token);
+            } catch (updateError) {
+                console.error('Failed to update file metadata after upload:', updateError);
+            }
         }
+
+        revalidatePath('/admin/documents', 'layout');
+        return { success: true, message: 'อัปโหลดไฟล์สำเร็จ' };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        console.error('Upload error:', error);
+        return { success: false, message: error.message || 'เกิดข้อผิดพลาดในการอัปโหลด' };
     }
-
-    revalidatePath('/admin/documents', 'layout');
-    return { success: true, message: 'อัปโหลดไฟล์สำเร็จ!' };
 }
-
 
 // update ข้อมูลไฟล์
 // PATCH /api/dl/file/:id
-export const updateFile = async (prevState: any, formData: FormData): Promise<State> => {
+export const updateFile = async (prevState: State | null, formData: FormData): Promise<State> => {
+    const session = await auth();
     const API_URL = process.env.API_URL;
-    const API_TOKEN = process.env.API_TOKEN;
-    if (!API_URL || !API_TOKEN) {
-        throw new Error('Missing API_URL or API_TOKEN in .env.local');
+    const token = session?.accessToken || process.env.API_TOKEN;
+
+    if (!API_URL) {
+        throw new Error('Missing API_URL in .env.local');
     }
 
     const schema = z.object({
@@ -124,6 +133,8 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
         description: z.string().optional(),
         filename: z.string().optional(),
         parent: z.string().optional(),
+        isactive: z.string().optional(),
+        category_id: z.string().optional(),
     });
 
     const rawData = Object.fromEntries(formData);
@@ -134,13 +145,13 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
         return { success: false, message: 'ข้อมูลไม่ถูกต้อง', errors };
     }
 
-    const { id, name, description, filename } = parsed.data;
+    const { id, name, description, filename, isactive, category_id } = parsed.data;
     const parentId = rawData.parent ? parseInt(rawData.parent as string, 10) : null;
 
     try {
         const targetFolderContents = parentId
-            ? await adminGetFolderById(parentId)
-            : await adminGetRootFolder();
+            ? await apiGetFolderById(parentId)
+            : await apiGetRootFolder();
 
         const isDuplicate = targetFolderContents.files.some(
             file => file.filename === filename && file.id !== parseInt(id)
@@ -154,27 +165,52 @@ export const updateFile = async (prevState: any, formData: FormData): Promise<St
         return { success: false, message: 'เกิดข้อผิดพลาดในการตรวจสอบชื่อไฟล์ซ้ำ' };
     }
 
-    const body: any = {};
+    const body: Record<string, string | number | null> = {};
     if (name) body.name = name;
     if (description !== undefined) body.description = description;
     if (filename) body.filename = filename;
     if (rawData.parent !== undefined) body.parent = parentId;
+    if (isactive) body.isactive = parseInt(isactive, 10);
+    if (category_id) body.category_id = parseInt(category_id, 10);
 
-    const res = await fetch(`${API_URL}/dl/file/${id}`, {
-        method: 'PATCH',
-        headers: {
-            'Authorization': `Bearer ${API_TOKEN}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-    });
-
-    if (!res.ok) {
-        const errorResponse = await res.json().catch(() => ({ message: res.statusText }));
-        console.error('Failed to update file:', errorResponse);
-        return { success: false, message: errorResponse.message || 'อัปเดตไฟล์ไม่สำเร็จ' };
+    // Add Audit field
+    if (session?.user?.id) {
+        body.updated_by = session.user.id;
+    } else {
+        console.warn('UpdateFile: No user ID found in session for audit logs');
     }
 
-    revalidatePath('/admin/documents', 'layout');
-    return { success: true, message: 'อัปเดตไฟล์สำเร็จ!' };
+    try {
+        await apiUpdateFile(parseInt(id), body, token);
+        revalidatePath('/admin/documents', 'layout');
+        return { success: true, message: 'อัปเดตไฟล์สำเร็จ!' };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        console.error('Failed to update file:', error);
+        return { success: false, message: error.message || 'อัปเดตไฟล์ไม่สำเร็จ' };
+    }
 }
+
+export const getCategories = async () => {
+    const session = await auth();
+    const token = session?.accessToken || process.env.API_TOKEN;
+    return apiGetCategories(token);
+};
+
+export const createCategory = async (name: string, group_name?: string) => {
+    const session = await auth();
+    const token = session?.accessToken || process.env.API_TOKEN;
+    return apiCreateCategory(name, group_name, token);
+};
+
+export const deleteCategory = async (id: number) => {
+    const session = await auth();
+    const token = session?.accessToken || process.env.API_TOKEN;
+    return apiDeleteCategory(id, token);
+};
+
+export const updateCategory = async (id: number, name: string, group_name?: string) => {
+    const session = await auth();
+    const token = session?.accessToken || process.env.API_TOKEN;
+    return apiUpdateCategory(id, name, group_name, token);
+};

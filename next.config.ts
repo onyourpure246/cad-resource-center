@@ -1,11 +1,19 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error'] } : false,
+  },
   /* config options here */
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    qualities: [25, 50, 75, 80, 90, 100],
+  },
   experimental: {
     serverActions: {
-      bodySizeLimit: '20mb',
+      bodySizeLimit: '300mb',
     },
+    middlewareClientMaxBodySize: 314572800,
     optimizePackageImports: [
       '@mui/material',
       '@mui/icons-material',

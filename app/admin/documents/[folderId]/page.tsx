@@ -6,10 +6,11 @@ import ItemsTable from '@/components/Admin/DocManagement/ItemsTable';
 import DataManagementLayout from '@/components/Admin/DocManagement/DataManagementLayout';
 import { Item as FolderItem } from '@/types/models';
 import ActionButtons from '@/components/Admin/DocManagement/ActionButtons';
-import Header from '@/components/Header/Header';
+import Header from '@/components/Layout/Header/Header';
 import { useFolderContents } from '@/hooks/useFolderContents';
 import { useTableData } from '@/hooks/useTableData';
 import PaginationFooter from '@/components/Admin/DocManagement/PaginationFooter';
+
 
 const FolderContentPage = () => {
     const router = useRouter();
@@ -17,7 +18,8 @@ const FolderContentPage = () => {
     const params = useParams();
     const folderId = parseInt(params.folderId as string, 10);
     const [selectedIds, setSelectedIds] = React.useState<(string | number)[]>([]);
-    const { items, isLoading, breadcrumbs, refresh, currentFolder } = useFolderContents(folderId);
+    const { items, isLoading, breadcrumbs, refresh } = useFolderContents(folderId);
+
     const {
         handleSearch,
         sortConfig,
@@ -33,10 +35,15 @@ const FolderContentPage = () => {
         if (item.type === 'folder') {
             // Navigate to the sub-folder
             startTransition(() => {
-                router.push(`/admin/documents/${item.id}?abbr=${item.abbr || ''}`);
+                router.push(`/admin/documents/${item.resourceId}?abbr=${item.abbr || ''}`);
             });
-        } else {
-            console.log(`Clicked on file: ${item.name} (ID: ${item.id})`);
+        } else if (item.type === 'file' && item.downloadUrl) {
+            const link = document.createElement('a');
+            link.href = item.downloadUrl;
+            link.download = item.filename || 'download';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     };
 
