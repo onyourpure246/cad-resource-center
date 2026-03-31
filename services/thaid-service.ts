@@ -21,7 +21,7 @@ export async function getThaIDOwner(code: string): Promise<{ pid: string; name: 
     const API_KEY = process.env.THAID_API_KEY;
 
     // Use dynamic URL for production, fallback to localhost for dev
-    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:24990";
     const REDIRECT_URI = `${APP_URL}/auth/callback`;
 
     if (!THAID_TOKEN_URL || !THAID_USERINFO_URL || !BASIC_TOKEN) {
