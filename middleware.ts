@@ -6,12 +6,14 @@ const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
   const { nextUrl } = req;
-  const isLoggedIn = !!req.auth;
+  const isLoggedIn = !!req.auth && (req.auth as any).error !== "AccessTokenExpired";
 
-  const isApiAuthRoute = nextUrl.pathname.startsWith('/api/auth');
-  const isDownloadsRoute = nextUrl.pathname.startsWith('/downloads');
-  const isAdminRoute = nextUrl.pathname.startsWith('/admin');
-  const isLoginRoute = nextUrl.pathname === '/login';
+  const pathname = req.nextUrl.pathname.replace(/^\/casdu_cdm/, '') || '/';
+  
+  const isApiAuthRoute = pathname.startsWith('/api/auth');
+  const isDownloadsRoute = pathname.startsWith('/downloads');
+  const isAdminRoute = pathname.startsWith('/admin');
+  const isLoginRoute = pathname === '/login';
 
   if (isApiAuthRoute) {
     return;
@@ -23,23 +25,27 @@ export default auth((req) => {
       if (nextUrl.searchParams.get('expired') === 'true') {
         return;
       }
-      return NextResponse.redirect(new URL('/admin/documents', nextUrl));
+      return NextResponse.redirect(new URL('/casdu_cdm/admin/documents', nextUrl));
     }
     return;
   }
 
   if (isAdminRoute || isDownloadsRoute) {
     if (!isLoggedIn) {
-      let callbackUrl = nextUrl.pathname;
+      let callbackUrl = pathname;
       if (nextUrl.search) {
         callbackUrl += nextUrl.search;
       }
       const encodedCallbackUrl = encodeURIComponent(callbackUrl);
-      return NextResponse.redirect(new URL(`/login?callbackUrl=${encodedCallbackUrl}`, nextUrl));
+      
+      if (req.auth && (req.auth as any).error === "AccessTokenExpired") {
+        return NextResponse.redirect(new URL(`/casdu_cdm/login?expired=true&callbackUrl=${encodedCallbackUrl}`, nextUrl));
+      }
+      return NextResponse.redirect(new URL(`/casdu_cdm/login?callbackUrl=${encodedCallbackUrl}`, nextUrl));
     }
 
-    if (nextUrl.pathname === '/admin') {
-      return NextResponse.redirect(new URL('/admin/documents', nextUrl));
+    if (pathname === '/admin') {
+      return NextResponse.redirect(new URL('/casdu_cdm/admin/documents', nextUrl));
     }
   }
 

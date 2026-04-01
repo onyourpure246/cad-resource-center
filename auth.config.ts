@@ -4,7 +4,8 @@ import { authApi } from "@/services/auth-api"
 import { getThaIDOwner } from "@/services/thaid-service"
 
 export const authConfig = {
-    basePath: '/casdu_cdm/api/auth',   // 👈 เพิ่มบรรทัดนี้เข้าไป
+    trustHost: true,
+    basePath: '/api/auth',   // 👈 Next.js App Router จะตัด /casdu_cdm ออกให้อยู่แล้วครับ ห้ามใส่ซ้อน
     pages: {
         signIn: '/login',
     },
@@ -14,19 +15,14 @@ export const authConfig = {
     },
     callbacks: {
         authorized({ auth, request: { nextUrl } }) {
-            const isLoggedIn = !!auth?.user;
-            const isOnDashboard = nextUrl.pathname.startsWith('/admin') || nextUrl.pathname.startsWith('/downloads');
-
-            if (isOnDashboard) {
-                if (isLoggedIn) return true;
-                return false; // Redirect unauthenticated users to login page
-            } else if (isLoggedIn) {
-                // Optional: Redirect to dashboard if already logged in and visiting login page
-                // if (nextUrl.pathname === '/login') return Response.redirect(new URL('/admin/documents', nextUrl));
-            }
-            return true;
+            return true; // Let middleware.ts strictly handle route interception and redirects.
         },
         async session({ session, token }) {
+            // If the token is already expired according to the server clock, mark it
+            if (token.accessTokenExpires && Date.now() > (token.accessTokenExpires as number)) {
+                (session as any).error = "AccessTokenExpired";
+            }
+
             if (token.sub && session.user) {
                 session.user.id = token.sub;
                 session.user.role = token.role as string;

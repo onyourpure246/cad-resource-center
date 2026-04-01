@@ -8,7 +8,7 @@ import { SessionWatcher } from '@/components/Auth/SessionWatcher'
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SessionProvider>
+    <SessionProvider basePath="/casdu_cdm/api/auth">
       <SessionWatcher />
       <ThemeProvider
         attribute="class"
