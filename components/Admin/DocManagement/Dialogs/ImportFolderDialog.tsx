@@ -10,8 +10,9 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { FolderUp, Loader2, File as FileIcon, Folder, AlertCircle, CheckCircle } from "lucide-react";
-import { importFolderTree } from '@/actions/import-folder-actions';
+import { FolderUp, Loader2, File as FileIcon, Folder, AlertCircle, CheckCircle, XCircle } from "lucide-react";
+import { createFolderIncremental, uploadFileIncremental } from '@/actions/import-folder-actions';
+import { bulkDeleteItems } from '@/actions/bulk-actions';
 import { toast } from 'sonner';
 
 interface ImportFolderDialogProps {
@@ -41,6 +42,13 @@ export const ImportFolderDialog = ({ parentId, onSuccess, trigger, open: constra
     const fileInputRef = useRef<HTMLInputElement>(null);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [importStats, setImportStats] = useState<any>(null);
+
+    // Progressive State
+    const [isUploading, setIsUploading] = useState(false);
+    const [isCanceling, setIsCanceling] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [currentActionText, setCurrentActionText] = useState("");
+    const cancelRef = useRef<boolean>(false);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -90,31 +98,157 @@ export const ImportFolderDialog = ({ parentId, onSuccess, trigger, open: constra
     const handleImport = async () => {
         if (selectedFiles.length === 0) return;
 
-        startTransition(async () => {
-            const formData = new FormData();
-            selectedFiles.forEach(file => {
-                formData.append('files', file);
-                formData.append('paths', file.webkitRelativePath);
+        setIsUploading(true);
+        setIsCanceling(false);
+        cancelRef.current = false;
+        setProgress(0);
+        setCurrentActionText("กำลังเตรียมการ...");
+
+        const stats = {
+            totalFiles: selectedFiles.length,
+            successFiles: 0,
+            failedFiles: 0,
+            foldersCreated: 0,
+            errors: [] as string[]
+        };
+
+        const createdItems: { id: number, type: 'folder' | 'file', name: string }[] = [];
+
+        try {
+            const fileEntries = selectedFiles.map((file) => ({
+                file,
+                path: file.webkitRelativePath
+            }));
+
+            // Attempt to count unique steps
+            const uniqueFolders = new Set<string>();
+            fileEntries.forEach(entry => {
+                const parts = entry.path.split('/');
+                parts.pop();
+                let p = "";
+                parts.forEach(part => {
+                    p = p ? `${p}/${part}` : part;
+                    uniqueFolders.add(p);
+                });
             });
+            const totalSteps = uniqueFolders.size + fileEntries.length;
+            let currentStep = 0;
 
-            const result = await importFolderTree(formData, parentId);
+            const updateProgress = (text: string) => {
+                currentStep++;
+                setProgress(Math.round((currentStep / totalSteps) * 100));
+                setCurrentActionText(text);
+            };
 
-            if (result.success) {
-                toast.success(result.message);
-                setImportStats(result.stats);
-                onSuccess();
-                // Optionally close automatically or let user see stats
-                // setOpen(false); 
-            } else {
-                toast.error(result.message);
+            const folderIdMap = new Map<string, number>();
+
+            // 1. Create folders
+            for (const entry of fileEntries) {
+                if (cancelRef.current) break;
+
+                const parts = entry.path.split('/');
+                parts.pop();
+
+                let currentParentId = parentId;
+                let currentPath = "";
+
+                for (const folderName of parts) {
+                    if (cancelRef.current) break;
+                    currentPath = currentPath ? `${currentPath}/${folderName}` : folderName;
+
+                    if (folderIdMap.has(currentPath)) {
+                        currentParentId = folderIdMap.get(currentPath)!;
+                    } else {
+                        updateProgress(`สร้างโฟลเดอร์: ${folderName}`);
+                        try {
+                            const newFolderId = await createFolderIncremental(folderName, currentParentId);
+                            folderIdMap.set(currentPath, newFolderId);
+                            currentParentId = newFolderId;
+                            stats.foldersCreated++;
+                            createdItems.push({ id: newFolderId, type: 'folder', name: folderName });
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        } catch (err: any) {
+                            stats.errors.push(`ไม่ได้สร้างโฟลเดอร์ '${currentPath}': ${err.message}`);
+                            break; // Stop nested folders creation
+                        }
+                    }
+                }
             }
-        });
+
+            // 2. Upload Files
+            if (!cancelRef.current) {
+                for (const entry of fileEntries) {
+                    if (cancelRef.current) break;
+
+                    const parts = entry.path.split('/');
+                    const fileName = parts.pop() || "";
+                    const folderPath = parts.join('/');
+
+                    let targetParentId = parentId;
+                    if (folderPath && folderIdMap.has(folderPath)) {
+                        targetParentId = folderIdMap.get(folderPath)!;
+                    } else if (folderPath) {
+                        stats.failedFiles++;
+                        continue; // Skip if parent folder isn't there
+                    }
+
+                    updateProgress(`อัปโหลดไฟล์: ${fileName}`);
+
+                    try {
+                        const formData = new FormData();
+                        formData.append('file', entry.file);
+                        formData.append('name', fileName);
+
+                        const newFileId = await uploadFileIncremental(formData, targetParentId);
+                        if (newFileId) {
+                            stats.successFiles++;
+                            createdItems.push({ id: newFileId, type: 'file', name: fileName });
+                        } else {
+                            throw new Error("ระบบไม่ได้ส่ง ID ไฟล์กลับมา");
+                        }
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    } catch (err: any) {
+                        stats.failedFiles++;
+                        stats.errors.push(`อัปโหลดไฟล์ไม่สำเร็จ ${entry.path}: ${err.message}`);
+                    }
+                }
+            }
+
+            if (cancelRef.current) {
+                setCurrentActionText("กำลังยกเลิกและล้างข้อมูล...");
+                setIsCanceling(true);
+                // Reverse items array to delete files before their parent folders
+                const itemsToDelete = createdItems.reverse();
+                await bulkDeleteItems(itemsToDelete);
+                toast.info("การอัปโหลดถูกยกเลิกและข้อมูลที่อาจสร้างค้างไว้ถูกลบหมดแล้ว");
+                setOpen(false);
+            } else {
+                setProgress(100);
+                setCurrentActionText("เรียบร้อย!");
+                setImportStats(stats);
+                toast.success(`นำเข้าเสร็จสิ้น: สำเร็จ ${stats.successFiles}/${stats.totalFiles} ไฟล์`);
+                onSuccess();
+            }
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            console.error("Import Error:", error);
+            toast.error(`เกิดข้อผิดพลาดในระบบ: ${error.message}`);
+        } finally {
+            setIsUploading(false);
+            setIsCanceling(false);
+        }
     };
 
     const reset = () => {
         setSelectedFiles([]);
         setTreePreview([]);
         setImportStats(null);
+        setIsUploading(false);
+        setIsCanceling(false);
+        setProgress(0);
+        setCurrentActionText("");
+        cancelRef.current = false;
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
@@ -144,6 +278,48 @@ export const ImportFolderDialog = ({ parentId, onSuccess, trigger, open: constra
         ));
     };
 
+    const renderProgress = () => (
+        <div className="flex flex-col items-center justify-center p-8 space-y-4">
+            {/* Circular Progress */}
+            <div className="relative w-32 h-32">
+                <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                    <circle
+                        className="text-muted/30 stroke-current"
+                        strokeWidth="8"
+                        cx="50" cy="50" r="40"
+                        fill="transparent"
+                    ></circle>
+                    <circle
+                        className="text-primary stroke-current"
+                        strokeWidth="8"
+                        strokeLinecap="round"
+                        cx="50" cy="50" r="40"
+                        fill="transparent"
+                        strokeDasharray="251.2"
+                        strokeDashoffset={251.2 - (251.2 * progress) / 100}
+                        style={{ transition: 'stroke-dashoffset 0.3s ease-in-out' }}
+                    ></circle>
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-xl font-bold">{progress}%</span>
+                </div>
+            </div>
+
+            <div className="text-center space-y-1">
+                <h3 className="font-medium text-lg flex items-center justify-center gap-2">
+                    {isCanceling ? (
+                        <><XCircle className="h-5 w-5 text-destructive animate-pulse" /> กำลังยกเลิก...</>
+                    ) : (
+                        <><Loader2 className="h-5 w-5 text-primary animate-spin" /> กำลังดำเนินการ...</>
+                    )}
+                </h3>
+                <p className="text-sm text-muted-foreground max-w-[280px] break-all">
+                    {currentActionText}
+                </p>
+            </div>
+        </div>
+    );
+
     return (
         <Dialog open={open} onOpenChange={openChanged}>
             {trigger ? (
@@ -163,7 +339,9 @@ export const ImportFolderDialog = ({ parentId, onSuccess, trigger, open: constra
                 </DialogHeader>
 
                 <div className="flex-1 overflow-hidden py-4">
-                    {!importStats ? (
+                    {isUploading ? (
+                        renderProgress()
+                    ) : !importStats ? (
                         <>
                             <div className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-6 bg-muted/20 hover:bg-muted/40 transition-colors">
                                 <input
@@ -246,20 +424,25 @@ export const ImportFolderDialog = ({ parentId, onSuccess, trigger, open: constra
                 </div>
 
                 <DialogFooter>
-                    {!importStats ? (
+                    {isUploading ? (
+                        <Button 
+                            variant="destructive" 
+                            onClick={() => { cancelRef.current = true; }} 
+                            disabled={isCanceling}
+                        >
+                            {isCanceling ? (
+                                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> กำลังลบข้อมูล...</>
+                            ) : (
+                                "ยกเลิกการอัปโหลด"
+                            )}
+                        </Button>
+                    ) : !importStats ? (
                         <>
-                            <Button variant="outline" onClick={() => setOpen(false)} disabled={isPending}>
+                            <Button variant="outline" onClick={() => setOpen(false)}>
                                 ยกเลิก
                             </Button>
-                            <Button onClick={handleImport} disabled={selectedFiles.length === 0 || isPending}>
-                                {isPending ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        กำลังนำเข้า...
-                                    </>
-                                ) : (
-                                    'เริ่มนำเข้า'
-                                )}
+                            <Button onClick={handleImport} disabled={selectedFiles.length === 0}>
+                                เริ่มนำเข้า
                             </Button>
                         </>
                     ) : (
