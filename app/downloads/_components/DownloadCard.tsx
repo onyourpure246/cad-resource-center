@@ -41,7 +41,7 @@ const DownloadCard = ({ item, highlightQuery }: DownloadCardProps) => {
         const regex = new RegExp(`(${escapedKeywords.join('|')})`, 'gi');
 
         const parts = text.split(regex);
-        
+
         return (
             <React.Fragment>
                 {parts.map((part, i) => {
@@ -123,7 +123,7 @@ const DownloadCard = ({ item, highlightQuery }: DownloadCardProps) => {
                             asChild
                             className="w-full md:w-auto px-6 rounded-full shadow-sm hover:shadow-md transition-all bg-primary hover:bg-primary/90"
                         >
-                            <a href={`/api/proxy-download/${item.id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                            <a href={`/casdu_cdm/api/proxy-download/${item.id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
                                 <Download className="w-4 h-4" />
                                 <span>ดาวน์โหลด</span>
                             </a>

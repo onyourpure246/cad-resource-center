@@ -29,7 +29,7 @@ const NavAuth = () => {
       console.error("Logout error:", error)
     } finally {
       // Force hard refresh to ensure clean state as requested
-      window.location.href = '/'
+      window.location.href = '/casdu_cdm'
     }
   }
 

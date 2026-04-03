@@ -47,7 +47,7 @@ export const RowActions = ({ item, parentId, onRefresh }: RowActionsProps) => {
                              It purely does nothing? Or maybe wrapped individually?
                              I'll reproduce it exactly.
                          */}
-                        <a href={item.downloadUrl || '#'} download={item.filename} className="flex items-center w-full">
+                        <a href={`/casdu_cdm/api/proxy-download/${item.resourceId}`} download={item.filename} className="flex items-center w-full">
                             <Download className="mr-1 h-2 w-2" />ดาวน์โหลด
                         </a>
                     </DropdownMenuItem>

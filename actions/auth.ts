@@ -6,5 +6,5 @@ import { revalidatePath } from 'next/cache';
 export const logout = async () => {
     console.log('Server Action: Logging out...');
     revalidatePath('/'); // Clear cache before redirect
-    await signOut({ redirectTo: '/' });
+    await signOut({ redirectTo: '/casdu_cdm' });
 }
