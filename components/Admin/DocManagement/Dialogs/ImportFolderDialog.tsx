@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useTransition } from 'react';
+import React, { useRef, useState } from 'react';
 import {
     Dialog,
     DialogContent,
@@ -36,7 +36,6 @@ export const ImportFolderDialog = ({ parentId, onSuccess, trigger, open: constra
 
     const open = constrainedOpen !== undefined ? constrainedOpen : internalOpen;
     const setOpen = setConstrainedOpen || setInternalOpen;
-    const [isPending, startTransition] = useTransition();
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [treePreview, setTreePreview] = useState<TreeNode[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);

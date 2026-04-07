@@ -46,7 +46,7 @@ export const InputSection = ({
                         defaultValue={announcement?.cover_image ? (
                             announcement.cover_image.startsWith('http') || announcement.cover_image.startsWith('blob:')
                                 ? announcement.cover_image
-                                : `/api/images/${announcement.cover_image}`
+                                : `/casdu_cdm/api/images/${announcement.cover_image}`
                         ) : null}
                         onChange={handleImageChange}
                     />

@@ -47,7 +47,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
     // Image URL - Use the local proxy which handles the backend authentication
     const isAbsoluteUrl = modalData.cover_image?.startsWith('blob:') || modalData.cover_image?.startsWith('http');
     const imageUrl = modalData.cover_image
-        ? (isAbsoluteUrl ? modalData.cover_image : `/api/images/${modalData.cover_image}`)
+        ? (isAbsoluteUrl ? modalData.cover_image : `/casdu_cdm/api/images/${modalData.cover_image}`)
         : null;
 
     // Category Color Mapping (consistent with Admin columns)
