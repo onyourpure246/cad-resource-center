@@ -12,7 +12,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
       <SessionWatcher />
       <ThemeProvider
         attribute="class"
-        defaultTheme="system"
+        defaultTheme="light"
         enableSystem
 
       >

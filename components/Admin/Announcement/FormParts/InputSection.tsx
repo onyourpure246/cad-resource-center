@@ -25,7 +25,7 @@ export const InputSection = ({
     return (
         <div>
             <div className='mb-4 flex flex-col gap-1'>
-                <Label className='text-2xl'>
+                <Label className='text-2xl font-bold'>
                     {isCreateMode ? 'สร้างประกาศใหม่' : 'แก้ไขประกาศ'}
                 </Label>
                 {isReadOnly && (

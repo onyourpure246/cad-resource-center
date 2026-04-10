@@ -25,8 +25,8 @@ const CategoryCard = ({ title, description, href, icon, mui_icon, mui_colour }: 
                             React.cloneElement(icon as React.ReactElement<{ size?: number; className?: string }>, { size: 32, className: "transition-transform duration-300 group-hover:scale-110" })
                         )}
                     </div>
-                    <div className="space-y-2">
-                        <CardTitle className='text-xl font-bold tracking-tight group-hover:text-primary transition-colors'>{title}</CardTitle>
+                    <div className="space-y-1">
+                        <CardTitle className='text-xl font-semibold tracking-tight group-hover:text-primary transition-colors'>{title}</CardTitle>
                         <CardDescription className="text-base leading-relaxed line-clamp-2">{description}</CardDescription>
                     </div>
                 </CardHeader>
