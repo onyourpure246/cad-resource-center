@@ -63,7 +63,7 @@
 
     /* Settings อื่นๆ คงเดิม */
     --radius: 1.55rem;
-    --font-sans: Sarabun, ui-sans-serif, sans-serif, system-ui;
+    --font-sans: Prompt, ui-sans-serif, sans-serif, system-ui;
     --font-serif: Kanit, ui-sans-serif, sans-serif, system-ui;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --shadow-x: 0;
@@ -146,7 +146,7 @@
 
     /* Settings อื่นๆ คงเดิม */
     --radius: 1.55rem;
-    --font-sans: Sarabun, ui-sans-serif, sans-serif, system-ui;
+    --font-sans: Prompt, ui-sans-serif, sans-serif, system-ui;
     --font-serif: Kanit, ui-sans-serif, sans-serif, system-ui;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --shadow-x: 0;
@@ -203,7 +203,7 @@
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
 
-    --font-sans: Sarabun, ui-sans-serif, sans-serif, system-ui;
+    --font-sans: Prompt, ui-sans-serif, sans-serif, system-ui;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --font-serif: Kanit, ui-sans-serif, sans-serif, system-ui;
 

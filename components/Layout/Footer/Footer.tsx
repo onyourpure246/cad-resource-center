@@ -15,7 +15,7 @@ const Footer = () => {
                         <div className="w-[150px]">
                             <ThemeLogo />
                         </div>
-                        <p className="text-primary-foreground/75 dark:text-foreground/75 text-sm">
+                        <p className="text-primary-foreground/75 dark:text-foreground/75 text-xs">
                             กลุ่มพัฒนาระบบตรวจสอบบัญชีคอมพิวเตอร์ <br />
                             ศูนย์เทคโนโลยีสารสนเทศและการสื่อสาร <br />
                             กรมตรวจบัญชีสหกรณ์
@@ -25,12 +25,12 @@ const Footer = () => {
                     {/* Dynamic Columns */}
                     {footerData.columns.map((col, index) => (
                         <div key={index} className={`flex flex-col space-y-2 ${(index === 0 || index === 1) ? 'lg:pl-8' : ''}`}>
-                            <h3 className="text-base font-bold">{col.title}</h3>
+                            <h3 className="text-sm">{col.title}</h3>
                             <div className="space-y-1 text-primary-foreground/75 dark:text-foreground/75">
                                 {col.content.map((item, i) => {
                                     const footerItem = item as FooterItem;
                                     if (footerItem.type === 'text') {
-                                        return <p key={i} className="text-sm">{footerItem.value}</p>;
+                                        return <p key={i} className="text-xs">{footerItem.value}</p>;
                                     }
                                     if (footerItem.type === 'image') {
                                         return (
@@ -40,7 +40,7 @@ const Footer = () => {
                                                     alt={footerItem.alt || "Image"}
                                                     width={footerItem.width || 100}
                                                     height={footerItem.height || 100}
-                                                    className="w-24 h-24 invert mix-blend-screen"
+                                                    className="w-18 h-18 invert mix-blend-screen"
                                                 />
                                             </div>
                                         )
@@ -49,7 +49,7 @@ const Footer = () => {
                                         return (
                                             <ul key={i} className="columns-2 gap-x-4 space-y-1">
                                                 {footerItem.items?.map((li: string, liIndex: number) => (
-                                                    <li key={liIndex} className="text-sm text-primary-foreground/75 dark:text-foreground/75 border-l-2 border-primary-foreground/50 dark:border-primary/50 pl-2 break-inside-avoid">
+                                                    <li key={liIndex} className="text-xs text-primary-foreground/75 dark:text-foreground/75 border-l-2 border-primary-foreground/50 dark:border-primary/50 pl-2 break-inside-avoid">
                                                         {li}
                                                     </li>
                                                 ))}

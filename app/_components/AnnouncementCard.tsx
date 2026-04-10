@@ -140,7 +140,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                         </div>
                     </CardHeader>
 
-                    <CardContent className="flex-grow p-3 pt-2 pb-0">
+                    <CardContent className="flex-grow p-3 pt-0 pb-0">
                         <div className="h-[3.25rem]">
                             <p className="font-sarabun text-muted-foreground line-clamp-2 leading-relaxed text-base indent-0">
                                 {stripHtml(modalData.content)}
@@ -168,7 +168,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
             </motion.div>
 
             <DialogContent className="sm:max-w-5xl max-h-[85vh] overflow-y-auto">
-                <DialogHeader className="space-y-4">
+                <DialogHeader className="space-y-2">
                     {imageUrl && (
                         <div className="w-full h-64 overflow-hidden rounded-xl mb-4 bg-muted">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -206,7 +206,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                     </DialogTitle>
                 </DialogHeader>
 
-                <div className="mt-4">
+                <div className="mt-1">
                     {/* Safe HTML Rendering */}
                     <div
                         className="font-sarabun text-foreground text-base w-full break-words leading-normal"
