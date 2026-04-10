@@ -120,7 +120,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                                     {category}
                                 </Badge>
                                 {isUrgent && (
-                                    <Badge variant="destructive" className="shrink-0 text-[10px] px-1.5 py-0 h-4 bg-red-500 hover:bg-red-600 animate-pulse">
+                                    <Badge variant="destructive" className="shrink-0 rounded-md px-2 py-0.5 text-xs font-normal bg-red-500 hover:bg-red-600 animate-pulse">
                                         ด่วน
                                     </Badge>
                                 )}
@@ -189,7 +189,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                                 {category}
                             </Badge>
                             {isUrgent && (
-                                <Badge variant="destructive" className="shrink-0 text-xs px-2 py-0.5 h-6 bg-red-500 hover:bg-red-600 animate-pulse">
+                                <Badge variant="destructive" className="shrink-0 rounded-full px-3 py-1 text-sm font-normal bg-red-500 hover:bg-red-600 animate-pulse">
                                     ด่วน
                                 </Badge>
                             )}

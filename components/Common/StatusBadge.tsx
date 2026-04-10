@@ -23,7 +23,7 @@ const defaultStatusColorMapping: Record<string, string> = {
     // Announcement Categories
     'ประชาสัมพันธ์': 'bg-blue-500/15 text-blue-700 dark:text-blue-400 hover:bg-blue-500/25 border-blue-200/50',
     'กิจกรรม': 'bg-orange-500/15 text-orange-700 dark:text-orange-400 hover:bg-orange-500/25 border-orange-200/50',
-    'แจ้งเตือนระบบ': 'bg-destructive/15 text-destructive hover:bg-destructive/25 border-destructive/20',
+    'แจ้งเตือนระบบ': 'bg-red-500/15 text-red-700 dark:text-red-400 hover:bg-red-500/25 border-red-200/50',
     'ระเบียบ/คำสั่ง': 'bg-sky-500/15 text-sky-700 dark:text-sky-400 hover:bg-sky-500/25 border-sky-200/50',
 
     // Roles
