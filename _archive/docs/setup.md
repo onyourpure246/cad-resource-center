@@ -25,7 +25,7 @@
 
     ```env
     # --- General Config ---
-    NEXT_PUBLIC_APP_URL=http://localhost:3000   # URL ของเว็บเรา
+    NEXT_PUBLIC_APP_URL=http://localhost:24990   # URL ของเว็บเรา
     AUTH_SECRET=changeme                        # สร้างด้วยคำสั่ง: npx auth secret
 
     # --- External API (ระบบจัดการข้อมูลหลังบ้าน) ---
@@ -47,10 +47,10 @@
     ```bash
     npm run dev
     ```
-    เปิด Browser ไปที่ [http://localhost:3000](http://localhost:3000)
+    เปิด Browser ไปที่ [http://localhost:24990](http://localhost:24990)
 
 ## โหมดทดสอบ (Mock Mode)
 
 หากไม่มีบัญชี ThaID Sandbox หรือต้องการทดสอบระบบอย่างรวดเร็ว:
 *   ในหน้า Login ให้กรอกรหัส `TEST_ADMIN` ในช่อง Code (ถ้ามี) หรือใช้ปุ่ม Bypass ที่เตรียมไว้ (ถ้าเปิดใช้งานใน Code)
-*   ระบบจะ Login ให้เป็น Admin โดยอัตโนมัติ (แก้ไขตรรกะนี้ได้ใน `lib/thaid-service.ts`)
+*   ระบบจะ Login ให้เป็น Admin โดยอัตโนมัติ (แก้ไขตรรกะนี้ได้ใน `services/thaid-service.ts`)

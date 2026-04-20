@@ -43,5 +43,5 @@
 
 ## สรุป Component ที่เกี่ยวข้อง
 - **`auth.config.ts`**: จุดศูนย์กลางของระบบ Login ฝั่ง Next.js ทำหน้าที่ควบคุมเงื่อนไข จัดการ Token และ Session
-- **`lib/thaid-service.ts`**: จัดการเรื่องการคุยกับระบบภายนอก (ThaID)
-- **`lib/backend-api.ts`**: สื่อสารกับฝั่ง Backend ของเรา โดยเฉพาะเส้น `/employee/verify`
+- **`services/thaid-service.ts`**: จัดการเรื่องการคุยกับระบบภายนอก (ThaID)
+- **`services/auth-api.ts`**: สื่อสารกับฝั่ง Backend ของเรา โดยเฉพาะเส้น `/employee/verify`
