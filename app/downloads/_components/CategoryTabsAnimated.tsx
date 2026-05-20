@@ -27,7 +27,7 @@ export default function CategoryTabsAnimated({ categories }: { categories: TabCa
         <h3 className="text-lg font-semibold border-b pb-2 text-primary">{title}</h3>
     );
 
-    const CategoryGrid = ({ data, defaultDesc = 'ดาวน์โหลดเอกสารในหมวดหมู่นี้' }: { data: TabCategory[], defaultDesc?: string }) => (
+    const CategoryGrid = ({ data, defaultDesc = 'เลือกดูเอกสารในหมวดหมู่นี้' }: { data: TabCategory[], defaultDesc?: string }) => (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
             {data.map((category: TabCategory) => (
                 <CategoryCard

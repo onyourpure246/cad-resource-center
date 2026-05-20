@@ -1,0 +1,36 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.5 [39m[90m/home/cdmoper/cad-resource-center[39m
+
+ [32m✓[39m __tests__/actions/user-actions.test.ts[2m > [22mUser Actions[2m > [22mgetUsers[2m > [22mreturns an array of users when successful[32m 7[2mms[22m[39m
+ [32m✓[39m __tests__/actions/user-actions.test.ts[2m > [22mUser Actions[2m > [22mgetUsers[2m > [22mreturns empty array when API fails[32m 2[2mms[22m[39m
+ [32m✓[39m __tests__/actions/user-actions.test.ts[2m > [22mUser Actions[2m > [22mupdateUser[2m > [22mreturns success: true when update is successful[32m 1[2mms[22m[39m
+ [32m✓[39m __tests__/actions/user-actions.test.ts[2m > [22mUser Actions[2m > [22mupdateUser[2m > [22mreturns success: false with message when update fails[32m 1[2mms[22m[39m
+ [32m✓[39m __tests__/services/backend-api.test.ts[2m > [22mbackendApi[2m > [22mgetDashboardStats[2m > [22mreturns data when successful[32m 7[2mms[22m[39m
+ [32m✓[39m __tests__/services/backend-api.test.ts[2m > [22mbackendApi[2m > [22mgetDashboardStats[2m > [22mreturns null if response is not ok[32m 1[2mms[22m[39m
+ [32m✓[39m __tests__/services/backend-api.test.ts[2m > [22mbackendApi[2m > [22mgetDashboardStats[2m > [22mreturns null if API_URL is undefined[32m 1[2mms[22m[39m
+ [32m✓[39m __tests__/services/backend-api.test.ts[2m > [22mbackendApi[2m > [22mgetDashboardStats[2m > [22mreturns null and catches error if fetchApi throws[32m 2[2mms[22m[39m
+ [32m✓[39m __tests__/api/proxy-download.test.ts[2m > [22mProxy Download API[2m > [22mreturns 401 Unauthorized if no session[32m 9[2mms[22m[39m
+ [32m✓[39m __tests__/api/proxy-download.test.ts[2m > [22mProxy Download API[2m > [22mreturns 500 if API_URL is missing[32m 3[2mms[22m[39m
+ [32m✓[39m __tests__/api/proxy-download.test.ts[2m > [22mProxy Download API[2m > [22mproxies the request and returns 200 with stream[32m 6[2mms[22m[39m
+ [32m✓[39m __tests__/api/proxy-download.test.ts[2m > [22mProxy Download API[2m > [22mreturns backend error status if fetch is not ok[32m 2[2mms[22m[39m
+ [32m✓[39m __tests__/actions/announcement-actions.test.ts[2m > [22mAnnouncement Actions[2m > [22mgetAnnouncements[2m > [22mreturns an array of announcements when successful[32m 6[2mms[22m[39m
+ [32m✓[39m __tests__/actions/announcement-actions.test.ts[2m > [22mAnnouncement Actions[2m > [22mcreateAnnouncement[2m > [22mreturns error if title is missing[32m 2[2mms[22m[39m
+ [32m✓[39m __tests__/actions/announcement-actions.test.ts[2m > [22mAnnouncement Actions[2m > [22mcreateAnnouncement[2m > [22msubmits correctly and returns success[32m 1[2mms[22m[39m
+ [32m✓[39m __tests__/actions/announcement-actions.test.ts[2m > [22mAnnouncement Actions[2m > [22mupdateAnnouncementStatus[2m > [22mupdates status and returns correct success message for published[32m 2[2mms[22m[39m
+ [32m✓[39m __tests__/actions/folder-actions.test.ts[2m > [22mFolder Actions[2m > [22mcreateFolder[2m > [22mshould return error if name is missing[32m 10[2mms[22m[39m
+ [32m✓[39m __tests__/actions/folder-actions.test.ts[2m > [22mFolder Actions[2m > [22mcreateFolder[2m > [22mshould return error if abbr is missing[32m 2[2mms[22m[39m
+ [32m✓[39m __tests__/actions/folder-actions.test.ts[2m > [22mFolder Actions[2m > [22mcreateFolder[2m > [22mshould return error if abbr contains invalid characters[32m 2[2mms[22m[39m
+ [32m✓[39m __tests__/actions/folder-actions.test.ts[2m > [22mFolder Actions[2m > [22mcreateFolder[2m > [22mshould return error if folder name is duplicate[32m 2[2mms[22m[39m
+ [32m✓[39m __tests__/actions/folder-actions.test.ts[2m > [22mFolder Actions[2m > [22mcreateFolder[2m > [22mshould call apiCreateFolder and return success when valid[32m 4[2mms[22m[39m
+ [32m✓[39m __tests__/hooks/useFolderContents.test.ts[2m > [22museFolderContents[2m > [22mshould set isLoading to false after successfully fetching data[32m 76[2mms[22m[39m
+ [32m✓[39m __tests__/hooks/useFolderContents.test.ts[2m > [22museFolderContents[2m > [22mshould handle API errors and stop loading[32m 58[2mms[22m[39m
+ [32m✓[39m __tests__/hooks/useFolderContents.test.ts[2m > [22museFolderContents[2m > [22mshould not fetch if folderId is NaN[32m 5[2mms[22m[39m
+ [32m✓[39m __tests__/components/ConfirmationDialog.test.tsx[2m > [22mConfirmationDialog Component[2m > [22mrenders trigger correctly[32m 52[2mms[22m[39m
+ [32m✓[39m __tests__/components/ConfirmationDialog.test.tsx[2m > [22mConfirmationDialog Component[2m > [22mrenders dialog content when trigger is clicked[32m 239[2mms[22m[39m
+ [32m✓[39m __tests__/components/ConfirmationDialog.test.tsx[2m > [22mConfirmationDialog Component[2m > [22mcalls onConfirm when confirm button is clicked[32m 95[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m7 passed[39m[22m[90m (7)[39m
+[2m      Tests [22m [1m[32m27 passed[39m[22m[90m (27)[39m
+[2m   Start at [22m 16:14:20
+[2m   Duration [22m 1.83s[2m (transform 605ms, setup 514ms, import 1.32s, tests 616ms, environment 5.67s)[22m
+
