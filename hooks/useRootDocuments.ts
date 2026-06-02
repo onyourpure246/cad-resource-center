@@ -35,7 +35,10 @@ const transformDataToItems = (data: Awaited<ReturnType<typeof adminGetRootFolder
         mui_colour: file.mui_colour,
         downloadUrl: `/api/proxy-download/${file.id}`,
         isactive: file.isactive !== undefined ? file.isactive : 1,
-        downloads: file.downloads
+        downloads: file.downloads,
+        category_id: file.category_id,
+        category_name: file.category_name,
+        release_year: file.release_year
     }));
     transformedFolders.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
     transformedFiles.sort((a, b) => ((a.filename || a.name) || '').localeCompare((b.filename || b.name) || ''));

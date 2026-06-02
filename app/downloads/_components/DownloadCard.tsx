@@ -22,7 +22,7 @@ const DownloadCard = ({ item, highlightQuery }: DownloadCardProps) => {
         const diffTime = Math.abs(now.getTime() - createdDate.getTime());
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-        return diffDays <= 14; // ไฟล์ใหม่ในช่วง 14 วัน
+        return diffDays <= 30; // ไฟล์ใหม่ในช่วง 30 วัน
     }, [item.created_at]);
 
     const renderHighlightedText = (text: string | undefined | null, query?: string) => {

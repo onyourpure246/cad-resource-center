@@ -32,7 +32,7 @@ const SharedDownloadView: React.FC<SharedDownloadViewProps> = ({
                 title={title}
                 description={description}
             />
-            <div className="container mx-auto px-2 py-4 max-w-[1920px]">
+            <div className="container mx-auto px-2 py-2 max-w-[1920px]">
                 {subFolders && subFolders.length > 0 && parentFolderId !== undefined ? (
                     <SubFolderBadges
                         subFolders={subFolders}
@@ -41,7 +41,7 @@ const SharedDownloadView: React.FC<SharedDownloadViewProps> = ({
                     />
                 ) : (
                     backLink && (
-                        <div className="mb-4 flex flex-col gap-4">
+                        <div className="flex flex-col">
                             <div className="flex items-center">
                                 <Button variant="ghost" size="sm" asChild className="pl-0 hover:bg-transparent hover:text-primary transition-colors group">
                                     <Link href={backLink} className="flex items-center gap-1 text-muted-foreground group-hover:text-primary">

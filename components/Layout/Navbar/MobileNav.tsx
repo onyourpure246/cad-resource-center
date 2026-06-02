@@ -3,13 +3,15 @@
 import React, { useState } from 'react';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { Menu, LogIn, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import ThemeLogo from './ThemeLogo';
 import { usePathname } from 'next/navigation';
 import { ModeToggle } from './ModeToggle';
 import { sidebarItems } from '@/lib/constants';
+import { logout } from '@/actions/auth';
+import { toast } from 'sonner';
 
 const MobileNav = () => {
     const [open, setOpen] = useState(false);
@@ -17,8 +19,15 @@ const MobileNav = () => {
     const { data: session } = useSession();
 
     const handleSignOut = async () => {
-        await signOut({ callbackUrl: '/' });
         setOpen(false);
+        toast.success('กำลังออกจากระบบ...');
+        try {
+            await logout();
+        } catch (error) {
+            console.error("Logout error:", error);
+        } finally {
+            window.location.href = '/casdu_cdm';
+        }
     };
 
     return (

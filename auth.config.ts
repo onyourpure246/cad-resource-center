@@ -69,8 +69,16 @@ export const authConfig = {
                 console.log("[Auth] Starting authentication flow...");
 
                 try {
-                    // 1. แลก Code เป็น PID จาก ThaID
-                    const thaidUser = await getThaIDOwner(code);
+                    let thaidUser;
+                    
+                    if (process.env.NODE_ENV === "development" && code === "MOCK_ADMIN") {
+                        const mockPid = process.env.NEXT_PUBLIC_MOCK_PID || "1101000093449"; // Default to Super Admin
+                        console.log(`[Auth] Using MOCK ThaID Login for PID: ${mockPid}`);
+                        thaidUser = { pid: mockPid };
+                    } else {
+                        // 1. แลก Code เป็น PID จาก ThaID
+                        thaidUser = await getThaIDOwner(code);
+                    }
 
                     if (!thaidUser || !thaidUser.pid) {
                         throw new Error("ThaID verification failed");

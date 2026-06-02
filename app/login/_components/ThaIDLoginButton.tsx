@@ -11,7 +11,19 @@ export function ThaIDLoginButton() {
 
     // Sandbox Supported Scopes: openid pid name given_name family_name
     // Removing 'offline_access' as it causes invalid_scope in Sandbox
-    const thaidUrl = `${THAID_AUTH_URL}?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=openid pid name&state=random_state_string`;
+    const params = new URLSearchParams({
+        response_type: "code",
+        client_id: CLIENT_ID,
+        redirect_uri: REDIRECT_URI,
+        scope: "openid pid",
+        state: "random_state_string"
+    });
+    
+    // In development mode, bypass ThaID and go straight to our callback
+    const isDev = process.env.NODE_ENV === "development";
+    const thaidUrl = isDev 
+        ? `${REDIRECT_URI}?code=MOCK_ADMIN&state=mock_dev`
+        : `${THAID_AUTH_URL}?${params.toString()}`;
 
     return (
         <div className="space-y-4">

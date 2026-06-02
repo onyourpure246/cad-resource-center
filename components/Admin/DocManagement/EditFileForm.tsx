@@ -28,6 +28,7 @@ const EditFileForm = ({ file, onSuccess, onCancel }: EditFileFormProps) => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>(file.category_id ? file.category_id.toString() : 'unassigned');
     const [isManageCategoryOpen, setIsManageCategoryOpen] = useState(false);
+    const [releaseYear, setReleaseYear] = useState(file.release_year || '');
 
     useEffect(() => {
         if (state.success) {
@@ -38,6 +39,7 @@ const EditFileForm = ({ file, onSuccess, onCancel }: EditFileFormProps) => {
     useEffect(() => {
         setSelectedCategory(file.category_id ? file.category_id.toString() : 'unassigned');
         setIsActive(file.isactive === 1);
+        setReleaseYear(file.release_year || '');
     }, [file]);
 
     useEffect(() => {
@@ -128,6 +130,23 @@ const EditFileForm = ({ file, onSuccess, onCancel }: EditFileFormProps) => {
                                 )}
                             </div>
                         </div>
+
+                        {categories.find(c => c.id.toString() === selectedCategory)?.group_name === 'ชุดคำสั่ง' && (
+                            <div className='grid md:grid-cols-1 gap-4 mt-4'>
+                                <div className="space-y-2">
+                                    <Label htmlFor="release_year">ปีที่ปล่อยอัพเดท (เช่น 2568)</Label>
+                                    <input 
+                                        type="text" 
+                                        id="release_year" 
+                                        name="release_year" 
+                                        value={releaseYear}
+                                        onChange={(e) => setReleaseYear(e.target.value)}
+                                        placeholder="ปีที่ปล่อยอัพเดท (เว้นว่างได้)" 
+                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+                                    />
+                                </div>
+                            </div>
+                        )}
 
                         <ManageCategoryDialog
                             open={isManageCategoryOpen}

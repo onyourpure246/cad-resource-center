@@ -20,6 +20,7 @@ const UploadFileForm = ({ parentId, onSuccess }: CreateNewFormProps) => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>('unassigned');
     const [isManageCategoryOpen, setIsManageCategoryOpen] = useState(false);
+    const [releaseYear, setReleaseYear] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
     
     // Progress Tracking States
@@ -98,6 +99,11 @@ const UploadFileForm = ({ parentId, onSuccess }: CreateNewFormProps) => {
         } else if (fileNameLower.endsWith('.zip') || fileNameLower.endsWith('.rar') || fileNameLower.endsWith('.7z')) {
             formData.append('mui_icon', 'FolderZip');
             formData.append('mui_colour', '#FFCE3C');
+        }
+
+        const currentCat = categories.find(c => c.id.toString() === selectedCategory);
+        if (currentCat?.group_name === 'ชุดคำสั่ง' && releaseYear.trim()) {
+            formData.append('release_year', releaseYear.trim());
         }
 
         const xhr = new XMLHttpRequest();
@@ -203,6 +209,23 @@ const UploadFileForm = ({ parentId, onSuccess }: CreateNewFormProps) => {
                             </div>
                         </div>
                     </div>
+
+                    {categories.find(c => c.id.toString() === selectedCategory)?.group_name === 'ชุดคำสั่ง' && (
+                        <div className='grid md:grid-cols-1 gap-4 mt-4'>
+                            <div className="space-y-2">
+                                <Label htmlFor="release_year">ปีที่ปล่อยอัพเดท (เช่น 2568)</Label>
+                                <input 
+                                    type="text" 
+                                    id="release_year" 
+                                    name="release_year" 
+                                    value={releaseYear}
+                                    onChange={(e) => setReleaseYear(e.target.value)}
+                                    placeholder="ปีที่ปล่อยอัพเดท (เว้นว่างได้)" 
+                                    className="flex h-10 w-full md:w-1/3 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+                                />
+                            </div>
+                        </div>
+                    )}
 
                     <ManageCategoryDialog
                         open={isManageCategoryOpen}
