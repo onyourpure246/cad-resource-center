@@ -37,7 +37,7 @@ const TagCloud = ({ tags: initialTags = [] }: { tags?: string[] }) => {
     if (tags.length === 0) return null;
 
     return (
-        <div className="flex flex-wrap justify-center gap-2 mt-8 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-backwards">
+        <div className="flex flex-wrap justify-center gap-2 mt-4 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-backwards">
             <span className="text-sm text-muted-foreground self-center mr-2">คำค้นยอดนิยม:</span>
             {tags.map((tag, index) => (
                 <Badge

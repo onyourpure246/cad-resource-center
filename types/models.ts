@@ -55,7 +55,7 @@ export interface File {
     downloads?: number;
     category_id?: number | null;
     category_name?: string | null;
-    release_year?: string;
+    version?: string;
 }
 
 export interface Item {
@@ -78,7 +78,7 @@ export interface Item {
     downloads?: number;
     category_id?: number | null;
     category_name?: string | null;
-    release_year?: string;
+    version?: string;
 }
 
 export interface DownloadItem {
@@ -102,7 +102,6 @@ export interface DownloadItem {
     downloads?: number;
     category_id?: number | null;
     category_name?: string | null;
-    release_year?: string;
 }
 
 // From newcdm_types.ts (Database Types for Download System)
@@ -133,5 +132,5 @@ export interface DLFile {
     updated_at: string;
     downloads?: number;
     category_id?: number | null;
-    release_year?: string;
+    version?: string;
 }

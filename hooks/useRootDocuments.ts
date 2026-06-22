@@ -38,7 +38,7 @@ const transformDataToItems = (data: Awaited<ReturnType<typeof adminGetRootFolder
         downloads: file.downloads,
         category_id: file.category_id,
         category_name: file.category_name,
-        release_year: file.release_year
+        version: file.version
     }));
     transformedFolders.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
     transformedFiles.sort((a, b) => ((a.filename || a.name) || '').localeCompare((b.filename || b.name) || ''));

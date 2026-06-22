@@ -20,7 +20,7 @@ const Navbar = () => {
 
         {/* Logo Section */}
         <div className='flex gap-12 items-center'>
-          <Link href="/">
+          <Link href="https://cad.go.th" target='_blank'>
             <ThemeLogo />
           </Link>
         </div>
@@ -30,7 +30,7 @@ const Navbar = () => {
           <ul className='flex flex-row my-2 items-center'>
             <li className="mx-2">
               <Button variant="ghost" asChild className="font-bold text-base transition-colors duration-300 hover:bg-transparent text-primary-foreground/75 hover:text-primary-foreground dark:text-foreground/70 dark:hover:bg-transparent dark:hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:bg-primary-foreground dark:after:bg-primary">
-                <Link href="https://cad.go.th" target='_blank'>กรมตรวจบัญชีสหกรณ์</Link>
+                <Link href="/">หน้าหลัก</Link>
               </Button>
             </li>
             <li className="mx-2">

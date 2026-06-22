@@ -135,7 +135,7 @@ export const updateFile = async (prevState: State | null, formData: FormData): P
         parent: z.string().optional(),
         isactive: z.string().optional(),
         category_id: z.string().optional(),
-        release_year: z.string().optional(),
+        version: z.string().optional(),
     });
 
     const rawData = Object.fromEntries(formData);
@@ -146,7 +146,7 @@ export const updateFile = async (prevState: State | null, formData: FormData): P
         return { success: false, message: 'ข้อมูลไม่ถูกต้อง', errors };
     }
 
-    const { id, name, description, filename, isactive, category_id, release_year } = parsed.data;
+    const { id, name, description, filename, isactive, category_id, version } = parsed.data;
     const parentId = rawData.parent ? parseInt(rawData.parent as string, 10) : null;
 
     try {
@@ -173,7 +173,7 @@ export const updateFile = async (prevState: State | null, formData: FormData): P
     if (rawData.parent !== undefined) body.parent = parentId;
     if (isactive !== undefined) body.isactive = parseInt(isactive, 10);
     if (category_id !== undefined) body.category_id = category_id === 'unassigned' ? null : parseInt(category_id, 10);
-    if (release_year !== undefined) body.release_year = release_year;
+    if (version !== undefined) body.version = version;
 
     // Add Audit field
     if (session?.user?.id) {

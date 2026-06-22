@@ -62,7 +62,7 @@ export const useFolderContents = (folderId: number) => {
                 downloads: file.downloads,
                 category_id: file.category_id,
                 category_name: file.category_name,
-                release_year: file.release_year
+                version: file.version
             }));
 
             // Combine folders and files for display

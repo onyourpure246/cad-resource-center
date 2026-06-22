@@ -15,7 +15,7 @@ export const HeroBackground = ({ mouseX, mouseY }: HeroBackgroundProps) => {
     const y = useTransform(mouseY || new MotionValue(0), (val) => val - 150);
 
     return (
-        <div className="absolute inset-0 overflow-hidden -z-10 bg-background">
+        <div className="absolute inset-0 overflow-hidden -z-10 bg-transparent">
             <div className="absolute inset-0 bg-grid-black/[0.02] z-0" />
 
             {/* 1. Deep Emerald Base - The Foundation */}

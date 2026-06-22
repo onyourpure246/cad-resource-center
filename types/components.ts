@@ -115,6 +115,7 @@ export interface DownloadListProps {
     filterTags?: string[];
     filterMap?: Record<string, string>;
     highlightQuery?: string;
+    categoryGroupName?: string;
 }
 
 export interface SearchPageProps {
@@ -148,6 +149,9 @@ export interface ErrorStateProps {
 export interface DownloadCardProps {
     item: DownloadItem;
     highlightQuery?: string;
+    isLatestInVersion?: boolean;
+    categoryGroupName?: string;
+    variant?: 'hero' | 'compact';
 }
 
 export interface UserActionButtonsProps {

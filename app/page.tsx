@@ -49,7 +49,7 @@ const HomePage = () => {
               ศูนย์บริการข้อมูลและทรัพยากร
             </h1>
             <p className="text-sm md:text-sm">
-              รวมเอกสาร และเครื่องมือสำหรับตรวจสอบบัญชี
+              รวมเอกสาร และเครื่องมือสำหรับตรวจสอบบัญชีคอมพิวเตอร์
             </p>
             <div className="flex gap-4 ml-10">
               <Link href="/downloads"><Button variant="default" size="default" className="mt-4 cursor-pointer">
@@ -57,7 +57,7 @@ const HomePage = () => {
               </Button>
               </Link>
               <Button asChild size="lg" variant="link" className="mt-4 cursor-pointer text-white">
-                <Link href="#footer">ติดต่อเรา</Link>
+                <Link href="https://lin.ee/s0Z8q2k" target="_blank">ติดต่อเรา</Link>
               </Button>
             </div>
           </div>
