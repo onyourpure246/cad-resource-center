@@ -57,7 +57,7 @@ const HomePage = () => {
               </Button>
               </Link>
               <Button asChild size="lg" variant="link" className="mt-4 cursor-pointer text-white">
-                <Link href="https://lin.ee/s0Z8q2k" target="_blank">ติดต่อเรา</Link>
+                <Link href="https://lin.ee/OxR745f" target="_blank">ติดต่อเรา</Link>
               </Button>
             </div>
           </div>
