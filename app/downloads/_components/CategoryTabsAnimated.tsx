@@ -28,7 +28,7 @@ export default function CategoryTabsAnimated({ categories }: { categories: TabCa
     );
 
     const CategoryGrid = ({ data, defaultDesc = 'เลือกดูเอกสารในหมวดหมู่นี้' }: { data: TabCategory[], defaultDesc?: string }) => (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2'>
             {data.map((category: TabCategory) => (
                 <CategoryCard
                     key={category.id}

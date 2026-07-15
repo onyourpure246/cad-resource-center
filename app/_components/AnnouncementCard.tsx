@@ -21,7 +21,14 @@ import { getAnnouncementById } from '@/actions/announcement-actions';
 
 const stripHtml = (html: string) => {
     if (!html) return "";
-    return html.replace(/<[^>]*>?/gm, '');
+    return html
+        .replace(/<[^>]*>?/gm, '')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/\s+/g, ' ')
+        .trim();
 };
 
 const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => {
@@ -60,6 +67,29 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
 
     const badgeColorClass = categoryColors[category] || 'bg-secondary text-secondary-foreground hover:bg-secondary/80';
 
+    // Parse cover image adjustments from HTML content
+    const coverSettings = React.useMemo(() => {
+        const html = modalData.content || '';
+        let height = 240;
+        let position = 50;
+        if (html.includes('id="announcement-cover-settings"')) {
+            try {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const settingsEl = doc.querySelector('#announcement-cover-settings');
+                if (settingsEl) {
+                    const h = settingsEl.getAttribute('data-height');
+                    const p = settingsEl.getAttribute('data-position');
+                    if (h) height = Number(h);
+                    if (p) position = Number(p);
+                }
+            } catch (e) {
+                console.error("Failed to parse cover settings", e);
+            }
+        }
+        return { height, position };
+    }, [modalData.content]);
+
     const handleReadMore = async () => {
         // If ID is invalid (e.g. Preview Mode with ID -1), just open modal with current data
         if (!announcement.id || Number(announcement.id) <= 0) {
@@ -88,16 +118,16 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                 transition={{ type: "spring", stiffness: 300 }}
                 className="h-full"
             >
-                <Card className="flex flex-col h-full overflow-hidden border-border/ bg-background/50 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 rounded-[1.55rem]">
+                <Card className="group flex flex-col h-full overflow-hidden border-border bg-background/50 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 rounded-[1.55rem]">
 
-                    {/* Cover Image - Reduced height */}
+                    {/* Cover Image - Adjusted height for better balance */}
                     {imageUrl ? (
-                        <div className="relative w-full h-32 overflow-hidden bg-muted">
+                        <div className="relative w-full h-40 overflow-hidden bg-muted">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                                 src={imageUrl}
                                 alt={modalData.title}
-                                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                 onError={(e) => {
                                     // Fallback if image fails
                                     (e.target as HTMLImageElement).style.display = 'none';
@@ -105,7 +135,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                             />
                         </div>
                     ) : (
-                        <div className="relative w-full h-32 bg-gradient-to-br from-muted/50 to-muted flex items-center justify-center">
+                        <div className="relative w-full h-40 bg-gradient-to-br from-muted/50 to-muted flex items-center justify-center">
                             <Tag className="w-10 h-10 text-muted-foreground/20" />
                         </div>
                     )}
@@ -167,55 +197,106 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                 </Card>
             </motion.div>
 
-            <DialogContent className="sm:max-w-5xl max-h-[85vh] overflow-y-auto">
-                <DialogHeader className="space-y-2">
+            <DialogContent className="max-w-[1200px] sm:max-w-[1200px] w-[95vw] max-h-[92vh] overflow-y-auto rounded-2xl p-0 custom-scrollbar">
+                <div className="flex flex-col">
+                    {/* Header Banner - Full Width & Edge-to-Edge */}
                     {imageUrl && (
-                        <div className="w-full h-64 overflow-hidden rounded-xl mb-4 bg-muted">
+                        <div
+                            className="w-full overflow-hidden rounded-t-2xl bg-muted border-b border-border/50 shadow-xs"
+                            style={{ height: `${coverSettings.height}px` }}
+                        >
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                                 src={imageUrl}
                                 alt={modalData.title}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover select-none pointer-events-none"
+                                style={{ objectPosition: `center ${coverSettings.position}%` }}
                             />
                         </div>
                     )}
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <Badge
-                                variant="outline"
-                                className={`rounded-full px-3 py-1 text-sm font-normal flex items-center gap-1.5 w-fit border-transparent ${badgeColorClass}`}
-                            >
-                                <Tag className="w-3.5 h-3.5" />
-                                {category}
-                            </Badge>
-                            {isUrgent && (
-                                <Badge variant="destructive" className="shrink-0 rounded-full px-3 py-1 text-sm font-normal bg-red-500 hover:bg-red-600 animate-pulse">
-                                    ด่วน
-                                </Badge>
-                            )}
-                        </div>
-                        {displayDate && (
-                            <div className="flex items-center text-sm text-muted-foreground font-sarabun bg-muted px-2.5 py-1 rounded-full border">
-                                <Calendar className="w-3.5 h-3.5 mr-1.5" />
-                                <span>{displayDate}</span>
+
+                    {/* Split Layout with dynamic padding depending on cover image presence */}
+                    <div className={`grid grid-cols-1 lg:grid-cols-12 gap-8 items-start p-6 md:p-10 ${imageUrl ? 'pt-6 md:pt-8' : ''}`}>
+                        {/* LEFT COLUMN: Main content */}
+                        <div className="lg:col-span-8 space-y-5">
+                            <div className="space-y-3">
+                                <DialogTitle className="text-3xl font-extrabold tracking-tight leading-snug font-sarabun text-foreground">
+                                    {modalData.title}
+                                </DialogTitle>
+                                <div className="h-px bg-border/60 w-full" />
                             </div>
-                        )}
+
+                            {/* Safe HTML Content */}
+                            <div>
+                                <div
+                                    className="font-sarabun text-foreground text-base w-full break-words leading-relaxed prose dark:prose-invert max-w-none"
+                                    dangerouslySetInnerHTML={{ __html: modalData.content }}
+                                />
+                            </div>
+                        </div>
+
+                        {/* RIGHT COLUMN: Sidebar Metadata card */}
+                        <div className="lg:col-span-4 lg:sticky lg:top-0 space-y-4">
+                            <div className="rounded-2xl border border-border bg-muted/40 p-5 space-y-5 shadow-xs">
+                                <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                    ข้อมูลประกาศข่าวสาร
+                                </h3>
+
+                                <div className="h-px bg-border/50 w-full" />
+
+                                <div className="space-y-4">
+                                    {/* Category row */}
+                                    <div className="flex flex-col gap-1.5">
+                                        <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                                            <Tag className="w-3.5 h-3.5" /> หมวดหมู่ข่าวสาร
+                                        </span>
+                                        <div className="flex items-center gap-2">
+                                            <Badge
+                                                variant="outline"
+                                                className={`rounded-full px-3 py-0.5 text-sm font-semibold border-transparent ${badgeColorClass}`}
+                                            >
+                                                {category}
+                                            </Badge>
+                                            {isUrgent && (
+                                                <Badge variant="destructive" className="rounded-full px-3 py-0.5 text-sm font-semibold bg-red-500 hover:bg-red-600 animate-pulse">
+                                                    ด่วน
+                                                </Badge>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Date row */}
+                                    {displayDate && (
+                                        <div className="flex flex-col gap-1.5">
+                                            <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                                                <Calendar className="w-3.5 h-3.5" /> วันที่เผยแพร่
+                                            </span>
+                                            <span className="text-sm font-semibold text-foreground bg-background border px-3 py-1.5 rounded-xl w-fit">
+                                                {displayDate}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="h-px bg-border/50 w-full" />
+
+                                <div className="flex justify-between items-center text-xs text-muted-foreground font-sarabun">
+                                    <span>สร้างโดย: ฝ่ายพัฒนาระบบ</span>
+                                    {modalData.view_count !== undefined && (
+                                        <span>ยอดผู้เข้าชม: {modalData.view_count}</span>
+                                    )}
+                                </div>
+                            </div>
+
+                            <Button
+                                variant="outline"
+                                onClick={() => setIsOpen(false)}
+                                className="w-full cursor-pointer rounded-xl h-10 border border-border/80 hover:bg-muted text-sm font-semibold"
+                            >
+                                ปิดหน้าต่างข่าวสาร
+                            </Button>
+                        </div>
                     </div>
-                    <DialogTitle className="text-2xl font-bold leading-tight font-sarabun">
-                        {modalData.title}
-                    </DialogTitle>
-                </DialogHeader>
-
-                <div className="mt-1">
-                    {/* Safe HTML Rendering */}
-                    <div
-                        className="font-sarabun text-foreground text-base w-full break-words leading-normal"
-                        dangerouslySetInnerHTML={{ __html: modalData.content }}
-                    />
-                </div>
-
-                <div className="mt-6 pt-4 border-t flex justify-end">
-                    <Button variant="outline" onClick={() => setIsOpen(false)} className="cursor-pointer rounded-xl">ปิดหน้าต่าง</Button>
                 </div>
             </DialogContent>
         </Dialog>
