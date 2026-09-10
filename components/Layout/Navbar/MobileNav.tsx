@@ -42,7 +42,9 @@ const MobileNav = () => {
                     <SheetHeader className="bg-primary dark:bg-sidebar text-primary-foreground dark:text-foreground px-6 py-2">
                         <SheetTitle className="sr-only">Menu</SheetTitle>
                         <div className="flex items-center gap-2">
-                            <ThemeLogo />
+                            <Link href="https://cad.go.th" target="_blank" onClick={() => setOpen(false)}>
+                                <ThemeLogo />
+                            </Link>
                         </div>
                     </SheetHeader>
 
@@ -71,16 +73,17 @@ const MobileNav = () => {
                         <div className="flex flex-col space-y-3 font-kanit">
                             <h3 className="text-sm font-medium text-muted-foreground">เมนูหลัก</h3>
                             <Link
-                                href="https://cad.go.th"
-                                className="text-foreground hover:text-primary transition-colors text-base font-medium py-2 border-b border-border/50"
-                                target='_blank'
+                                href="/"
+                                onClick={() => setOpen(false)}
+                                className={`text-foreground hover:text-primary transition-colors text-base font-medium py-2 border-b border-border/50 ${pathname === '/' ? 'text-primary' : ''}`}
                             >
-                                กรมตรวจบัญชีสหกรณ์
+                                หน้าหลัก
                             </Link>
                             <Link
                                 href="https://store-auditdocs.cad.go.th/CADWP"
                                 className="text-foreground hover:text-primary transition-colors text-base font-medium py-2 border-b border-border/50"
                                 target='_blank'
+                                onClick={() => setOpen(false)}
                             >
                                 ระบบจัดการกระดาษทำการ
                             </Link>
@@ -102,13 +105,18 @@ const MobileNav = () => {
 
                             <div className="pt-2 border-t border-border/50">
                                 {session?.user ? (
-                                    <button
-                                        onClick={handleSignOut}
-                                        className="flex items-center gap-2 w-full text-base font-medium py-2 text-red-500 hover:text-red-600 transition-colors"
-                                    >
-                                        <LogOut className="h-4 w-4" />
-                                        ออกจากระบบ
-                                    </button>
+                                    <div className="flex flex-col space-y-1">
+                                        <div className="text-base font-medium py-2 text-foreground">
+                                            สวัสดี, {session.user.name || 'ผู้ใช้'}
+                                        </div>
+                                        <button
+                                            onClick={handleSignOut}
+                                            className="flex items-center gap-2 w-full text-base font-medium py-2 text-red-500 hover:text-red-600 transition-colors"
+                                        >
+                                            <LogOut className="h-4 w-4" />
+                                            ออกจากระบบ
+                                        </button>
+                                    </div>
                                 ) : (
                                     <Link
                                         href="/login"
