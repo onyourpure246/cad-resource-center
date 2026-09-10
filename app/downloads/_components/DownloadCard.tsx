@@ -10,24 +10,35 @@ import { DownloadCardProps } from '@/types/components';
 
 const DownloadCard = ({ item, highlightQuery, isLatestInVersion, categoryGroupName, variant = 'hero' }: DownloadCardProps) => {
     const isNew = React.useMemo(() => {
-        // ถ้าเป็นหมวดหมู่ชุดคำสั่ง จะเช็คว่าเป็นเวอร์ชันล่าสุดหรือไม่ (ไม่สนใจเวลา 7 วัน)
-        if (categoryGroupName === 'ชุดคำสั่ง') {
-            return !!isLatestInVersion;
+        // Safe date parser
+        const getValidDate = (dateStr?: string | null) => {
+            if (!dateStr) return null;
+            const str = String(dateStr).trim();
+            if (!str) return null;
+            const formattedStr = str.includes(' ') && !str.includes('T') ? str.replace(' ', 'T') : str;
+            const parsed = new Date(formattedStr);
+            return isNaN(parsed.getTime()) ? null : parsed;
+        };
+
+        const createdDate = getValidDate(item.created_at) || getValidDate(item.updated_at);
+        let isWithin7Days = false;
+
+        if (createdDate) {
+            const now = new Date();
+            const diffTime = Math.abs(now.getTime() - createdDate.getTime());
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays <= 7) {
+                isWithin7Days = true;
+            }
         }
 
-        // ถ้าไม่ใช่ชุดคำสั่ง ให้ใช้กฎ 7 วันปกติ
-        if (!item.created_at && !item.updated_at) return false;
-        
-        const dateStr = item.created_at || item.updated_at || '';
-        if (!dateStr) return false;
-        
-        const formattedStr = dateStr.includes(' ') && !dateStr.includes('T') ? dateStr.replace(' ', 'T') : dateStr;
-        const createdDate = new Date(formattedStr);
-        const now = new Date();
-        const diffTime = Math.abs(now.getTime() - createdDate.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-        
-        return diffDays <= 7;
+        // หมวดหมู่ชุดคำสั่ง: ขึ้น NEW ถ้าอัปโหลดใน 7 วัน หรือเป็นเวอร์ชันล่าสุด
+        if (categoryGroupName === 'ชุดคำสั่ง') {
+            return isWithin7Days || !!isLatestInVersion;
+        }
+
+        // หมวดหมู่อื่นๆ: ใช้กฎ 7 วัน
+        return isWithin7Days;
     }, [item.created_at, item.updated_at, isLatestInVersion, categoryGroupName]);
 
     const renderHighlightedText = (text: string | undefined | null, query?: string) => {

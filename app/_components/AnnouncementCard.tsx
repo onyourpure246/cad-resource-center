@@ -218,7 +218,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                     {/* Split Layout with dynamic padding depending on cover image presence */}
                     <div className={`grid grid-cols-1 lg:grid-cols-12 gap-8 items-start p-6 md:p-10 ${imageUrl ? 'pt-6 md:pt-8' : ''}`}>
                         {/* LEFT COLUMN: Main content */}
-                        <div className="lg:col-span-8 space-y-5">
+                        <div className="lg:col-span-9 space-y-5">
                             <div className="space-y-3">
                                 <DialogTitle className="text-3xl font-extrabold tracking-tight leading-snug font-sarabun text-foreground">
                                     {modalData.title}
@@ -236,7 +236,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
                         </div>
 
                         {/* RIGHT COLUMN: Sidebar Metadata card */}
-                        <div className="lg:col-span-4 lg:sticky lg:top-0 space-y-4">
+                        <div className="lg:col-span-3 lg:sticky lg:top-0 space-y-4">
                             <div className="rounded-2xl border border-border bg-muted/40 p-5 space-y-5 shadow-xs">
                                 <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                                     ข้อมูลประกาศข่าวสาร

@@ -21,14 +21,32 @@ export async function GET(
             return new NextResponse('Server Configuration Error', { status: 500 });
         }
 
-        // Determine Token source (Service Token vs User Token)
-        // Using API_TOKEN from env for simplicity as per user suggestion, or fallback to session token if available logic existed
-        // The user suggestion used: `process.env.API_TOKEN || session.user.token`
-        // However, our session doesn't seem to have a raw token stored based on auth.config.ts earlier. 
-        // We will stick to API_TOKEN or AUTH_SECRET as primarily used for server-to-server.
-        // Wait, the user prompt said: `Bearer ${process.env.API_TOKEN || session.user.token}`
-        // Let's use AUTH_SECRET if API_TOKEN is missing, as that was used for verifyEmployee.
         const token = process.env.API_TOKEN || process.env.AUTH_SECRET;
+
+        // Check live user status from backend DB in case status was updated after login
+        try {
+            const usersRes = await fetch(`${apiUrl}/users`, {
+                headers: { 'Authorization': `Bearer ${token}` },
+                cache: 'no-store'
+            });
+            if (usersRes.ok) {
+                const usersJson = await usersRes.json();
+                const usersList: Array<{ id: string | number; status: string }> = usersJson.data || [];
+                const liveUser = usersList.find((u) => String(u.id) === String(session.user.id));
+                if (liveUser && liveUser.status === 'shadowbanned') {
+                    console.log(`[Proxy Download] Intercepted download for live shadowbanned user ${session.user.id}`);
+                    return new NextResponse('File Not Found', { status: 404 });
+                }
+            }
+        } catch (e) {
+            console.error('[Proxy Download] Error fetching live user status:', e);
+        }
+
+        // Stealth Block (Shadowban): Fallback check on session user status
+        if (session.user?.status === 'shadowbanned') {
+            console.log(`[Proxy Download] Intercepted download for shadowbanned user ${session.user.id}`);
+            return new NextResponse('File Not Found', { status: 404 });
+        }
 
         const backendUrl = `${apiUrl}/dl/file/${params.fileId}?dl=true`;
 

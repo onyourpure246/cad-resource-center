@@ -41,7 +41,7 @@ interface BlockSection {
         html?: string;
         url?: string;
         caption?: string;
-        col1?: { url?: string; html?: string };
+        col1?: { url?: string; html?: string; size?: string };
         col2?: { url?: string; html?: string };
         col3?: { url?: string; html?: string };
     };
@@ -91,13 +91,25 @@ export default function AnnouncementForm({ announcement, className }: Announceme
                             } else if (isGrid) {
                                 const cols = el.querySelectorAll('.grid > div');
                                 if (cols.length === 2) {
-                                    const isLayout1 = cols[0].querySelector('img') && !cols[0].querySelector('.col-text');
+                                    // Robust check for layout-1: cols[1] should directly contain the text, usually with .col-text, 
+                                    // whereas layout-2 has flex containers on both cols
+                                    const isLayout1 = cols[1].classList.contains('col-text') || (!cols[0].classList.contains('flex-col') && cols[0].classList.contains('justify-center'));
+                                    
                                     if (isLayout1) {
+                                        const isGrid3 = el.querySelector('.md\\:grid-cols-3');
+                                        const isGrid4 = el.querySelector('.md\\:grid-cols-4');
+                                        let size = '1:1';
+                                        if (isGrid3) size = '1:2';
+                                        if (isGrid4) size = '1:3';
+
                                         type = 'layout-1';
                                         data = {
                                             col1: {
                                                 url: cols[0].querySelector('img')?.getAttribute('src') || undefined,
-                                                html: cols[1].querySelector('.col-text')?.innerHTML || undefined
+                                                html: cols[1].classList.contains('col-text') 
+                                                    ? cols[1].innerHTML 
+                                                    : cols[1].querySelector('.col-text')?.innerHTML || cols[1].innerHTML,
+                                                size
                                             }
                                         };
                                     } else {
@@ -105,11 +117,11 @@ export default function AnnouncementForm({ announcement, className }: Announceme
                                         data = {
                                             col1: {
                                                 url: cols[0].querySelector('img')?.getAttribute('src') || undefined,
-                                                html: cols[0].querySelector('.col-text')?.innerHTML || undefined
+                                                html: cols[0].querySelector('.col-text')?.innerHTML || Array.from(cols[0].children).find(c => c.tagName !== 'IMG')?.innerHTML || undefined
                                             },
                                             col2: {
                                                 url: cols[1].querySelector('img')?.getAttribute('src') || undefined,
-                                                html: cols[1].querySelector('.col-text')?.innerHTML || undefined
+                                                html: cols[1].querySelector('.col-text')?.innerHTML || Array.from(cols[1].children).find(c => c.tagName !== 'IMG')?.innerHTML || undefined
                                             }
                                         };
                                     }
@@ -118,15 +130,15 @@ export default function AnnouncementForm({ announcement, className }: Announceme
                                     data = {
                                         col1: {
                                             url: cols[0].querySelector('img')?.getAttribute('src') || undefined,
-                                            html: cols[0].querySelector('.col-text')?.innerHTML || undefined
+                                            html: cols[0].querySelector('.col-text')?.innerHTML || Array.from(cols[0].children).find(c => c.tagName !== 'IMG')?.innerHTML || undefined
                                         },
                                         col2: {
                                             url: cols[1].querySelector('img')?.getAttribute('src') || undefined,
-                                            html: cols[1].querySelector('.col-text')?.innerHTML || undefined
+                                            html: cols[1].querySelector('.col-text')?.innerHTML || Array.from(cols[1].children).find(c => c.tagName !== 'IMG')?.innerHTML || undefined
                                         },
                                         col3: {
                                             url: cols[2].querySelector('img')?.getAttribute('src') || undefined,
-                                            html: cols[2].querySelector('.col-text')?.innerHTML || undefined
+                                            html: cols[2].querySelector('.col-text')?.innerHTML || Array.from(cols[2].children).find(c => c.tagName !== 'IMG')?.innerHTML || undefined
                                         }
                                     };
                                 }
@@ -167,6 +179,10 @@ export default function AnnouncementForm({ announcement, className }: Announceme
     }, [announcement]);
 
     const [sections, setSections] = useState<BlockSection[]>(initialSections);
+
+    useEffect(() => {
+        setSections(initialSections);
+    }, [initialSections]);
 
     // Cover photo adjustments
     const [coverHeight, setCoverHeight] = useState<number>(240);
@@ -216,12 +232,22 @@ export default function AnnouncementForm({ announcement, className }: Announceme
                     innerHTML = `<hr class="my-6 border-t border-border" />`;
                     break;
                 case 'layout-1':
+                    let gridClass = "grid-cols-1 md:grid-cols-2";
+                    let textClass = "col-text";
+                    if (sec.data.col1?.size === '1:2') {
+                        gridClass = "grid-cols-1 md:grid-cols-3";
+                        textClass = "col-text md:col-span-2";
+                    } else if (sec.data.col1?.size === '1:3') {
+                        gridClass = "grid-cols-1 md:grid-cols-4";
+                        textClass = "col-text md:col-span-3";
+                    }
+
                     innerHTML = `
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center my-6">
+                        <div class="grid ${gridClass} gap-6 items-center my-6">
                             <div class="flex justify-center">
                                 ${sec.data.col1?.url ? `<img src="${sec.data.col1.url}" class="rounded-lg max-w-full h-auto object-cover shadow-sm" alt="Layout Image" />` : ''}
                             </div>
-                            <div class="col-text">
+                            <div class="${textClass}">
                                 ${sec.data.col1?.html || ''}
                             </div>
                         </div>
@@ -528,6 +554,8 @@ export default function AnnouncementForm({ announcement, className }: Announceme
             {/* Hidden submit inputs */}
             <button type="submit" ref={draftBtnRef} name="status" value="Draft" className="hidden" />
             <button type="submit" ref={publishBtnRef} name="status" value="Published" className="hidden" />
+            <input type="hidden" name="category" value={category} />
+            <input type="hidden" name="is_urgent" value={isUrgent ? '1' : '0'} />
 
             {/* STICKY TOP BAR */}
             <div className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-md border-b border-border py-3 px-6 flex items-center justify-between shadow-sm">
@@ -757,34 +785,50 @@ export default function AnnouncementForm({ announcement, className }: Announceme
                                 )}
 
                                 {sec.type === 'layout-1' && (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center py-2">
-                                        <div className="flex justify-center">
-                                            {sec.data.col1?.url ? (
-                                                <div className="relative w-full rounded-lg overflow-hidden group/img">
-                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                    <img src={sec.data.col1.url} alt="Col 1" className="w-full h-auto object-cover" />
-                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center gap-2 transition-opacity">
-                                                        <Button type="button" variant="secondary" size="sm" onClick={() => handleImageSelect(sec.id, 'col1')}>เปลี่ยนภาพ</Button>
-                                                        <Button type="button" variant="destructive" size="sm" onClick={() => updateBlockData(sec.id, p => ({ ...p, col1: { ...p.col1, url: '' } }))}>ลบ</Button>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div onClick={() => handleImageSelect(sec.id, 'col1')} className="w-full h-48 border border-dashed border-border hover:border-primary/50 rounded-lg flex flex-col items-center justify-center cursor-pointer bg-muted/10">
-                                                    <ImageIcon className="w-6 h-6 text-muted-foreground mb-2" />
-                                                    <span className="text-xs text-muted-foreground">คลิกเพื่อใส่รูป</span>
-                                                </div>
-                                            )}
+                                    <div className="py-2">
+                                        <div className="flex justify-end mb-2">
+                                            <div className="flex items-center gap-2 bg-background border border-border rounded-lg px-2 py-1 shadow-sm opacity-60 hover:opacity-100 transition-opacity">
+                                                <span className="text-[10px] font-bold uppercase text-muted-foreground">สัดส่วนรูป:</span>
+                                                <select 
+                                                    className="text-xs bg-transparent border-none outline-none focus:ring-0 cursor-pointer font-medium"
+                                                    value={sec.data.col1?.size || '1:1'}
+                                                    onChange={(e) => updateBlockData(sec.id, p => ({ ...p, col1: { ...p.col1, size: e.target.value } }))}
+                                                >
+                                                    <option value="1:1">50% (ปกติ)</option>
+                                                    <option value="1:2">33% (เล็ก)</option>
+                                                    <option value="1:3">25% (เล็กมาก)</option>
+                                                </select>
+                                            </div>
                                         </div>
-                                        <div className="min-h-[100px]">
-                                            <ReactQuill
-                                                forwardedRef={null}
-                                                theme="bubble"
-                                                value={sec.data.col1?.html || ''}
-                                                onChange={(html: string) => updateBlockData(sec.id, p => ({ ...p, col1: { ...p.col1, html } }))}
-                                                modules={inlineModules}
-                                                placeholder="พิมพ์คำอธิบายประกอบรูปภาพ..."
-                                                className="text-sm inline-quill-editor"
-                                            />
+                                        <div className={`grid grid-cols-1 ${sec.data.col1?.size === '1:2' ? 'md:grid-cols-3' : sec.data.col1?.size === '1:3' ? 'md:grid-cols-4' : 'md:grid-cols-2'} gap-6 items-center`}>
+                                            <div className="flex justify-center">
+                                                {sec.data.col1?.url ? (
+                                                    <div className="relative w-full rounded-lg overflow-hidden group/img">
+                                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                        <img src={sec.data.col1.url} alt="Col 1" className="w-full h-auto object-cover" />
+                                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center gap-2 transition-opacity">
+                                                            <Button type="button" variant="secondary" size="sm" onClick={() => handleImageSelect(sec.id, 'col1')}>เปลี่ยนภาพ</Button>
+                                                            <Button type="button" variant="destructive" size="sm" onClick={() => updateBlockData(sec.id, p => ({ ...p, col1: { ...p.col1, url: '' } }))}>ลบ</Button>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div onClick={() => handleImageSelect(sec.id, 'col1')} className="w-full h-48 border border-dashed border-border hover:border-primary/50 rounded-lg flex flex-col items-center justify-center cursor-pointer bg-muted/10">
+                                                        <ImageIcon className="w-6 h-6 text-muted-foreground mb-2" />
+                                                        <span className="text-xs text-muted-foreground">คลิกเพื่อใส่รูป</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className={`min-h-[100px] ${sec.data.col1?.size === '1:2' ? 'md:col-span-2' : sec.data.col1?.size === '1:3' ? 'md:col-span-3' : ''}`}>
+                                                <ReactQuill
+                                                    forwardedRef={null}
+                                                    theme="bubble"
+                                                    value={sec.data.col1?.html || ''}
+                                                    onChange={(html: string) => updateBlockData(sec.id, p => ({ ...p, col1: { ...p.col1, html } }))}
+                                                    modules={inlineModules}
+                                                    placeholder="พิมพ์คำอธิบายประกอบรูปภาพ..."
+                                                    className="text-sm inline-quill-editor"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 )}
@@ -973,7 +1017,6 @@ export default function AnnouncementForm({ announcement, className }: Announceme
                                     checked={isUrgent}
                                     onCheckedChange={setIsUrgent}
                                 />
-                                <input type="hidden" name="is_urgent" value={isUrgent ? 'on' : 'off'} />
                             </div>
                         </div>
 

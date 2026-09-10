@@ -26,6 +26,7 @@ export const authConfig = {
             if (token.sub && session.user) {
                 session.user.id = token.sub;
                 session.user.role = token.role as string;
+                session.user.status = token.status as string;
                 session.accessToken = token.accessToken as string; // Persist token to session
 
                 // Overwrite NextAuth session expiration with our Backend Token's expiration
@@ -39,6 +40,7 @@ export const authConfig = {
             if (user) {
                 token.sub = user.id;
                 token.role = user.role;
+                token.status = user.status;
                 token.accessToken = user.accessToken; // Persist token to JWT
 
                 // ถอดรหัส JWT จากหลังบ้าน เพื่อดึงเวลาหมดอายุออกมาตรวจสอบ
@@ -96,8 +98,8 @@ export const authConfig = {
 
                     const { user: systemUser, token } = result;
 
-                    // 4. เช็คสถานะ User (Active เท่านั้นถึงจะเข้าได้)
-                    if (systemUser.status && systemUser.status !== 'active') {
+                    // 4. เช็คสถานะ User (Active และ Shadowbanned เท่านั้นถึงจะเข้าได้)
+                    if (systemUser.status && systemUser.status !== 'active' && systemUser.status !== 'shadowbanned') {
                         console.error(`[Auth] User ${systemUser.username} is ${systemUser.status}. Access Denied.`);
                         throw new Error("Access Denied: Your account is inactive.");
                     }
@@ -109,6 +111,7 @@ export const authConfig = {
                         email: systemUser.username,   // หรือ PID
                         image: null,
                         role: systemUser.isadmin === 1 ? 'admin' : 'user', // ส่ง Role เข้า Session
+                        status: systemUser.status,
                         accessToken: token // Access Token from backend
                     };
                 } catch (error) {

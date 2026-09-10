@@ -6,7 +6,7 @@ export interface User {
     lastname?: string; // นามสกุล (API returns lowercase)
     jobtitle?: string; // ตำแหน่ง
     role: 'admin' | 'user' | 'editor'; // Role ของ User
-    status: 'active' | 'inactive' | 'suspended';
+    status: 'active' | 'inactive' | 'suspended' | 'shadowbanned';
     created_at: string; // API returns created_at
     updated_at?: string; // แก้ไขเมื่อ
     lastLogin?: string;

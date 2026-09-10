@@ -169,8 +169,8 @@ export const updateAnnouncement = async (id: number, formData: FormData): Promis
         const title = formData.get('name') as string;
         const content = formData.get('messages') as string;
 
-        if (title) backendFormData.append('title', title);
-        if (content) backendFormData.append('content', content);
+        if (title !== null) backendFormData.append('title', title);
+        if (content !== null) backendFormData.append('content', content);
 
         const category = formData.get('category') as string;
         if (category) backendFormData.append('category', category);

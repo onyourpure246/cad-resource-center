@@ -58,20 +58,23 @@ describe('Proxy Download API', () => {
     const { auth } = await import('@/auth');
     (auth as any).mockResolvedValueOnce({ user: { id: 1 } });
 
-    // Mock fetch response
-    const mockBody = new ReadableStream({
-      start(controller) {
-        controller.enqueue(new Uint8Array([1, 2, 3]));
-        controller.close();
-      }
-    });
-
-    (global.fetch as any).mockResolvedValueOnce({
-      ok: true,
-      status: 200,
-      headers: new Headers({ 'Content-Type': 'application/pdf' }),
-      body: mockBody,
-    });
+    // Mock fetch for /users and then /dl/file/123
+    (global.fetch as any)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ success: true, data: [{ id: 1, status: 'active' }] })
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        headers: new Headers({ 'Content-Type': 'application/pdf' }),
+        body: new ReadableStream({
+          start(controller) {
+            controller.enqueue(new Uint8Array([1, 2, 3]));
+            controller.close();
+          }
+        }),
+      });
 
     const req = new NextRequest('http://localhost/api/proxy-download/123');
     const params = Promise.resolve({ fileId: '123' });
@@ -93,10 +96,15 @@ describe('Proxy Download API', () => {
     const { auth } = await import('@/auth');
     (auth as any).mockResolvedValueOnce({ user: { id: 1 } });
 
-    (global.fetch as any).mockResolvedValueOnce({
-      ok: false,
-      status: 404,
-    });
+    (global.fetch as any)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ success: true, data: [{ id: 1, status: 'active' }] })
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+      });
 
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -108,5 +116,23 @@ describe('Proxy Download API', () => {
     expect(response.status).toBe(404);
     
     consoleErrorSpy.mockRestore();
+  });
+
+  it('intercepts and returns 404 for shadowbanned users without calling backend download', async () => {
+    const { auth } = await import('@/auth');
+    (auth as any).mockResolvedValueOnce({ user: { id: 1, status: 'shadowbanned' } });
+
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ success: true, data: [{ id: 1, status: 'shadowbanned' }] })
+    });
+
+    const req = new NextRequest('http://localhost/api/proxy-download/123');
+    const params = Promise.resolve({ fileId: '123' });
+    
+    const response = await GET(req, { params });
+
+    expect(response.status).toBe(404);
+    expect(global.fetch).toHaveBeenCalledTimes(1); // Only called /users check
   });
 });
