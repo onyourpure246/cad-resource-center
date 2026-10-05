@@ -49,7 +49,7 @@ const MobileNav = () => {
                     </SheetHeader>
 
                     <div className="flex flex-col gap-6 px-4 py-2">
-                        {session?.user?.role === 'admin' && (
+                        {(session?.user?.role === 'admin' || session?.user?.role === 'superadmin') && (
                             <div className="flex flex-col space-y-3 font-kanit">
                                 <h3 className="text-sm font-medium text-muted-foreground">ผู้ดูแลระบบ</h3>
                                 {sidebarItems.map((item) => {

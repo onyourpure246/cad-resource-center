@@ -19,9 +19,9 @@ export function ThaIDLoginButton() {
         state: "random_state_string"
     });
     
-    // In development mode, bypass ThaID and go straight to our callback
-    const isDev = process.env.NODE_ENV === "development";
-    const thaidUrl = isDev 
+    // Control mock mode via NEXT_PUBLIC_ENABLE_MOCK_AUTH env variable (defaults to false unless explicitly 'true')
+    const isMockAuth = process.env.NEXT_PUBLIC_ENABLE_MOCK_AUTH === "true";
+    const thaidUrl = isMockAuth
         ? `${REDIRECT_URI}?code=MOCK_ADMIN&state=mock_dev`
         : `${THAID_AUTH_URL}?${params.toString()}`;
 

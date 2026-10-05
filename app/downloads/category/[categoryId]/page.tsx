@@ -36,6 +36,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             items={results}
             backLink="/downloads"
             categoryGroupName={currentCategory.group_name}
+            categoryId={categoryIdNum}
         />
     );
 }

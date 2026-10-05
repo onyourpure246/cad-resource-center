@@ -1,11 +1,9 @@
 'use client';
 
 import React from 'react'
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import {
     Dialog,
     DialogContent,
-    DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
@@ -19,19 +17,32 @@ import { th } from 'date-fns/locale';
 import { AnnouncementCardProps } from '@/types/components';
 import { getAnnouncementById } from '@/actions/announcement-actions';
 
-const stripHtml = (html: string) => {
-    if (!html) return "";
-    return html
-        .replace(/<[^>]*>?/gm, '')
-        .replace(/&nbsp;/g, ' ')
+const decodeHtmlEntities = (str: string) => {
+    if (!str) return "";
+    return str
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&apos;/g, "'")
+        .replace(/&#x27;/g, "'")
+        .replace(/&ldquo;/g, '"')
+        .replace(/&rdquo;/g, '"')
+        .replace(/&lsquo;/g, "'")
+        .replace(/&rsquo;/g, "'")
         .replace(/&amp;/g, '&')
         .replace(/&lt;/g, '<')
         .replace(/&gt;/g, '>')
-        .replace(/\s+/g, ' ')
-        .trim();
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&ndash;/g, '–')
+        .replace(/&mdash;/g, '—');
 };
 
-const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => {
+const stripHtml = (html: string) => {
+    if (!html) return "";
+    const cleanText = html.replace(/<[^>]*>?/gm, '');
+    return decodeHtmlEntities(cleanText).replace(/\s+/g, ' ').trim();
+};
+
+const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement, paginationElement }) => {
     const [isOpen, setIsOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
     const [modalData, setModalData] = React.useState<Announcement>(announcement);
@@ -57,15 +68,15 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
         ? (isAbsoluteUrl ? modalData.cover_image : `/casdu_cdm/api/images/${modalData.cover_image}`)
         : null;
 
-    // Category Color Mapping (consistent with Admin columns)
+    // Category Color Mapping (matching Admin StatusBadge & lib/constants)
     const categoryColors: Record<string, string> = {
-        'ประชาสัมพันธ์': 'bg-blue-500/15 text-blue-700 dark:text-blue-400 hover:bg-blue-500/25 border-blue-200/50',
-        'กิจกรรม': 'bg-orange-500/15 text-orange-700 dark:text-orange-400 hover:bg-orange-500/25 border-orange-200/50',
-        'แจ้งเตือนระบบ': 'bg-destructive/15 text-destructive hover:bg-destructive/25 border-destructive/20',
-        'ระเบียบ/คำสั่ง': 'bg-sky-500/15 text-sky-700 dark:text-sky-400 hover:bg-sky-500/25 border-sky-200/50',
+        'ประชาสัมพันธ์': 'bg-blue-500/80 text-white border-blue-400/40 shadow-xs',
+        'กิจกรรม': 'bg-orange-500/80 text-white border-orange-400/40 shadow-xs',
+        'แจ้งเตือนระบบ': 'bg-red-500/80 text-white border-red-400/40 shadow-xs',
+        'ระเบียบ/คำสั่ง': 'bg-sky-500/80 text-white border-sky-400/40 shadow-xs',
     };
 
-    const badgeColorClass = categoryColors[category] || 'bg-secondary text-secondary-foreground hover:bg-secondary/80';
+    const badgeColorClass = categoryColors[category] || 'bg-slate-800/80 text-white border-white/20 shadow-xs';
 
     // Parse cover image adjustments from HTML content
     const coverSettings = React.useMemo(() => {
@@ -114,87 +125,90 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({ announcement }) => 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <motion.div
-                whileHover={{ y: -5 }}
-                transition={{ type: "spring", stiffness: 300 }}
+                whileHover={{ y: -4 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 className="h-full"
             >
-                <Card className="group flex flex-col h-full overflow-hidden border-border bg-background/50 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 rounded-[1.55rem]">
-
-                    {/* Cover Image - Adjusted height for better balance */}
+                <div
+                    onClick={handleReadMore}
+                    className="group relative w-full aspect-video overflow-hidden rounded-[1.55rem] border border-border/40 bg-card shadow-md hover:shadow-xl hover:border-primary/40 transition-all duration-300 cursor-pointer flex flex-col justify-between"
+                >
+                    {/* Background Cover Image or Fallback Gradient */}
                     {imageUrl ? (
-                        <div className="relative w-full h-40 overflow-hidden bg-muted">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src={imageUrl}
-                                alt={modalData.title}
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                onError={(e) => {
-                                    // Fallback if image fails
-                                    (e.target as HTMLImageElement).style.display = 'none';
-                                }}
-                            />
-                        </div>
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img
+                            src={imageUrl}
+                            alt={modalData.title}
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            onError={(e) => {
+                                (e.target as HTMLImageElement).style.display = 'none';
+                            }}
+                        />
                     ) : (
-                        <div className="relative w-full h-40 bg-gradient-to-br from-muted/50 to-muted flex items-center justify-center">
-                            <Tag className="w-10 h-10 text-muted-foreground/20" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 flex items-center justify-center">
+                            <Tag className="w-12 h-12 text-white/10" />
                         </div>
                     )}
 
-                    <CardHeader className="p-3 pb-0 space-y-0.5 gap-1">
-                        <div className="flex justify-between items-start gap-1">
-                            <div className="flex items-center gap-2">
-                                <Badge
-                                    variant="outline"
-                                    className={`rounded-md px-2 py-0.5 text-xs font-normal flex items-center gap-1 border-transparent ${badgeColorClass}`}
-                                >
-                                    {category}
+                    {/* Top Subtle Vignette for Badge legibility on bright images */}
+                    <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-black/40 via-black/10 to-transparent pointer-events-none" />
+
+                    {/* Dark Gradient Overlay ONLY behind the text at bottom */}
+                    <div className="absolute bottom-0 left-0 right-0 h-3/5 bg-gradient-to-t from-black/95 via-black/60 to-transparent pointer-events-none transition-opacity duration-300 group-hover:from-black/95 group-hover:via-black/70" />
+
+                    {/* Top Overlay Header: Category Badge + Urgent + Date */}
+                    <div className="relative z-10 p-3 sm:p-4 flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                            <Badge
+                                variant="outline"
+                                className={`rounded-md px-2.5 py-0.5 text-xs font-semibold backdrop-blur-md shadow-xs ${badgeColorClass}`}
+                            >
+                                {category}
+                            </Badge>
+                            {isUrgent && (
+                                <Badge variant="destructive" className="shrink-0 rounded-md px-2 py-0.5 text-xs font-semibold bg-red-500/90 text-white animate-pulse shadow-xs">
+                                    ด่วน
                                 </Badge>
-                                {isUrgent && (
-                                    <Badge variant="destructive" className="shrink-0 rounded-md px-2 py-0.5 text-xs font-normal bg-red-500 hover:bg-red-600 animate-pulse">
-                                        ด่วน
-                                    </Badge>
-                                )}
-                            </div>
-                            {displayDate && (
-                                <div className="flex items-center text-xs text-muted-foreground font-sarabun bg-muted/50 px-2 py-0.5 rounded-full whitespace-nowrap border">
-                                    <Calendar className="w-3 h-3 mr-1" />
-                                    <span>{displayDate}</span>
-                                </div>
                             )}
                         </div>
 
-                        <div className="h-[1.75rem] flex items-center">
-                            <h3 className="text-lg font-semibold text-foreground line-clamp-1 leading-normal" title={modalData.title}>
-                                {modalData.title}
-                            </h3>
-                        </div>
-                    </CardHeader>
+                        {displayDate && (
+                            <div className="flex items-center text-[11px] sm:text-xs font-sarabun text-white/95 bg-black/40 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/20 whitespace-nowrap shadow-xs">
+                                <Calendar className="w-3 h-3 mr-1 text-white/80" />
+                                <span>{displayDate}</span>
+                            </div>
+                        )}
+                    </div>
 
-                    <CardContent className="flex-grow p-3 pt-0 pb-0">
-                        <div className="h-[3.25rem]">
-                            <p className="font-sarabun text-muted-foreground line-clamp-2 leading-relaxed text-base indent-0">
-                                {stripHtml(modalData.content)}
-                            </p>
-                        </div>
-                    </CardContent>
+                    {/* Bottom Overlay Content: Title + Description Snippet + Read More */}
+                    <div className="relative z-10 p-3 sm:p-4 pt-0 space-y-1 flex flex-col justify-end">
+                        <h3 className="text-sm sm:text-base md:text-lg font-bold text-white line-clamp-1 leading-snug drop-shadow-sm group-hover:text-amber-400 dark:group-hover:text-amber-300 transition-colors" title={decodeHtmlEntities(modalData.title)}>
+                            {decodeHtmlEntities(modalData.title)}
+                        </h3>
 
-                    <CardFooter className="p-3 pt-2 flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground font-sarabun">
-                            {/* Spacer or View Count if needed */}
-                        </span>
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={handleReadMore}
-                            disabled={isLoading}
-                            className="cursor-pointer group hover:bg-primary/5 hover:text-primary rounded-lg h-7 px-2 flex items-center gap-1.5 text-sm"
-                        >
-                            <span className="mt-0.5">{isLoading ? 'กำลังโหลด...' : 'อ่านเพิ่มเติม'}</span>
-                            <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-                        </Button>
-                    </CardFooter>
-                </Card>
+                        <p className="font-sarabun text-xs sm:text-sm text-white/85 line-clamp-2 leading-relaxed drop-shadow-xs">
+                            {stripHtml(modalData.content)}
+                        </p>
+
+                        <div className="pt-1 flex items-center justify-between gap-2">
+                            <span className="text-[10px] text-white/60 font-sarabun shrink-0">
+                                ฝ่ายพัฒนาระบบ
+                            </span>
+
+                            {/* Center Pagination Dots & Loader */}
+                            {paginationElement && (
+                                <div className="flex items-center justify-center shrink-0 z-20">
+                                    {paginationElement}
+                                </div>
+                            )}
+
+                            <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-white group-hover:text-amber-400 dark:group-hover:text-amber-300 transition-colors shrink-0">
+                                <span>{isLoading ? 'กำลังโหลด...' : 'อ่านเพิ่มเติม'}</span>
+                                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </motion.div>
 
             <DialogContent className="max-w-[1200px] sm:max-w-[1200px] w-[95vw] max-h-[92vh] overflow-y-auto rounded-2xl p-0 custom-scrollbar">

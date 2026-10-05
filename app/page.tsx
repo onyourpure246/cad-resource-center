@@ -1,71 +1,51 @@
 import React from "react";
-import Image from "next/image";
-import Landing from "@/assets/img/landing_page_banner.png";
+import HeroVideoBanner from "./_components/HeroVideoBanner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import AnnounceSection from "./_components/AnnounceSection";
 import Link from "next/link";
+import HomePreviewCombinedSection from "./_components/HomePreviewCombinedSection";
+
+export const dynamic = 'force-dynamic';
 
 const HomePage = () => {
   return (
     <div className="pb-16">
-      <section className="relative w-full h-[210px] md:h-[210px] overflow-hidden">
-        {/* Background Video */}
-        {/* Base Background Image (Always visible as fallback) */}
-        <Image
-          src={Landing}
-          alt="Landing Banner"
-          fill
-          priority
-          className="object-cover brightness-75 z-0"
-          sizes="100vw"
-        />
-
-        {/* Video Overlay (Visible when video loads) */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          poster="" // Not needed as we have the Image component behind it
-          className="absolute inset-0 w-full h-full object-cover brightness-75 z-0 mix-blend-overlay opacity-0" // Hide by default, show via CSS or JS if needed. But for simple layer stack:
-        // Actually, standard stack: Image bottom, Video top. If video has source, it covers image.
-        // Let's just stack them. Video will be transparent if no source.
-        >
-          {/* Enable these to show video. The video will cover the image. */}
-          {/* <source src="/assets/video/banner.webm" type="video/webm" /> */}
-          {/* <source src="/assets/video/banner.mp4" type="video/mp4" /> */}
-        </video>
+      <section className="relative w-full h-[190px] md:h-[190px] overflow-hidden">
+        {/* Background Video & Fallback Image */}
+        <HeroVideoBanner />
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-black/40" />
         {/* Content */}
         <div className="relative z-10 h-full px-6 lg:px-20 flex items-center justify-between">
           {/* Left Content */}
-          <div className="max-w-2xl text-white space-y-2">
+          <div className="max-w-2xl text-white space-y-1">
             <Badge variant="outline" className="text-white border-white/50 bg-white/10">
               กลุ่มพัฒนาระบบตรวจสอบบัญชีคอมพิวเตอร์
             </Badge>
-            <h1 className="text-4xl md:text-4xl font-bold leading-tight">
+            <h1 className="text-2xl md:text-2xl font-bold leading-tight">
               ศูนย์บริการข้อมูลและทรัพยากร
             </h1>
             <p className="text-sm md:text-sm">
               รวมเอกสาร และเครื่องมือสำหรับตรวจสอบบัญชีคอมพิวเตอร์
             </p>
             <div className="flex gap-4 ml-10">
-              <Link href="/downloads"><Button variant="default" size="default" className="mt-4 cursor-pointer">
+              <Link href="/downloads"><Button variant="default" size="default" className="mt-1 cursor-pointer">
                 ดาวน์โหลด
               </Button>
               </Link>
-              <Button asChild size="lg" variant="link" className="mt-4 cursor-pointer text-white">
+              <Button asChild size="lg" variant="link" className="mt-1 cursor-pointer text-white">
                 <Link href="https://lin.ee/OxR745f" target="_blank">ติดต่อเรา</Link>
               </Button>
             </div>
           </div>
         </div>
       </section>
-      <AnnounceSection />
+
+      {/* Redesigned Combined Home Section (50% ข่าวประกาศ / 50% ชุดคำสั่งอัปเดตล่าสุด 3 หมวด) */}
+      <HomePreviewCombinedSection />
     </div>
   );
 };
+
 
 export default HomePage;

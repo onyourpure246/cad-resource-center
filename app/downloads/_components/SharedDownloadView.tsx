@@ -6,6 +6,10 @@ import { DownloadItem, Folder } from '@/types/models';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
+import { auth } from '@/auth';
+import InlineUploadButton from './InlineUploadButton';
+import { isSuperAdminRole } from '@/lib/auth-helpers';
+import SuperAdminOnly from '@/components/Auth/SuperAdminOnly';
 
 interface SharedDownloadViewProps {
     title: string;
@@ -16,9 +20,10 @@ interface SharedDownloadViewProps {
     parentFolderId?: number; // Needed for SubFolderBadges
     highlightQuery?: string;
     categoryGroupName?: string;
+    categoryId?: number;
 }
 
-const SharedDownloadView: React.FC<SharedDownloadViewProps> = ({
+const SharedDownloadView = async ({
     title,
     description,
     items,
@@ -26,8 +31,13 @@ const SharedDownloadView: React.FC<SharedDownloadViewProps> = ({
     subFolders,
     parentFolderId,
     highlightQuery,
-    categoryGroupName
-}) => {
+    categoryGroupName,
+    categoryId
+}: SharedDownloadViewProps) => {
+
+    const session = await auth();
+    const isSuperAdmin = isSuperAdminRole(session);
+
     return (
         <div className="container mx-auto px-10 py-8 max-w-[1920px] animate-in fade-in duration-500">
             <Header
@@ -56,7 +66,13 @@ const SharedDownloadView: React.FC<SharedDownloadViewProps> = ({
                     )
                 )}
 
-                <DownloadList items={items} highlightQuery={highlightQuery} categoryGroupName={categoryGroupName} />
+                <SuperAdminOnly>
+                    <div className="flex justify-end mb-4">
+                        <InlineUploadButton categoryId={categoryId} />
+                    </div>
+                </SuperAdminOnly>
+
+                <DownloadList items={items} highlightQuery={highlightQuery} categoryGroupName={categoryGroupName} isSuperAdmin={isSuperAdmin} />
             </div>
         </div>
     );

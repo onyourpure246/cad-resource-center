@@ -16,7 +16,7 @@ const Navbar = () => {
   return (
     <nav className='sticky top-0 z-50 bg-primary dark:bg-sidebar text-primary-foreground dark:text-foreground shadow-md transition-colors duration-300'>
       {/* Logo */}
-      <div className='container mx-auto px-4 md:max-w-[1360px] relative min-h-[50px] py-1 flex justify-between items-center'>
+      <div className='container mx-auto px-4 lg:px-8 max-w-[1920px] relative min-h-[50px] py-1 flex justify-between items-center'>
 
         {/* Logo Section */}
         <div className='flex gap-12 items-center'>

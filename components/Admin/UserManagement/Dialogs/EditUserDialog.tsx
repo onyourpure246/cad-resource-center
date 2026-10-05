@@ -28,10 +28,11 @@ interface EditUserDialogProps {
     // Importing directly is fine since it's a client component using server action.
 }
 
+import { useSession } from 'next-auth/react';
 import { updateUser } from '@/actions/user-actions';
 
 export const EditUserDialog = ({ user, open, onOpenChange, onSuccess }: EditUserDialogProps) => {
-    // const { toast } = useToast()
+    const { data: currentSession, update: updateSession } = useSession();
     const [isLoading, setIsLoading] = useState(false);
     const [role, setRole] = useState<string>(user?.role || 'user');
     const [status, setStatus] = useState<string>(user?.status || 'active');
@@ -48,8 +49,13 @@ export const EditUserDialog = ({ user, open, onOpenChange, onSuccess }: EditUser
         if (!user) return;
         setIsLoading(true);
         try {
-            const res = await updateUser(user.id, { role: role as 'admin' | 'user', status: status as 'active' | 'inactive' | 'suspended' | 'shadowbanned' });
+            const res = await updateUser(user.id, { role: role as User['role'], status: status as User['status'] });
             if (res.success) {
+                // If editing self, update current active NextAuth session immediately
+                if (currentSession?.user?.id === user.id.toString()) {
+                    await updateSession({ role, status });
+                }
+
                 toast.success("อัปเดตผู้ใช้สำเร็จ", {
                     description: `เปลี่ยนสถานะเป็น ${status} และสิทธิ์เป็น ${role}`,
                 });
@@ -96,6 +102,7 @@ export const EditUserDialog = ({ user, open, onOpenChange, onSuccess }: EditUser
                             <SelectContent>
                                 <SelectItem value="user">User (ผู้ใช้ทั่วไป)</SelectItem>
                                 <SelectItem value="admin">Admin (ผู้ดูแลระบบ)</SelectItem>
+                                <SelectItem value="superadmin">Super Admin (ผู้ดูแลระบบสูงสุด)</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

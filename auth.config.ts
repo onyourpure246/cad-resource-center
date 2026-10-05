@@ -36,7 +36,7 @@ export const authConfig = {
             }
             return session;
         },
-        async jwt({ token, user }) {
+        async jwt({ token, user, trigger, session }) {
             if (user) {
                 token.sub = user.id;
                 token.role = user.role;
@@ -57,6 +57,14 @@ export const authConfig = {
                     console.error("[Auth] Error decoding JWT timestamp", e);
                 }
             }
+
+            // Allow client-side update() calls to update JWT token properties dynamically
+            if (trigger === "update" && session) {
+                if (session.role) token.role = session.role;
+                if (session.user?.role) token.role = session.user.role;
+                if (session.status) token.status = session.status;
+            }
+
             return token;
         }
     },
@@ -110,7 +118,7 @@ export const authConfig = {
                         name: systemUser.displayname, // ชื่อจาก DB เรา
                         email: systemUser.username,   // หรือ PID
                         image: null,
-                        role: systemUser.isadmin === 1 ? 'admin' : 'user', // ส่ง Role เข้า Session
+                        role: systemUser.role || (systemUser.isadmin === 1 ? 'admin' : 'user'), // Pass exact role (superadmin/admin/user) into Session
                         status: systemUser.status,
                         accessToken: token // Access Token from backend
                     };

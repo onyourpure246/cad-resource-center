@@ -12,13 +12,17 @@ import { Label } from "@/components/ui/label"
 import { ManageCategoryDialog } from './ManageCategoryDialog';
 import { toast } from 'sonner';
 
-const UploadFileForm = ({ parentId, onSuccess }: CreateNewFormProps) => {
+interface UploadFileFormProps extends CreateNewFormProps {
+    defaultCategory?: string;
+}
+
+const UploadFileForm = ({ parentId, onSuccess, defaultCategory }: UploadFileFormProps) => {
     // We removed useFormSubmission since we need XHR to track upload progress
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [isPublished, setIsPublished] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);
-    const [selectedCategory, setSelectedCategory] = useState<string>('unassigned');
+    const [selectedCategory, setSelectedCategory] = useState<string>(defaultCategory || 'unassigned');
     const [isManageCategoryOpen, setIsManageCategoryOpen] = useState(false);
     const [version, setVersion] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -186,29 +190,33 @@ const UploadFileForm = ({ parentId, onSuccess }: CreateNewFormProps) => {
                         </div>
                     </div>
 
-                    <div className='grid md:grid-cols-1 gap-4 mt-4'>
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium leading-none">
-                                หมวดหมู่เอกสาร {isPublished && <span className="text-destructive">*</span>}
-                            </label>
-                            <div className="flex gap-2">
-                                <Select name="category_id" value={selectedCategory} onValueChange={setSelectedCategory} required={isPublished}>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="เลือกหมวดหมู่..." />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="unassigned">-- ไม่ระบุ --</SelectItem>
-                                        {categories.map((cat) => (
-                                            <SelectItem key={cat.id} value={cat.id.toString()}>{cat.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <Button type="button" variant="outline" size="icon" title="จัดการหมวดหมู่" onClick={() => setIsManageCategoryOpen(true)}>
-                                    <Settings className="h-4 w-4" />
-                                </Button>
+                    {!defaultCategory ? (
+                        <div className='grid md:grid-cols-1 gap-4 mt-4'>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium leading-none">
+                                    หมวดหมู่เอกสาร {isPublished && <span className="text-destructive">*</span>}
+                                </label>
+                                <div className="flex gap-2">
+                                    <Select name="category_id" value={selectedCategory} onValueChange={setSelectedCategory} required={isPublished}>
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="เลือกหมวดหมู่..." />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="unassigned">-- ไม่ระบุ --</SelectItem>
+                                            {categories.map((cat) => (
+                                                <SelectItem key={cat.id} value={cat.id.toString()}>{cat.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <Button type="button" variant="outline" size="icon" title="จัดการหมวดหมู่" onClick={() => setIsManageCategoryOpen(true)}>
+                                        <Settings className="h-4 w-4" />
+                                    </Button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    ) : (
+                        <input type="hidden" name="category_id" value={defaultCategory} />
+                    )}
 
                     {categories.find(c => c.id.toString() === selectedCategory)?.group_name === 'ชุดคำสั่ง' && (
                         <div className='grid md:grid-cols-1 gap-4 mt-4'>

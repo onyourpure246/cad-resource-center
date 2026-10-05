@@ -6,6 +6,11 @@ import CategoryCard from './CategoryCard'
 import { Folder, Boxes } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import InlineManageCategoryButton from './InlineManageCategoryButton'
+import { searchFiles } from '@/actions/search-actions'
+import { deleteCategory } from '@/actions/file-actions'
+import { toast } from 'sonner'
+import SuperAdminOnly from '@/components/Auth/SuperAdminOnly'
 
 interface TabCategory {
     id: number;
@@ -16,18 +21,37 @@ interface TabCategory {
     mui_colour?: string;
 }
 
-export default function CategoryTabsAnimated({ categories }: { categories: TabCategory[] }) {
+export default function CategoryTabsAnimated({ categories, isSuperAdmin }: { categories: TabCategory[], isSuperAdmin?: boolean }) {
     const [activeTab, setActiveTab] = useState("docs");
 
     const docCategories = categories?.filter((c: TabCategory) => c.group_name === 'เอกสารต่างๆ' || !c.group_name) || [];
     const scriptCategories = categories?.filter((c: TabCategory) => c.group_name === 'ชุดคำสั่ง') || [];
     const otherCategories = categories?.filter((c: TabCategory) => c.group_name && c.group_name !== 'เอกสารต่างๆ' && c.group_name !== 'ชุดคำสั่ง') || [];
 
+    const handleDeleteCategory = async (id: number) => {
+        if (!confirm('ยืนยันการลบหมวดหมู่นี้? (ต้องไม่มีเอกสารอยู่ข้างใน)')) return;
+        
+        try {
+            const files = await searchFiles('', id);
+            if (files && files.length > 0) {
+                toast.error('ไม่สามารถลบได้เนื่องจากมีเอกสารอยู่ในหมวดหมู่นี้');
+                return;
+            }
+            
+            await deleteCategory(id);
+            toast.success('ลบหมวดหมู่สำเร็จ');
+            window.location.reload();
+        } catch (error) {
+            console.error(error);
+            toast.error('เกิดข้อผิดพลาดในการลบหมวดหมู่');
+        }
+    };
+
     const SectionHeader = ({ title }: { title: string }) => (
         <h3 className="text-lg font-semibold border-b pb-2 text-primary">{title}</h3>
     );
 
-    const CategoryGrid = ({ data, defaultDesc = 'เลือกดูเอกสารในหมวดหมู่นี้' }: { data: TabCategory[], defaultDesc?: string }) => (
+    const CategoryGrid = ({ data, defaultDesc = 'เลือกดูเอกสารในหมวดหมู่นี้', defaultGroup = 'เอกสารต่างๆ' }: { data: TabCategory[], defaultDesc?: string, defaultGroup?: string }) => (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2'>
             {data.map((category: TabCategory) => (
                 <CategoryCard
@@ -38,8 +62,14 @@ export default function CategoryTabsAnimated({ categories }: { categories: TabCa
                     icon={<Folder />}
                     mui_icon={category.mui_icon}
                     mui_colour={category.mui_colour || '#1976d2'}
+                    categoryId={category.id}
+                    isSuperAdmin={isSuperAdmin}
+                    onDelete={handleDeleteCategory}
                 />
             ))}
+            <SuperAdminOnly>
+                <InlineManageCategoryButton defaultGroup={defaultGroup} />
+            </SuperAdminOnly>
         </div>
     );
 
@@ -88,9 +118,9 @@ export default function CategoryTabsAnimated({ categories }: { categories: TabCa
                             transition={{ duration: 0.4 }}
                             className="space-y-10"
                         >
-                            {docCategories.length > 0 ? (
+                            {docCategories.length > 0 || isSuperAdmin ? (
                                 <div className="space-y-4">
-                                    <CategoryGrid data={docCategories} />
+                                    <CategoryGrid data={docCategories} defaultGroup="เอกสารต่างๆ" />
                                 </div>
                             ) : (
                                 <div className="text-center py-10 text-muted-foreground">ไม่มีหมวดหมู่ย่อยในเอกสารต่างๆ</div>
@@ -112,9 +142,9 @@ export default function CategoryTabsAnimated({ categories }: { categories: TabCa
                             transition={{ duration: 0.4 }}
                             className="space-y-10"
                         >
-                            {scriptCategories.length > 0 ? (
+                            {scriptCategories.length > 0 || isSuperAdmin ? (
                                 <div className="space-y-4">
-                                    <CategoryGrid data={scriptCategories} defaultDesc="ดาวน์โหลดโปรแกรมและชุดคำสั่ง" />
+                                    <CategoryGrid data={scriptCategories} defaultDesc="ดาวน์โหลดโปรแกรมและชุดคำสั่ง" defaultGroup="ชุดคำสั่ง" />
                                 </div>
                             ) : (
                                 <div className="text-center py-10 text-muted-foreground">ไม่มีหมวดหมู่ย่อยในชุดคำสั่ง</div>

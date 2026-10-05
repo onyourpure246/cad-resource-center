@@ -5,7 +5,7 @@ import { FileText } from 'lucide-react'
 import DownloadCard from './DownloadCard'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
-const DownloadList = ({ items, highlightQuery, categoryGroupName }: DownloadListProps) => {
+const DownloadList = ({ items, highlightQuery, categoryGroupName, isSuperAdmin }: DownloadListProps) => {
     const [activeVersionTab, setActiveVersionTab] = useState("all");
 
     // Extract unique versions
@@ -100,6 +100,7 @@ const DownloadList = ({ items, highlightQuery, categoryGroupName }: DownloadList
                                     categoryGroupName={categoryGroupName}
                                     isLatestInVersion={latestIdsInVersions.has(sortedAndFilteredItems[0].id)}
                                     variant="hero"
+                                    isSuperAdmin={isSuperAdmin}
                                 />
                             </section>
 
@@ -118,6 +119,7 @@ const DownloadList = ({ items, highlightQuery, categoryGroupName }: DownloadList
                                                 categoryGroupName={categoryGroupName}
                                                 isLatestInVersion={latestIdsInVersions.has(item.id)}
                                                 variant="compact"
+                                                isSuperAdmin={isSuperAdmin}
                                             />
                                         ))}
                                     </div>
@@ -135,6 +137,7 @@ const DownloadList = ({ items, highlightQuery, categoryGroupName }: DownloadList
                                     categoryGroupName={categoryGroupName}
                                     isLatestInVersion={false}
                                     variant="compact"
+                                    isSuperAdmin={isSuperAdmin}
                                 />
                             ))}
                         </div>

@@ -7,17 +7,29 @@ import {
     CardTitle,
 } from '@/components/ui/card'
 import { CategoryCardProps } from '@/types/components'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Trash2 } from 'lucide-react'
 import MuiIconRenderer from '@/components/ui/MuiIconRenderer'
 
-const CategoryCard = ({ title, description, href, icon, mui_icon, mui_colour }: CategoryCardProps) => {
+const CategoryCard = ({ title, description, href, icon, mui_icon, mui_colour, categoryId, isSuperAdmin, onDelete }: CategoryCardProps) => {
     return (
-        <Link href={href} className="block group">
-            <Card className="border border-border/60 shadow-sm hover:shadow-md transition-all duration-300 hover:border-primary/40 bg-card hover:bg-primary/5 overflow-hidden relative">
+        <Link href={href} className="block group h-full">
+            <Card className="border border-border/60 shadow-sm hover:shadow-md transition-all duration-300 hover:border-primary/40 bg-card hover:bg-primary/5 overflow-hidden relative min-h-[82px] h-full">
                 <div className="absolute top-1/2 right-4 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-10px] group-hover:translate-x-0">
                     <ArrowRight className="w-4 h-4 text-primary" />
                 </div>
-                <CardHeader className="flex flex-row items-center gap-4 p-4">
+                {isSuperAdmin && onDelete && categoryId && (
+                    <div 
+                        className="absolute top-2 right-2 p-1.5 rounded-md hover:bg-destructive/10 text-slate-400 hover:text-destructive transition-colors z-10"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onDelete(categoryId);
+                        }}
+                    >
+                        <Trash2 className="w-4 h-4" />
+                    </div>
+                )}
+                <CardHeader className="flex flex-row items-center gap-4 p-4 py-[1.125rem]">
                     <div className='p-3 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300 shrink-0'>
                         {mui_icon ? (
                             <MuiIconRenderer iconName={mui_icon} iconColor={mui_colour} className="w-6 h-6 transition-transform duration-300 group-hover:scale-110" />
