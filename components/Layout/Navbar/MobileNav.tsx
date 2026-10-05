@@ -3,13 +3,15 @@
 import React, { useState } from 'react';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { Menu, LogIn, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import ThemeLogo from './ThemeLogo';
 import { usePathname } from 'next/navigation';
 import { ModeToggle } from './ModeToggle';
 import { sidebarItems } from '@/lib/constants';
+import { logout } from '@/actions/auth';
+import { toast } from 'sonner';
 
 const MobileNav = () => {
     const [open, setOpen] = useState(false);
@@ -17,8 +19,15 @@ const MobileNav = () => {
     const { data: session } = useSession();
 
     const handleSignOut = async () => {
-        await signOut({ callbackUrl: '/' });
         setOpen(false);
+        toast.success('กำลังออกจากระบบ...');
+        try {
+            await logout();
+        } catch (error) {
+            console.error("Logout error:", error);
+        } finally {
+            window.location.href = '/casdu_cdm';
+        }
     };
 
     return (
@@ -33,12 +42,14 @@ const MobileNav = () => {
                     <SheetHeader className="bg-primary dark:bg-sidebar text-primary-foreground dark:text-foreground px-6 py-2">
                         <SheetTitle className="sr-only">Menu</SheetTitle>
                         <div className="flex items-center gap-2">
-                            <ThemeLogo />
+                            <Link href="https://cad.go.th" target="_blank" onClick={() => setOpen(false)}>
+                                <ThemeLogo />
+                            </Link>
                         </div>
                     </SheetHeader>
 
                     <div className="flex flex-col gap-6 px-4 py-2">
-                        {session?.user?.role === 'admin' && (
+                        {(session?.user?.role === 'admin' || session?.user?.role === 'superadmin') && (
                             <div className="flex flex-col space-y-3 font-kanit">
                                 <h3 className="text-sm font-medium text-muted-foreground">ผู้ดูแลระบบ</h3>
                                 {sidebarItems.map((item) => {
@@ -62,16 +73,17 @@ const MobileNav = () => {
                         <div className="flex flex-col space-y-3 font-kanit">
                             <h3 className="text-sm font-medium text-muted-foreground">เมนูหลัก</h3>
                             <Link
-                                href="https://cad.go.th"
-                                className="text-foreground hover:text-primary transition-colors text-base font-medium py-2 border-b border-border/50"
-                                target='_blank'
+                                href="/"
+                                onClick={() => setOpen(false)}
+                                className={`text-foreground hover:text-primary transition-colors text-base font-medium py-2 border-b border-border/50 ${pathname === '/' ? 'text-primary' : ''}`}
                             >
-                                กรมตรวจบัญชีสหกรณ์
+                                หน้าหลัก
                             </Link>
                             <Link
                                 href="https://store-auditdocs.cad.go.th/CADWP"
                                 className="text-foreground hover:text-primary transition-colors text-base font-medium py-2 border-b border-border/50"
                                 target='_blank'
+                                onClick={() => setOpen(false)}
                             >
                                 ระบบจัดการกระดาษทำการ
                             </Link>
@@ -93,13 +105,18 @@ const MobileNav = () => {
 
                             <div className="pt-2 border-t border-border/50">
                                 {session?.user ? (
-                                    <button
-                                        onClick={handleSignOut}
-                                        className="flex items-center gap-2 w-full text-base font-medium py-2 text-red-500 hover:text-red-600 transition-colors"
-                                    >
-                                        <LogOut className="h-4 w-4" />
-                                        ออกจากระบบ
-                                    </button>
+                                    <div className="flex flex-col space-y-1">
+                                        <div className="text-base font-medium py-2 text-foreground">
+                                            สวัสดี, {session.user.name || 'ผู้ใช้'}
+                                        </div>
+                                        <button
+                                            onClick={handleSignOut}
+                                            className="flex items-center gap-2 w-full text-base font-medium py-2 text-red-500 hover:text-red-600 transition-colors"
+                                        >
+                                            <LogOut className="h-4 w-4" />
+                                            ออกจากระบบ
+                                        </button>
+                                    </div>
                                 ) : (
                                     <Link
                                         href="/login"

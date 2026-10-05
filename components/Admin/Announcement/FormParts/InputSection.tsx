@@ -25,7 +25,7 @@ export const InputSection = ({
     return (
         <div>
             <div className='mb-4 flex flex-col gap-1'>
-                <Label className='text-2xl'>
+                <Label className='text-2xl font-bold'>
                     {isCreateMode ? 'สร้างประกาศใหม่' : 'แก้ไขประกาศ'}
                 </Label>
                 {isReadOnly && (
@@ -46,7 +46,7 @@ export const InputSection = ({
                         defaultValue={announcement?.cover_image ? (
                             announcement.cover_image.startsWith('http') || announcement.cover_image.startsWith('blob:')
                                 ? announcement.cover_image
-                                : `/api/images/${announcement.cover_image}`
+                                : `/casdu_cdm/api/images/${announcement.cover_image}`
                         ) : null}
                         onChange={handleImageChange}
                     />

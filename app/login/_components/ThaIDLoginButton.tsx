@@ -6,12 +6,24 @@ import thaidLogo from "@/assets/img/thaid.png";
 export function ThaIDLoginButton() {
     const THAID_AUTH_URL = process.env.NEXT_PUBLIC_THAID_AUTH_URL || "https://imauthsbx.bora.dopa.go.th/api/v2/oauth2/auth/"; // Sandbox + Trailing Slash
     const CLIENT_ID = process.env.NEXT_PUBLIC_THAID_CLIENT_ID || "bDNWUDBJYVNJVE4xNDhPRUhsTDdZSXNRM0RLZzl6WE4"; // Sandbox Client ID
-    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:24990";
+    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://auditdocs.cad.go.th/casdu_cdm";
     const REDIRECT_URI = `${APP_URL}/auth/callback`;
 
     // Sandbox Supported Scopes: openid pid name given_name family_name
     // Removing 'offline_access' as it causes invalid_scope in Sandbox
-    const thaidUrl = `${THAID_AUTH_URL}?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=openid pid name&state=random_state_string`;
+    const params = new URLSearchParams({
+        response_type: "code",
+        client_id: CLIENT_ID,
+        redirect_uri: REDIRECT_URI,
+        scope: "openid pid",
+        state: "random_state_string"
+    });
+    
+    // Control mock mode via NEXT_PUBLIC_ENABLE_MOCK_AUTH env variable (defaults to false unless explicitly 'true')
+    const isMockAuth = process.env.NEXT_PUBLIC_ENABLE_MOCK_AUTH === "true";
+    const thaidUrl = isMockAuth
+        ? `${REDIRECT_URI}?code=MOCK_ADMIN&state=mock_dev`
+        : `${THAID_AUTH_URL}?${params.toString()}`;
 
     return (
         <div className="space-y-4">

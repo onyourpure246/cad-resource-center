@@ -73,8 +73,12 @@ export const getItemColumns = ({
                     className="flex items-center gap-2 w-full overflow-hidden"
                 >
                     <div
-                        className={`hover:underline pl-3 font-medium truncate block ${item.type === 'folder' ? 'cursor-pointer hover:text-primary transition-colors' : 'text-foreground'}`}
-                        onClick={() => onItemClick(item)}
+                        className={`pl-3 font-medium truncate block ${item.type === 'folder' ? 'cursor-pointer hover:underline hover:text-primary transition-colors' : 'text-foreground'}`}
+                        onClick={() => {
+                            if (item.type === 'folder') {
+                                onItemClick(item);
+                            }
+                        }}
                         title={item.type === 'file' && item.filename ? item.filename : (item.name || "")}
                     >
                         {item.type === 'file' && item.filename ? item.filename : item.name}

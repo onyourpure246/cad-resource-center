@@ -28,6 +28,7 @@ const EditFileForm = ({ file, onSuccess, onCancel }: EditFileFormProps) => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>(file.category_id ? file.category_id.toString() : 'unassigned');
     const [isManageCategoryOpen, setIsManageCategoryOpen] = useState(false);
+    const [version, setVersion] = useState(file.version || '');
 
     useEffect(() => {
         if (state.success) {
@@ -38,6 +39,7 @@ const EditFileForm = ({ file, onSuccess, onCancel }: EditFileFormProps) => {
     useEffect(() => {
         setSelectedCategory(file.category_id ? file.category_id.toString() : 'unassigned');
         setIsActive(file.isactive === 1);
+        setVersion(file.version || '');
     }, [file]);
 
     useEffect(() => {
@@ -128,6 +130,23 @@ const EditFileForm = ({ file, onSuccess, onCancel }: EditFileFormProps) => {
                                 )}
                             </div>
                         </div>
+
+                        {categories.find(c => c.id.toString() === selectedCategory)?.group_name === 'ชุดคำสั่ง' && (
+                            <div className='grid md:grid-cols-1 gap-4 mt-4'>
+                                <div className="space-y-2">
+                                    <Label htmlFor="version">เวอร์ชัน (เช่น 1.9, 2.0)</Label>
+                                    <input 
+                                        type="text" 
+                                        id="version" 
+                                        name="version" 
+                                        value={version}
+                                        onChange={(e) => setVersion(e.target.value)}
+                                        placeholder="ใส่เวอร์ชัน (เว้นว่างได้)" 
+                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+                                    />
+                                </div>
+                            </div>
+                        )}
 
                         <ManageCategoryDialog
                             open={isManageCategoryOpen}

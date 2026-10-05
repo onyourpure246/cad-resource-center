@@ -4,7 +4,7 @@
 
 ## การเชื่อมต่อ (Integration)
 
-Frontend เชื่อมต่อกับ Backend ผ่าน **Server Actions** (`actions/*.ts`) โดยใช้ `fetch` มาตรฐาน
+Frontend เชื่อมต่อกับ Backend ผ่าน **Server Actions** (`actions/*.ts`) และ **Services** (`services/*.ts`) โดยใช้ `fetch` มาตรฐาน
 ทุก Request ที่ส่งไป Backend จะต้องแนบ **Header** ดังนี้:
 
 ```json

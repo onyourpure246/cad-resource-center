@@ -6,6 +6,10 @@ import { DownloadItem, Folder } from '@/types/models';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
+import { auth } from '@/auth';
+import InlineUploadButton from './InlineUploadButton';
+import { isSuperAdminRole } from '@/lib/auth-helpers';
+import SuperAdminOnly from '@/components/Auth/SuperAdminOnly';
 
 interface SharedDownloadViewProps {
     title: string;
@@ -15,24 +19,32 @@ interface SharedDownloadViewProps {
     subFolders?: Folder[]; // Keep flexible based on Folder model
     parentFolderId?: number; // Needed for SubFolderBadges
     highlightQuery?: string;
+    categoryGroupName?: string;
+    categoryId?: number;
 }
 
-const SharedDownloadView: React.FC<SharedDownloadViewProps> = ({
+const SharedDownloadView = async ({
     title,
     description,
     items,
     backLink,
     subFolders,
     parentFolderId,
-    highlightQuery
-}) => {
+    highlightQuery,
+    categoryGroupName,
+    categoryId
+}: SharedDownloadViewProps) => {
+
+    const session = await auth();
+    const isSuperAdmin = isSuperAdminRole(session);
+
     return (
         <div className="container mx-auto px-10 py-8 max-w-[1920px] animate-in fade-in duration-500">
             <Header
                 title={title}
                 description={description}
             />
-            <div className="container mx-auto px-2 py-4 max-w-[1920px]">
+            <div className="container mx-auto px-2 py-2 max-w-[1920px]">
                 {subFolders && subFolders.length > 0 && parentFolderId !== undefined ? (
                     <SubFolderBadges
                         subFolders={subFolders}
@@ -41,7 +53,7 @@ const SharedDownloadView: React.FC<SharedDownloadViewProps> = ({
                     />
                 ) : (
                     backLink && (
-                        <div className="mb-4 flex flex-col gap-4">
+                        <div className="flex flex-col">
                             <div className="flex items-center">
                                 <Button variant="ghost" size="sm" asChild className="pl-0 hover:bg-transparent hover:text-primary transition-colors group">
                                     <Link href={backLink} className="flex items-center gap-1 text-muted-foreground group-hover:text-primary">
@@ -54,7 +66,13 @@ const SharedDownloadView: React.FC<SharedDownloadViewProps> = ({
                     )
                 )}
 
-                <DownloadList items={items} highlightQuery={highlightQuery} />
+                <SuperAdminOnly>
+                    <div className="flex justify-end mb-4">
+                        <InlineUploadButton categoryId={categoryId} />
+                    </div>
+                </SuperAdminOnly>
+
+                <DownloadList items={items} highlightQuery={highlightQuery} categoryGroupName={categoryGroupName} isSuperAdmin={isSuperAdmin} />
             </div>
         </div>
     );

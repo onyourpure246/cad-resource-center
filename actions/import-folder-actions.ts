@@ -200,3 +200,89 @@ export const importFolderTree = async (formData: FormData, parentId: number | nu
         }
     }
 }
+
+export async function createFolderIncremental(name: string, parentId: number | null): Promise<number> {
+    try {
+        const contents = parentId ? await adminGetFolderById(parentId) : await adminGetRootFolder();
+        const existing = contents.folders.find((f: { name: string; id: number }) => f.name === name);
+        if (existing) return existing.id;
+    } catch {
+        // Ignore fetch error, try create
+    }
+
+    const session = await auth();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const token: any = session?.accessToken || process.env.API_TOKEN;
+
+    const payload: Record<string, string | number | null> = {
+        name,
+        parent: parentId,
+        isactive: 1, // Active mode
+        mui_colour: '#FFCE3C' // Default yellow color
+    };
+
+    if (session?.user?.id) {
+        payload.created_by = session.user.id;
+        payload.updated_by = session.user.id;
+    }
+
+    return await apiCreateFolder(payload, token);
+}
+
+export async function uploadFileIncremental(formData: FormData, parentId: number | null) {
+    const session = await auth();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const token: any = session?.accessToken || process.env.API_TOKEN;
+
+    if (session?.user?.id) {
+        formData.append('created_by', session.user.id);
+        formData.append('updated_by', session.user.id);
+    }
+    
+    // In incremental upload, the file is passed in formData along with 'name'. Let's ensure 'isactive' and 'parent' are appended if they don't exist
+    if (!formData.has('isactive')) formData.append('isactive', '2'); // Draft mode
+    if (parentId && !formData.has('parent')) formData.append('parent', String(parentId));
+
+    const file = formData.get('file') as File;
+    const nameLower = file?.name?.toLowerCase() || '';
+
+    // Auto icons
+    let mui_icon = undefined;
+    let mui_colour = undefined;
+
+    if (nameLower.endsWith('.pdf')) {
+        mui_icon = 'PictureAsPdf';
+        mui_colour = '#E73E29'; // Red for PDF
+    } else if (nameLower.endsWith('.zip') || nameLower.endsWith('.rar') || nameLower.endsWith('.7z')) {
+        mui_icon = 'FolderZip';
+        mui_colour = '#FFCE3C'; // Yellow for ZIP
+    } else {
+        mui_icon = 'InsertDriveFile';
+    }
+
+    if (mui_icon && !formData.has('mui_icon')) formData.append('mui_icon', mui_icon);
+    if (mui_colour && !formData.has('mui_colour')) formData.append('mui_colour', mui_colour);
+
+    const newFileId = await apiUploadFile(formData, token);
+
+    if (newFileId) {
+        try {
+            const updatePayload: Record<string, string | number> = {};
+            if (mui_icon) updatePayload.mui_icon = mui_icon;
+            if (mui_colour) updatePayload.mui_colour = mui_colour;
+            
+            if (session?.user?.id) {
+                updatePayload.created_by = session.user.id;
+                updatePayload.updated_by = session.user.id;
+            }
+
+            // Only update if there's an icon or colour to update
+            if (Object.keys(updatePayload).length > 0) {
+                await apiUpdateFile(newFileId, updatePayload, token);
+            }
+        } catch (err) {
+            console.error("Failed to patch icon colors:", err);
+        }
+    }
+    return newFileId;
+}

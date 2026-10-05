@@ -108,6 +108,9 @@ export interface CategoryCardProps {
     icon: React.ReactElement;
     mui_icon?: string;
     mui_colour?: string;
+    categoryId?: number;
+    isSuperAdmin?: boolean;
+    onDelete?: (id: number) => void;
 }
 
 export interface DownloadListProps {
@@ -115,6 +118,8 @@ export interface DownloadListProps {
     filterTags?: string[];
     filterMap?: Record<string, string>;
     highlightQuery?: string;
+    categoryGroupName?: string;
+    isSuperAdmin?: boolean;
 }
 
 export interface SearchPageProps {
@@ -148,6 +153,10 @@ export interface ErrorStateProps {
 export interface DownloadCardProps {
     item: DownloadItem;
     highlightQuery?: string;
+    isLatestInVersion?: boolean;
+    categoryGroupName?: string;
+    variant?: 'hero' | 'compact';
+    isSuperAdmin?: boolean;
 }
 
 export interface UserActionButtonsProps {
@@ -187,6 +196,7 @@ export interface AnnouncementCardProps {
     isAdmin?: boolean;
     onEdit?: (announcement: Announcement) => void;
     onDelete?: (id: number) => void;
+    paginationElement?: React.ReactNode;
 }
 
 export interface UseItemsTableColumnsProps {

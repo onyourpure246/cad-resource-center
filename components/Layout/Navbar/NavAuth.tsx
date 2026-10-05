@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { User } from 'lucide-react'
 import { ModeToggle } from './ModeToggle'
+import SuperAdminOnly from '@/components/Auth/SuperAdminOnly'
 
 const NavAuth = () => {
   const { data: session, status } = useSession()
@@ -29,7 +30,7 @@ const NavAuth = () => {
       console.error("Logout error:", error)
     } finally {
       // Force hard refresh to ensure clean state as requested
-      window.location.href = '/'
+      window.location.href = '/casdu_cdm'
     }
   }
 
@@ -66,13 +67,16 @@ const NavAuth = () => {
       <DropdownMenuSeparator />
 
       {/* Admin Menu Items */}
-      {isSignedIn && user?.role === 'admin' && (
+      {isSignedIn && (user?.role === 'admin' || user?.role === 'superadmin') && (
         <>
           <DropdownMenuLabel className='text-xs text-muted-foreground'>สำหรับผู้ดูแลระบบ</DropdownMenuLabel>
           <DropdownMenuItem asChild><Link href="/admin/documents" className='w-full cursor-pointer'>จัดการรายการดาวน์โหลด</Link></DropdownMenuItem>
           <DropdownMenuItem asChild><Link href="/admin/usermanagement" className='w-full cursor-pointer'>จัดการข้อมูลผู้ใช้งาน</Link></DropdownMenuItem>
           <DropdownMenuItem asChild><Link href="/admin/dashboard" className='w-full cursor-pointer'>ข้อมูลการใช้งานระบบ</Link></DropdownMenuItem>
           <DropdownMenuItem asChild><Link href="/admin/announcement" className='w-full cursor-pointer'>จัดการข้อมูลประชาสัมพันธ์</Link></DropdownMenuItem>
+          <SuperAdminOnly>
+            <DropdownMenuItem asChild><Link href="/admin/backup" className='w-full cursor-pointer text-purple-600 dark:text-purple-400 font-medium'>สำรองและคืนค่าระบบ (ZIP)</Link></DropdownMenuItem>
+          </SuperAdminOnly>
           <DropdownMenuSeparator />
         </>
       )}

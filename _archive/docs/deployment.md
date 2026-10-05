@@ -20,7 +20,7 @@ npm run build
 npm start
 ```
 
-โดยปกติจะรันที่ Port `3000` (แก้ไขได้โดย `npm start -- -p 8080`)
+โดยปกติจะรันที่ Port `24990` (แก้ไขได้โดย `npm start -- -p 24990`)
 
 ## 3. Environment Variables (Production)
 
@@ -33,7 +33,7 @@ npm start
 
 ## 4. Reverse Proxy (Nginx/IIS)
 
-แนะนำให้ใช้ Nginx หรือ IIS เป็น Reverse Proxy เพื่อจัดการ SSL (HTTPS) และ Forward Request ไปยัง Port 3000
+แนะนำให้ใช้ Nginx หรือ IIS เป็น Reverse Proxy เพื่อจัดการ SSL (HTTPS) และ Forward Request ไปยัง Port 24990
 
 ตัวอย่าง Config Nginx:
 ```nginx
@@ -42,7 +42,7 @@ server {
     server_name resource.cad.go.th;
 
     location / {
-        proxy_pass http://localhost:3000;
+        proxy_pass http://localhost:24990;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -55,5 +55,5 @@ server {
 ## 5. Security Checklist
 
 *   [ ] ตรวจสอบว่า `console.log` ที่แสดงข้อมูลสำคัญถูกลบออกแล้ว
-*   [ ] ตั้งค่า Firewall ให้เปิดเฉพาะ Port ที่จำเป็น (80, 443) และปิด Port 3000 จากภายนอก
+*   [ ] ตั้งค่า Firewall ให้เปิดเฉพาะ Port ที่จำเป็น (80, 443) และปิด Port 24990 จากภายนอก
 *   [ ] ตั้งค่า `AUTH_TRUST_HOST=true` หากอยู่หลัง Proxy

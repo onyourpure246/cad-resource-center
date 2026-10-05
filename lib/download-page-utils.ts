@@ -20,17 +20,21 @@ export async function getDownloadPageData(folderId: string) {
     const downloadsFromApi: DownloadItem[] = folderContents.files
         .filter(file => file.isactive === 1)
         .map(file => ({
-            // อยากให้แสดงอะไรให้ใส่ในนี้
             id: file.id,
+            parent: file.parent,
             name: file.name,
             filename: file.filename,
             description: file.description || 'ไม่มีคำอธิบาย',
-            created_at: file.created_at.slice(0, 16).replace('T', ' '),
-            updated_at: file.updated_at.slice(0, 16).replace('T', ' '),
-            downloadUrl: `${process.env.NEXT_PUBLIC_API_URL}/dl/file/download/${file.id}`,
+            created_at: file.created_at ? file.created_at.slice(0, 16).replace('T', ' ') : '',
+            updated_at: file.updated_at ? file.updated_at.slice(0, 16).replace('T', ' ') : '',
+            downloadUrl: `/api/proxy-download/${file.id}`,
             mui_icon: file.mui_icon,
             mui_colour: file.mui_colour,
             downloads: file.downloads,
+            version: file.version,
+            category_id: file.category_id,
+            category_name: file.category_name,
+            isactive: file.isactive,
         }));
 
     // console.log('Folder Contents Keys:', Object.keys(folderContents));

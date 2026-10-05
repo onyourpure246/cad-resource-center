@@ -4,6 +4,8 @@ import { authApi } from "@/services/auth-api"
 import { getThaIDOwner } from "@/services/thaid-service"
 
 export const authConfig = {
+    trustHost: true,
+    basePath: '/api/auth',   // 👈 Next.js App Router จะตัด /casdu_cdm ออกให้อยู่แล้วครับ ห้ามใส่ซ้อน
     pages: {
         signIn: '/login',
     },
@@ -13,22 +15,18 @@ export const authConfig = {
     },
     callbacks: {
         authorized({ auth, request: { nextUrl } }) {
-            const isLoggedIn = !!auth?.user;
-            const isOnDashboard = nextUrl.pathname.startsWith('/admin') || nextUrl.pathname.startsWith('/downloads');
-
-            if (isOnDashboard) {
-                if (isLoggedIn) return true;
-                return false; // Redirect unauthenticated users to login page
-            } else if (isLoggedIn) {
-                // Optional: Redirect to dashboard if already logged in and visiting login page
-                // if (nextUrl.pathname === '/login') return Response.redirect(new URL('/admin/documents', nextUrl));
-            }
-            return true;
+            return true; // Let middleware.ts strictly handle route interception and redirects.
         },
         async session({ session, token }) {
+            // If the token is already expired according to the server clock, mark it
+            if (token.accessTokenExpires && Date.now() > (token.accessTokenExpires as number)) {
+                (session as any).error = "AccessTokenExpired";
+            }
+
             if (token.sub && session.user) {
                 session.user.id = token.sub;
                 session.user.role = token.role as string;
+                session.user.status = token.status as string;
                 session.accessToken = token.accessToken as string; // Persist token to session
 
                 // Overwrite NextAuth session expiration with our Backend Token's expiration
@@ -38,10 +36,11 @@ export const authConfig = {
             }
             return session;
         },
-        async jwt({ token, user }) {
+        async jwt({ token, user, trigger, session }) {
             if (user) {
                 token.sub = user.id;
                 token.role = user.role;
+                token.status = user.status;
                 token.accessToken = user.accessToken; // Persist token to JWT
 
                 // ถอดรหัส JWT จากหลังบ้าน เพื่อดึงเวลาหมดอายุออกมาตรวจสอบ
@@ -58,6 +57,14 @@ export const authConfig = {
                     console.error("[Auth] Error decoding JWT timestamp", e);
                 }
             }
+
+            // Allow client-side update() calls to update JWT token properties dynamically
+            if (trigger === "update" && session) {
+                if (session.role) token.role = session.role;
+                if (session.user?.role) token.role = session.user.role;
+                if (session.status) token.status = session.status;
+            }
+
             return token;
         }
     },
@@ -72,8 +79,16 @@ export const authConfig = {
                 console.log("[Auth] Starting authentication flow...");
 
                 try {
-                    // 1. แลก Code เป็น PID จาก ThaID
-                    const thaidUser = await getThaIDOwner(code);
+                    let thaidUser;
+                    
+                    if (process.env.NODE_ENV === "development" && code === "MOCK_ADMIN") {
+                        const mockPid = process.env.NEXT_PUBLIC_MOCK_PID || "1101000093449"; // Default to Super Admin
+                        console.log(`[Auth] Using MOCK ThaID Login for PID: ${mockPid}`);
+                        thaidUser = { pid: mockPid };
+                    } else {
+                        // 1. แลก Code เป็น PID จาก ThaID
+                        thaidUser = await getThaIDOwner(code);
+                    }
 
                     if (!thaidUser || !thaidUser.pid) {
                         throw new Error("ThaID verification failed");
@@ -91,8 +106,8 @@ export const authConfig = {
 
                     const { user: systemUser, token } = result;
 
-                    // 4. เช็คสถานะ User (Active เท่านั้นถึงจะเข้าได้)
-                    if (systemUser.status && systemUser.status !== 'active') {
+                    // 4. เช็คสถานะ User (Active และ Shadowbanned เท่านั้นถึงจะเข้าได้)
+                    if (systemUser.status && systemUser.status !== 'active' && systemUser.status !== 'shadowbanned') {
                         console.error(`[Auth] User ${systemUser.username} is ${systemUser.status}. Access Denied.`);
                         throw new Error("Access Denied: Your account is inactive.");
                     }
@@ -103,7 +118,8 @@ export const authConfig = {
                         name: systemUser.displayname, // ชื่อจาก DB เรา
                         email: systemUser.username,   // หรือ PID
                         image: null,
-                        role: systemUser.isadmin === 1 ? 'admin' : 'user', // ส่ง Role เข้า Session
+                        role: systemUser.role || (systemUser.isadmin === 1 ? 'admin' : 'user'), // Pass exact role (superadmin/admin/user) into Session
+                        status: systemUser.status,
                         accessToken: token // Access Token from backend
                     };
                 } catch (error) {

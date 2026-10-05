@@ -21,6 +21,7 @@ export const getUserColumns = (onEdit?: (user: User) => void) => [
         headerClassName: "w-[140px] text-left hidden sm:table-cell",
         className: "w-[140px] text-left hidden sm:table-cell",
         mapping: {
+            superadmin: 'bg-purple-100 text-purple-800 hover:bg-purple-100 border-transparent font-semibold',
             admin: 'bg-red-100 text-red-800 hover:bg-red-100 border-transparent',
             editor: 'bg-orange-100 text-orange-800 hover:bg-orange-100 border-transparent',
             user: 'bg-blue-100 text-blue-800 hover:bg-blue-100 border-transparent',
@@ -33,6 +34,7 @@ export const getUserColumns = (onEdit?: (user: User) => void) => [
             active: 'bg-green-100 text-green-800 hover:bg-green-100 border-transparent',
             inactive: 'bg-gray-100 text-gray-800 hover:bg-gray-100 border-transparent',
             suspended: 'bg-red-100 text-red-800 hover:bg-red-100 border-transparent',
+            shadowbanned: 'bg-amber-100 text-amber-800 hover:bg-amber-100 border-transparent',
         }
     }),
     helper.date('updated_at', 'แก้ไขเมื่อ', {

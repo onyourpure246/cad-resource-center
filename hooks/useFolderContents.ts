@@ -61,7 +61,8 @@ export const useFolderContents = (folderId: number) => {
                 isactive: file.isactive,
                 downloads: file.downloads,
                 category_id: file.category_id,
-                category_name: file.category_name
+                category_name: file.category_name,
+                version: file.version
             }));
 
             // Combine folders and files for display

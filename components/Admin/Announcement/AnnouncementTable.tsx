@@ -76,20 +76,20 @@ const AnnouncementTable = ({ announcements, isLoading, actionButtons }: Announce
 
                                 switch (tab.value) {
                                     case "published":
-                                        activeClass = "data-[state=active]:text-white";
+                                        activeClass = "data-[state=active]:text-white dark:data-[state=active]:!text-white";
                                         bgClass = "bg-emerald-500";
                                         break;
                                     case "draft":
-                                        activeClass = "data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400 data-[state=active]:border-amber-200/50";
+                                        activeClass = "data-[state=active]:text-amber-700 dark:data-[state=active]:!text-amber-400 data-[state=active]:border-amber-200/50";
                                         bgClass = "bg-amber-500/15";
                                         break;
                                     case "archived":
-                                        activeClass = "data-[state=active]:text-muted-foreground";
+                                        activeClass = "data-[state=active]:text-muted-foreground dark:data-[state=active]:!text-muted-foreground";
                                         bgClass = "bg-muted";
                                         break;
                                     case "all":
                                     default:
-                                        activeClass = "data-[state=active]:text-primary-foreground";
+                                        activeClass = "data-[state=active]:text-primary-foreground dark:data-[state=active]:!text-background";
                                         bgClass = "bg-primary";
                                         break;
                                 }
@@ -99,7 +99,7 @@ const AnnouncementTable = ({ announcements, isLoading, actionButtons }: Announce
                                         key={tab.value}
                                         value={tab.value}
                                         className={cn(
-                                            "relative z-10 transition-none data-[state=active]:shadow-none data-[state=active]:bg-transparent",
+                                            "relative z-10 transition-none data-[state=active]:shadow-none data-[state=active]:bg-transparent dark:data-[state=active]:bg-transparent",
                                             activeClass,
                                             activeTab !== tab.value && "text-muted-foreground hover:text-foreground hover:bg-transparent"
                                         )}

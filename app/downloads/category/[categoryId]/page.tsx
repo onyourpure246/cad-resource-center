@@ -35,6 +35,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             description={`เอกสารทั้งหมด ${results.length} รายการ`}
             items={results}
             backLink="/downloads"
+            categoryGroupName={currentCategory.group_name}
+            categoryId={categoryIdNum}
         />
     );
 }

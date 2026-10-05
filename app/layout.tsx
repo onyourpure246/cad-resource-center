@@ -4,7 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Layout/Navbar/Navbar";
 import Footer from "@/components/Layout/Footer/Footer";
 import Providers from "./provider";
-import { sarabun, kanit } from "./fonts";
+import { sarabun, prompt } from "./fonts";
 
 import { SidebarProvider } from '@/components/Admin/SidebarContext'
 
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
       <body
-        className={`${sarabun.variable} ${kanit.variable} ${sarabun.className} antialiased min-h-screen flex flex-col`}
+        className={`${prompt.variable} ${sarabun.variable} ${prompt.className} antialiased min-h-screen flex flex-col`}
       >
         <Providers>
           <SidebarProvider>

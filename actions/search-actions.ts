@@ -3,6 +3,7 @@
 import { adminGetFolderById, adminGetRootFolder } from './folder-actions';
 import { File } from '@/types/models';
 import { auth } from '@/auth';
+import { cookies } from 'next/headers';
 
 // Define a Search Result type that flattens the structure
 export interface SearchResultItem extends File {
@@ -25,7 +26,8 @@ const traverseAndSearch = async (
     currentPath: string,
     results: SearchResultItem[],
     depth: number = 0,
-    categoryId?: number | null
+    categoryId?: number | null,
+    isAdmin: boolean = false
 ) => {
     // Safety break for recursion depth (adjust as needed)
     const MAX_DEPTH = 5;
@@ -49,8 +51,8 @@ const traverseAndSearch = async (
         for (const file of content.files) {
             if (results.length >= MAX_RESULTS) break;
 
-            // Filter out inactive files
-            if (file.isactive !== 1) continue;
+            // Filter out inactive files for regular users
+            if (!isAdmin && file.isactive !== 1) continue;
 
             // Apply category filter if provided
             if (categoryId != null && file.category_id !== categoryId) continue;
@@ -78,10 +80,10 @@ const traverseAndSearch = async (
 
         // 2. Recurse into subfolders
         const folderPromises = content.folders
-            .filter(folder => folder.isactive === 1) // Filter out inactive folders from recursion
+            .filter(folder => isAdmin || folder.isactive === 1) // Filter out inactive folders from recursion for regular users
             .map(folder => {
                 const newPath = currentPath ? `${currentPath} > ${folder.name}` : folder.name;
-                return traverseAndSearch(folder.id, query, newPath, results, depth + 1, categoryId);
+                return traverseAndSearch(folder.id, query, newPath, results, depth + 1, categoryId, isAdmin);
             });
 
         await Promise.all(folderPromises);
@@ -98,14 +100,18 @@ export const searchFiles = async (query: string, categoryId?: number | null): Pr
     const results: SearchResultItem[] = [];
 
     try {
+        const session = await auth();
+        const userRole = session?.user?.role?.toLowerCase() || '';
+        const isAdmin = userRole === 'superadmin' || userRole === 'admin';
+
         // 1. Get all root folders
         const rootData = await adminGetRootFolder();
 
         // 2. Search in each root folder tree
         const searchPromises = rootData.folders
-            .filter(folder => folder.isactive === 1) // Only search in active root folders
+            .filter(folder => isAdmin || folder.isactive === 1) // Only search in active root folders unless admin
             .map(folder =>
-                traverseAndSearch(folder.id, query, folder.name, results, 0, categoryId)
+                traverseAndSearch(folder.id, query, folder.name, results, 0, categoryId, isAdmin)
             );
 
         await Promise.all(searchPromises);

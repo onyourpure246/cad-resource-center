@@ -8,6 +8,8 @@ declare module "next-auth" {
         user: {
             /** The user's role. */
             role?: string
+            /** The user's status. */
+            status?: string
             /** The backend access token. */
             accessToken?: string
         } & DefaultSession["user"]
@@ -16,6 +18,7 @@ declare module "next-auth" {
 
     interface User {
         role?: string
+        status?: string
         accessToken?: string
     }
 }
@@ -24,6 +27,7 @@ declare module "next-auth/jwt" {
     /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
     interface JWT {
         role?: string
+        status?: string
         accessToken?: string
     }
 }
